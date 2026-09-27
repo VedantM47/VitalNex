@@ -1,0 +1,38 @@
+PUNE CLINICAL RISK SYNTHETIC DATASET
+Version: 1.0
+Rows: 20,000
+Purpose: Academic Responsible AI / Healthcare AI Impact Assessment project.
+
+IMPORTANT:
+This dataset contains NO real patient records and must NOT be represented as real Pune/Maharashtra patient data.
+It is synthetic and designed for model-development, explainability, fairness, reliability and governance experiments.
+
+DESIGN BASIS:
+1. UCI Heart Disease was used as the structural reference for the core clinical feature set:
+   age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal.
+   UCI documents 303 instances, 13 predictive features and a heart-disease target. 
+2. Indian/Maharashtra health-risk context was informed by government/ICMR sources:
+   - ICMR INDIAB reported Maharashtra urban hypertension prevalence of about 30.5% and rural prevalence of about 24.5% in its Phase I study.
+   - ICMR identifies hypertension, raised blood glucose, obesity, tobacco use, physical inactivity and unhealthy diet among important NCD risk factors.
+   - Maharashtra HMIS on data.gov.in contains district/sub-district indicators including hypertension, stroke, disease and health-system measures.
+3. Pune-specific HMIS sources provide local health-system context, but they are aggregated rather than patient-level.
+4. Because no verified open patient-level Pune clinical dataset was established for this build, patient-level values and labels here are SYNTHETIC.
+
+TARGET CONSTRUCTION:
+heart_disease_risk is generated using a transparent synthetic risk mechanism combining age, sex, BP, cholesterol, diabetes, smoking, family history, BMI, hypertension, exercise-related variables and UCI-like cardiac variables, plus random variation.
+It is NOT a validated clinical risk score and must not be used for medical decisions.
+
+RECOMMENDED USE:
+- Baseline ML model
+- SHAP/LIME explanations
+- Fairness analysis across sex, locality_type and socioeconomic_band
+- Confidence/calibration experiments
+- Data quality and missingness stress tests
+- AI impact assessment and governance dashboard
+- Human-oversight and mitigation experiments
+
+SOURCES:
+UCI Heart Disease Dataset: https://archive.ics.uci.edu/dataset/45/heart+disease
+ICMR INDIAB Phase I Executive Summary: https://www.icmr.gov.in/icmrobject/static/icmr/dist/images/pdf/reports/Executive_summary_INDIAB_Phase_I.pdf
+Pune/Maharashtra HMIS on India OGD: https://www.data.gov.in/resource/item-wise-report-pune-maharashtra-june-2018-19
+ICMR Maharashtra NCD Risk Factor Survey: https://www.icmr.gov.in/icmrobject/static/icmr/dist/images/pdf/reports/Maharashtra_0.pdf
