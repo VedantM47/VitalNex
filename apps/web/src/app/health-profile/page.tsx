@@ -10,9 +10,17 @@ import { StatusBadge, DemoBadge } from "../../components/ui/StatusBadge";
 import { Save, CheckCircle2, Shield, Heart, Activity, Apple, MapPin } from "lucide-react";
 import { useTranslation } from "../../lib/i18n";
 
+import { useEffect } from "react";
+import { useAuth } from "../../lib/auth-context";
+import { api } from "../../lib/api-client";
+
 export default function HealthProfilePage() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const userId = user?.id || "usr-demo-patient-001";
+
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Health Profile State strictly dividing Model Features vs Context & Lifestyle
   const [profile, setProfile] = useState({
@@ -50,11 +58,114 @@ export default function HealthProfilePage() {
     dietPattern: "Mixed",
   });
 
-  const handleSave = (e: React.FormEvent) => {
+  useEffect(() => {
+    let active = true;
+    api.getHealthProfile(userId)
+      .then((hp) => {
+        if (active && hp && hp.clinical_model) {
+          const cm = hp.clinical_model;
+          const ls = hp.lifestyle || {};
+          const nut = hp.nutrition || {};
+          const ctx = hp.context || {};
+          setProfile({
+            age: cm.age ?? 48,
+            sex: String(cm.sex ?? "1"),
+            bmi: cm.bmi ?? 25.4,
+            smoking: String(cm.smoking ?? "0"),
+            familyHistory: String(cm.family_history ?? "0"),
+            diabetes: String(cm.diabetes ?? "0"),
+            hypertension: String(cm.hypertension ?? "1"),
+            restingBp: cm.trestbps ?? 135,
+            cholesterol: cm.chol ?? 215,
+            fbs: String(cm.fbs ?? "0"),
+            restEcg: String(cm.restecg ?? "0"),
+            maxHeartRate: cm.thalach ?? 148,
+            exerciseAngina: String(cm.exang ?? "0"),
+            stDepression: cm.oldpeak ?? 0.5,
+            stSlope: String(cm.slope ?? "1"),
+            majorVessels: String(cm.ca ?? "0"),
+            thal: String(cm.thal ?? "3"),
+
+            localityType: ctx.locality_type || "Urban_Pune",
+            socioeconomicBand: ctx.socioeconomic_band || "Middle",
+            city: ctx.city || "Pune",
+            occupation: ctx.occupation || "Software Engineer",
+
+            physicalActivity: ls.physical_activity || "Moderate",
+            sedentaryHours: ls.sedentary_hours_per_day ?? 6.5,
+            sleepHours: ls.sleep_hours_per_night ?? 7.0,
+            stressLevel: ls.stress_level || "Moderate",
+            dietQuality: nut.diet_quality || "Moderate",
+            dietPattern: nut.diet_pattern || "Mixed",
+          });
+        }
+      })
+      .catch((err) => console.warn("Health profile fetch fallback:", err));
+
+    return () => {
+      active = false;
+    };
+  }, [userId]);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 3000);
+    setIsSaving(true);
+    try {
+      await api.updateHealthProfile({
+        user_id: userId,
+        clinical_model: {
+          age: Number(profile.age),
+          sex: Number(profile.sex),
+          bmi: Number(profile.bmi),
+          smoking: Number(profile.smoking),
+          family_history: Number(profile.familyHistory),
+          diabetes: Number(profile.diabetes),
+          hypertension: Number(profile.hypertension),
+          cp: 4,
+          trestbps: Number(profile.restingBp),
+          chol: Number(profile.cholesterol),
+          fbs: Number(profile.fbs),
+          restecg: Number(profile.restEcg),
+          thalach: Number(profile.maxHeartRate),
+          exang: Number(profile.exerciseAngina),
+          oldpeak: Number(profile.stDepression),
+          slope: Number(profile.stSlope),
+          ca: Number(profile.majorVessels),
+          thal: Number(profile.thal),
+        },
+        lifestyle: {
+          physical_activity: profile.physicalActivity,
+          sedentary_hours_per_day: Number(profile.sedentaryHours),
+          sleep_hours_per_night: Number(profile.sleepHours),
+          stress_level: profile.stressLevel,
+          hydration_liters_per_day: 2.2,
+        },
+        nutrition: {
+          diet_quality: profile.dietQuality,
+          diet_pattern: profile.dietPattern,
+          meal_frequency_per_day: 3,
+          daily_fruit_veg_servings: 3,
+          processed_food_frequency: "Occasional",
+        },
+        context: {
+          locality_type: profile.localityType,
+          socioeconomic_band: profile.socioeconomicBand,
+          city: profile.city,
+          region: "Maharashtra",
+          country: "India",
+          occupation: profile.occupation,
+          work_pattern: "Desk Work",
+        },
+      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3500);
+    } catch (err) {
+      console.error("Failed to save health profile:", err);
+    } finally {
+      setIsSaving(false);
+    }
   };
+
 
   return (
     <AppShell>

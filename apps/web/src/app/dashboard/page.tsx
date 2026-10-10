@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Activity,
@@ -9,40 +9,84 @@ import {
   Calendar,
   Sparkles,
   ArrowRight,
+  TrendingDown,
   TrendingUp,
-  Heart,
-  Droplet,
-  Moon,
-  Info,
+  Download,
+  FileText,
+  Clock,
   ChevronRight,
+  CheckCircle2,
 } from "lucide-react";
 import { AppShell } from "../../components/layout/AppShell";
 import { Card, CardHeader } from "../../components/ui/Card";
-import { StatCard, ProgressBar } from "../../components/ui/StatCard";
+import { StatCard } from "../../components/ui/StatCard";
 import { RiskBadge, StatusBadge, DemoBadge } from "../../components/ui/StatusBadge";
 import { Button } from "../../components/ui/Button";
 import { useAuth } from "../../lib/auth-context";
 import { useTranslation } from "../../lib/i18n";
+import { api } from "../../lib/api-client";
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [hasCompletedAssessment, setHasCompletedAssessment] = useState(true);
+  const userId = user?.id || "usr-demo-patient-001";
+
+  const [loading, setLoading] = useState(true);
+  const [latestAssessment, setLatestAssessment] = useState<any>(null);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [profileCompleteness, setProfileCompleteness] = useState<number>(85);
+
+  useEffect(() => {
+    let active = true;
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      try {
+        // Fetch Assessment History
+        const historyData = await api.getAssessmentHistory(userId);
+        if (active && historyData?.assessments && historyData.assessments.length > 0) {
+          setLatestAssessment(historyData.assessments[0]);
+        }
+
+        // Fetch Scheduled Appointments
+        const aptsData = await api.getAppointments(userId, "patient");
+        if (active && Array.isArray(aptsData)) {
+          setAppointments(aptsData);
+        }
+
+        // Fetch Health Profile for completeness calculation
+        const hp = await api.getHealthProfile(userId);
+        if (active && hp) {
+          setProfileCompleteness(hp.completeness_score || 90);
+        }
+      } catch (err) {
+        console.warn("Dashboard data fetch warning:", err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+    return () => {
+      active = false;
+    };
+  }, [userId]);
+
+  const nextAppointment = appointments.find((a) => a.status === "confirmed" || a.status === "scheduled") || appointments[0];
 
   return (
     <AppShell>
       <div className="space-y-8">
-        {/* Welcome Banner */}
+        {/* Header Banner */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8E2EA] pb-6">
           <div className="space-y-1">
             <div className="flex items-center gap-2.5">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B1F33]">
                 {t("dashboard.welcome")}, {user?.fullName || "Patient"}
               </h1>
-              <DemoBadge label="Demo Environment" />
+              {user?.isDemo && <DemoBadge label="Demo Environment" />}
             </div>
             <p className="text-xs sm:text-sm text-[#475569]">
-              {t("dashboard.subtitle")}
+              Personalized cardiometabolic risk overview and care management.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -54,207 +98,218 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Top StatCards Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <StatCard
-            label="Profile Completeness"
-            value="85%"
-            subtext="22 of 26 features validated"
-            icon={<ShieldCheck className="w-5 h-5 text-[#0F766E]" />}
-          />
+        {/* Compact Overview Grid (3 Cards) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1: Latest Risk Screening */}
           <StatCard
             label="Latest Risk Screening"
-            value="Low Risk"
-            subtext="Baseline score: 18.1%"
+            value={latestAssessment ? `${latestAssessment.risk_score}%` : "No Screening Yet"}
+            subtext={latestAssessment ? `${latestAssessment.risk_band} Risk Stratum` : "Complete a screening to compute baseline"}
             icon={<Activity className="w-5 h-5 text-[#0E7490]" />}
           />
+
+          {/* Card 2: Profile Completeness */}
           <StatCard
-            label="AI Trust Verification"
-            value="100% Passed"
-            subtext="Parity: 0.94 across sex & locality"
-            icon={<Sparkles className="w-5 h-5 text-[#0E7490]" />}
+            label="Health Profile Completeness"
+            value={`${profileCompleteness}%`}
+            subtext="Clinical model parameters validated"
+            icon={<ShieldCheck className="w-5 h-5 text-[#0F766E]" />}
           />
+
+          {/* Card 3: Upcoming Appointment */}
           <StatCard
-            label="Upcoming Care"
-            value="1 Scheduled"
-            subtext="Dr. Anand Joshi (Video)"
+            label="Next Scheduled Care"
+            value={nextAppointment ? nextAppointment.doctor_name : "No Appointments"}
+            subtext={nextAppointment ? `${nextAppointment.consultation_type} • ${nextAppointment.appointment_time}` : "Schedule a specialist consultation"}
             icon={<Calendar className="w-5 h-5 text-[#0B1F33]" />}
           />
         </div>
 
-        {/* Primary Health & Risk Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Main Health Overview Container (8 cols) */}
+        {/* Main Section: Latest Risk Assessment Summary */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 space-y-6">
-            <Card className="p-6">
+            <Card className="p-6 sm:p-8 space-y-6">
               <CardHeader
-                title="Cardiometabolic Risk Screening"
-                subtitle="Baseline screening model calibrated on academic synthetic distributions."
-                badge={<DemoBadge label="Demo Mode" />}
+                title="Latest Risk Assessment Summary"
+                subtitle="Calibrated cardiometabolic screening model evaluation."
+                badge={
+                  latestAssessment ? (
+                    <RiskBadge band={latestAssessment.risk_band} />
+                  ) : (
+                    <StatusBadge label="Screening Required" variant="neutral" size="sm" />
+                  )
+                }
                 action={
                   <Link href="/risk-assessment">
                     <Button variant="outline" size="sm" rightIcon={<ChevronRight className="w-3.5 h-3.5" />}>
-                      Full Analysis
+                      Full Risk Analysis
                     </Button>
                   </Link>
                 }
               />
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA] mb-6">
-                <div>
-                  <p className="text-xs text-[#64748B]">Calculated Risk Index</p>
-                  <p className="text-2xl font-bold text-[#0B1F33] mt-1">18.1%</p>
-                  <p className="text-[11px] text-[#0F766E] font-medium mt-0.5">Low Risk Band</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#64748B]">95% Confidence Interval</p>
-                  <p className="text-lg font-bold text-[#0B1F33] mt-1">[13.6% - 22.6%]</p>
-                  <p className="text-[11px] text-[#64748B] mt-0.5">Narrow error bounds</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#64748B]">Clinician Oversight</p>
-                  <p className="text-sm font-bold text-[#0F766E] mt-2">Routine Automated</p>
-                  <p className="text-[11px] text-[#64748B] mt-0.5">No urgent flags detected</p>
-                </div>
-              </div>
+              {latestAssessment ? (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5 bg-[#F8FAFC] rounded-2xl border border-[#D8E2EA]">
+                    <div>
+                      <p className="text-xs text-[#64748B]">Calculated Risk Index</p>
+                      <p className="text-3xl font-extrabold text-[#0B1F33] mt-1">{latestAssessment.risk_score}%</p>
+                      <p className="text-[11px] text-[#0F766E] font-semibold mt-0.5">{latestAssessment.risk_band} Risk Stratum</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#64748B]">95% Confidence Interval</p>
+                      <p className="text-lg font-bold text-[#0B1F33] mt-1">
+                        [{latestAssessment.confidence_interval?.[0]}% - {latestAssessment.confidence_interval?.[1]}%]
+                      </p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">Platt Isotonic Calibrated</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#64748B]">Clinical Review Gate</p>
+                      <p className="text-sm font-bold text-[#0F766E] mt-2">
+                        {latestAssessment.human_review_status === "Pending" ? "Physician Review Advised" : "Automated Gate"}
+                      </p>
+                      <p className="text-[11px] text-[#64748B] mt-0.5">Audited in AI Trust Passport</p>
+                    </div>
+                  </div>
 
-              {/* Progress and Feature Drivers */}
-              <div className="space-y-4">
-                <div className="flex justify-between items-center text-xs font-semibold text-[#0B1F33]">
-                  <span>Key Contributing Vitals</span>
-                  <span className="text-[#64748B]">Relative Model Weight</span>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-xs text-[#475569] mb-1">
-                      <span>Resting Blood Pressure (132 mmHg)</span>
-                      <span className="font-semibold text-[#0B1F33]">+8.2% impact</span>
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs">
+                    <span className="text-[#64748B]">Model Engine: {latestAssessment.model_version}</span>
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={api.getReportPdfUrl(latestAssessment.id)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#0E7490] hover:underline font-semibold flex items-center gap-1"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download PDF Report</span>
+                      </a>
+                      <Link
+                        href={`/ai-trust?id=${latestAssessment.id}`}
+                        className="text-[#0B1F33] hover:underline font-semibold flex items-center gap-1"
+                      >
+                        <span>AI Trust Passport</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
                     </div>
-                    <ProgressBar value={60} max={100} showPercentage={false} />
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-xs text-[#475569] mb-1">
-                      <span>Serum Cholesterol (181 mg/dL)</span>
-                      <span className="font-semibold text-[#0B1F33]">+4.1% impact</span>
-                    </div>
-                    <ProgressBar value={40} max={100} showPercentage={false} />
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-xs text-[#475569] mb-1">
-                      <span>Physical Activity (Moderate Habit)</span>
-                      <span className="font-semibold text-[#0F766E]">-5.5% mitigating</span>
-                    </div>
-                    <ProgressBar value={55} max={100} showPercentage={false} />
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-8 text-center space-y-4 bg-[#F8FAFC] rounded-2xl border border-[#D8E2EA]">
+                  <Activity className="w-10 h-10 text-[#94A3B8] mx-auto" />
+                  <div>
+                    <h3 className="font-bold text-base text-[#0B1F33]">No Cardiometabolic Assessment Completed</h3>
+                    <p className="text-xs text-[#64748B] max-w-md mx-auto mt-1">
+                      Enter your physiological parameters to run the calibrated ML screening model and receive personalized risk guidance.
+                    </p>
+                  </div>
+                  <Link href="/risk-assessment">
+                    <Button variant="primary" size="md">
+                      Start Risk Screening
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </Card>
 
-            {/* Lifestyle Snapshot */}
-            <Card className="p-6">
-              <CardHeader
-                title="Lifestyle & Daily Rhythm Snapshot"
-                subtitle="Contextual health indicators captured for personalized lifestyle guidance."
-              />
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA] space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
-                    <Moon className="w-3.5 h-3.5 text-[#0E7490]" />
-                    <span>Sleep</span>
+            {/* Quick Actions Grid (4 Actions) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <Link href="/risk-assessment" className="block">
+                <Card className="p-4 space-y-2 hover:border-[#0E7490] hover:shadow-xs transition-all cursor-pointer h-full">
+                  <div className="p-2 bg-[#0E7490]/10 rounded-xl text-[#0E7490] w-fit">
+                    <Activity className="w-5 h-5" />
                   </div>
-                  <p className="text-lg font-bold text-[#0B1F33]">7.0 hrs</p>
-                  <p className="text-[10px] text-[#0F766E] font-medium">Restful duration</p>
-                </div>
+                  <h4 className="font-bold text-xs text-[#0B1F33]">Start Assessment</h4>
+                  <p className="text-[11px] text-[#64748B]">Calculate risk index</p>
+                </Card>
+              </Link>
 
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA] space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
-                    <Activity className="w-3.5 h-3.5 text-[#0E7490]" />
-                    <span>Activity</span>
+              <Link href="/history" className="block">
+                <Card className="p-4 space-y-2 hover:border-[#0E7490] hover:shadow-xs transition-all cursor-pointer h-full">
+                  <div className="p-2 bg-[#0F766E]/10 rounded-xl text-[#0F766E] w-fit">
+                    <Clock className="w-5 h-5" />
                   </div>
-                  <p className="text-lg font-bold text-[#0B1F33]">Moderate</p>
-                  <p className="text-[10px] text-[#0F766E] font-medium">35 mins daily</p>
-                </div>
+                  <h4 className="font-bold text-xs text-[#0B1F33]">View History</h4>
+                  <p className="text-[11px] text-[#64748B]">Risk trajectory timeline</p>
+                </Card>
+              </Link>
 
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA] space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
-                    <Droplet className="w-3.5 h-3.5 text-[#0E7490]" />
-                    <span>Hydration</span>
+              <Link href="/care-connect" className="block">
+                <Card className="p-4 space-y-2 hover:border-[#0E7490] hover:shadow-xs transition-all cursor-pointer h-full">
+                  <div className="p-2 bg-[#0B1F33]/10 rounded-xl text-[#0B1F33] w-fit">
+                    <Stethoscope className="w-5 h-5" />
                   </div>
-                  <p className="text-lg font-bold text-[#0B1F33]">2.2 L</p>
-                  <p className="text-[10px] text-[#0F766E] font-medium">Optimal range</p>
-                </div>
+                  <h4 className="font-bold text-xs text-[#0B1F33]">Find Clinician</h4>
+                  <p className="text-[11px] text-[#64748B]">Pune specialists</p>
+                </Card>
+              </Link>
 
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA] space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
-                    <Heart className="w-3.5 h-3.5 text-[#0E7490]" />
-                    <span>Diet Quality</span>
+              <Link href="/reports" className="block">
+                <Card className="p-4 space-y-2 hover:border-[#0E7490] hover:shadow-xs transition-all cursor-pointer h-full">
+                  <div className="p-2 bg-[#0E7490]/10 rounded-xl text-[#0E7490] w-fit">
+                    <FileText className="w-5 h-5" />
                   </div>
-                  <p className="text-lg font-bold text-[#0B1F33]">Balanced</p>
-                  <p className="text-[10px] text-[#64748B]">Mixed nutrition</p>
-                </div>
-              </div>
-            </Card>
+                  <h4 className="font-bold text-xs text-[#0B1F33]">Clinical Reports</h4>
+                  <p className="text-[11px] text-[#64748B]">Download PDF summaries</p>
+                </Card>
+              </Link>
+            </div>
           </div>
 
-          {/* Side Column: AI Trust Status & Connected Care (4 cols) */}
+          {/* Side Column: Care Connect & Appointments */}
           <div className="lg:col-span-4 space-y-6">
-            {/* AI Trust Passport Card */}
-            <Card className="p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-[#0F766E]" />
-                  <h3 className="font-bold text-sm sm:text-base text-[#0B1F33]">AI Trust Passport</h3>
+            {/* Next Appointment / Care Connect Card */}
+            {nextAppointment ? (
+              <Card className="p-6 space-y-4 border-[#0E7490]/40">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-[#0E7490]" />
+                    <h3 className="font-bold text-sm text-[#0B1F33]">Upcoming Consultation</h3>
+                  </div>
+                  <StatusBadge label={nextAppointment.status.toUpperCase()} variant="info" size="sm" />
                 </div>
-                <StatusBadge label="Verified" variant="success" size="sm" />
-              </div>
 
-              <p className="text-xs text-[#475569] leading-relaxed">
-                This assessment was verified against 11 responsible AI standards before display.
-              </p>
+                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA] space-y-2 text-xs">
+                  <p className="font-bold text-[#0B1F33] text-sm">{nextAppointment.doctor_name}</p>
+                  <p className="text-[#64748B]">{nextAppointment.consultation_type} • {nextAppointment.appointment_time}</p>
+                  <p className="text-[#0F766E] font-semibold">{nextAppointment.location}</p>
+                </div>
 
-              <div className="space-y-2.5 pt-2 border-t border-[#F1F5F9] text-xs">
-                <div className="flex justify-between py-1 border-b border-[#F8FAFC]">
-                  <span className="text-[#64748B]">Demographic Parity:</span>
-                  <span className="font-semibold text-[#0F766E]">94% Ratio (Pass)</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-[#F8FAFC]">
-                  <span className="text-[#64748B]">Calibration (Platt):</span>
-                  <span className="font-semibold text-[#0B1F33]">Brier 0.082</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-[#F8FAFC]">
-                  <span className="text-[#64748B]">Safety Boundary Check:</span>
-                  <span className="font-semibold text-[#0F766E]">100% In-Bounds</span>
-                </div>
-                <div className="flex justify-between py-1">
-                  <span className="text-[#64748B]">Model Artifact:</span>
-                  <span className="font-mono text-[11px] text-[#0E7490]">v1.0.0-demo</span>
-                </div>
-              </div>
-
-              <Link href="/ai-trust" className="block pt-2">
-                <Button variant="outline" size="sm" className="w-full">
-                  Inspect All 11 Dimensions
-                </Button>
-              </Link>
-            </Card>
-
-            {/* Care Connect Quick Action Card */}
-            <Card className="p-6 space-y-4 bg-gradient-to-br from-[#0B1F33] to-[#132E4A] text-white">
-              <div className="flex items-center justify-between">
+                <Link href={`/consultation/${nextAppointment.id}`} className="block">
+                  <Button variant="primary" size="md" className="w-full">
+                    Join Video Consultation Room
+                  </Button>
+                </Link>
+              </Card>
+            ) : (
+              <Card className="p-6 space-y-4 bg-gradient-to-br from-[#0B1F33] to-[#132E4A] text-white">
                 <div className="flex items-center gap-2">
                   <Stethoscope className="w-5 h-5 text-[#22C1DC]" />
-                  <h3 className="font-bold text-sm sm:text-base">Care Connect</h3>
+                  <h3 className="font-bold text-sm">Care Connect</h3>
                 </div>
-                <span className="text-[11px] text-[#22C1DC] font-semibold">Pune Region</span>
+                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                  Schedule a consultation with verified cardiologists and preventive health specialists in Kothrud, Baner, and Shivajinagar.
+                </p>
+                <Link href="/care-connect" className="block pt-2">
+                  <Button variant="teal" size="sm" className="w-full">
+                    Find Pune Specialists
+                  </Button>
+                </Link>
+              </Card>
+            )}
+
+            {/* AI Trust Passport Link Card */}
+            <Card className="p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#0F766E]" />
+                <h3 className="font-bold text-sm text-[#0B1F33]">AI Trust &amp; Governance</h3>
               </div>
-
-              <p className="text-xs text-[#CBD5E1] leading-relaxed">
-                Schedule a consultation with certified cardiologists and preventive health physicians in Kothrud, Baner, and Shivajinagar.
+              <p className="text-xs text-[#475569] leading-relaxed">
+                Inspect 11 transparent governance dimensions including demographic parity, Brier calibration, and Platt scaling metrics.
               </p>
-
-              <Link href="/care-connect" className="block pt-2">
-                <Button variant="teal" size="sm" className="w-full">
-                  Find Pune Specialists
+              <Link href="/ai-trust" className="block">
+                <Button variant="outline" size="sm" className="w-full">
+                  Inspect Trust Passport
                 </Button>
               </Link>
             </Card>

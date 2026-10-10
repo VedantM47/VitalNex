@@ -25,7 +25,8 @@ from .trust_passport import (
     HumanReviewSummary,
 )
 from .doctor import DoctorResponse, DoctorFilter, DoctorLocation, DoctorAvailabilitySlot
-from .appointment import AppointmentCreate, AppointmentResponse
+from .appointment import AppointmentCreate, AppointmentUpdate, AppointmentResponse
+from .review import PatientReviewResponse, PatientReviewUpdate
 from .assistant import ChatMessage, AssistantMessageRequest, AssistantMessageResponse, ActionSuggestion
 from .voice import VoiceTranscribeRequest, VoiceTranscribeResponse, VoiceSynthesizeRequest, VoiceSynthesizeResponse
 from .governance import GovernanceEvent, GovernanceSummaryResponse

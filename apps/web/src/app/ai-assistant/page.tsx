@@ -86,16 +86,22 @@ export default function AIAssistantPage() {
         };
         setMessages((prev) => [...prev, assistantMessage]);
       }
-    } catch {
-      // Deterministic fallback response if offline
+    } catch (err) {
+      console.warn("Assistant API unavailable:", err);
       const fallback: Message = {
         id: `ast-offline-${Date.now()}`,
         role: "assistant",
-        content: `Your assessment reflects a low-risk cardiometabolic profile (18.1%) based on normal resting vitals. All 11 dimensions of your AI Trust Passport remain within validated boundaries.`,
+        content:
+          language === "mr"
+            ? "सूचना: थेट सहाय्यक सर्व्हरशी संपर्क होऊ शकला नाही. स्थानिक सुरक्षा नियमांनुसार: तीव्र अस्वस्थता असल्यास त्वरित 108 वर संपर्क साधा किंवा आपल्या डॉक्टरांचा सल्ला घ्या."
+            : language === "hi"
+            ? "सूचना: सहायक सर्वर से संपर्क नहीं हो पाया। आपातकालीन स्थिति में तुरंत 108 पर कॉल करें अथवा अपने चिकित्सक से संपर्क करें।"
+            : "Notice: Unable to reach the live intelligence service. Using offline clinical guidance: For acute symptoms please contact emergency services (108/112). For routine review, please check your AI Trust Passport or consult a licensed clinician.",
         suggestions: [
           { id: "fb-1", label: "Inspect AI Trust Passport", action_type: "navigate", payload: { path: "/ai-trust" } },
+          { id: "fb-2", label: "Discover Clinicians", action_type: "navigate", payload: { path: "/care-connect" } },
         ],
-        citations: [{ source: "ICMR Preventive Guidelines (Demo Cache)" }],
+        citations: [{ source: "VITALNEX Offline Safety Protocol" }],
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, fallback]);

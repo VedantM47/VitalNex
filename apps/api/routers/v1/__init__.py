@@ -9,6 +9,7 @@ from .assessment import router as assessment_router
 from .doctors import router as doctors_router
 from .assistant import router as assistant_router
 from .models import router as models_router
+from .reports import router as reports_router
 
 api_v1_router = APIRouter()
 
@@ -18,5 +19,6 @@ api_v1_router.include_router(assessment_router)
 api_v1_router.include_router(doctors_router)
 api_v1_router.include_router(assistant_router)
 api_v1_router.include_router(models_router)
+api_v1_router.include_router(reports_router)
 
 __all__ = ["api_v1_router"]

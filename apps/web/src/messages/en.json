@@ -65,7 +65,7 @@
     "calibration": "Calibration Status",
     "humanReviewNotice": "Clinical review indicator: Routine automated screening.",
     "humanReviewRequired": "Clinical review recommended by a licensed physician.",
-    "whatIfSimulator": "What-If Lifestyle Simulator (Available in Prompt 2)",
+    "whatIfSimulator": "What-If Lifestyle Sensitivity Simulator",
     "whatIfNotice": "Test how lifestyle and vital adjustments influence your risk index.",
     "explainabilityTitle": "Feature Contribution Analysis (SHAP)",
     "explainabilityDesc": "Transparent breakdown of variables influencing this assessment."

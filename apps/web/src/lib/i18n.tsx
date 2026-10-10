@@ -7,6 +7,12 @@ import mr from "../messages/mr.json";
 
 export type SupportedLanguage = "en" | "hi" | "mr";
 
+export const SUPPORTED_LANGUAGES = [
+  { code: "en" as const, name: "English", nativeName: "English" },
+  { code: "hi" as const, name: "Hindi", nativeName: "हिंदी" },
+  { code: "mr" as const, name: "Marathi", nativeName: "मराठी" },
+];
+
 interface I18nContextType {
   language: SupportedLanguage;
   setLanguage: (lang: SupportedLanguage) => void;

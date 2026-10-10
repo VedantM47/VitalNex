@@ -33,9 +33,14 @@ export const api = {
   getHealth: () => fetchApi<any>("/health"),
 
   // User Profile
-  getProfile: () => fetchApi<any>("/api/v1/profile"),
-  updateProfile: (data: any) =>
-    fetchApi<any>("/api/v1/profile", { method: "PUT", body: JSON.stringify(data) }),
+  getProfile: (userId?: string) =>
+    fetchApi<any>(`/api/v1/profile${userId ? `?user_id=${encodeURIComponent(userId)}` : ""}`),
+  updateProfile: (data: any, userId?: string) =>
+    fetchApi<any>(`/api/v1/profile${userId ? `?user_id=${encodeURIComponent(userId)}` : ""}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+
 
   // Health Profile
   getHealthProfile: (userId = "demo-user") =>
@@ -60,10 +65,29 @@ export const api = {
   getDoctor: (id: string) => fetchApi<any>(`/api/v1/doctors/${id}`),
 
   // Appointments
-  getAppointments: (userId = "demo-user", role = "patient") =>
-    fetchApi<any[]>(`/api/v1/appointments?user_id=${userId}&role=${role}`),
+  getAppointments: (userId = "demo-user", role = "patient", status?: string) => {
+    const params = new URLSearchParams({ user_id: userId, role });
+    if (status) params.append("status", status);
+    return fetchApi<any[]>(`/api/v1/appointments?${params.toString()}`);
+  },
+  getAppointment: (id: string) => fetchApi<any>(`/api/v1/appointments/${id}`),
   createAppointment: (payload: any) =>
     fetchApi<any>("/api/v1/appointments", { method: "POST", body: JSON.stringify(payload) }),
+  updateAppointment: (id: string, payload: any) =>
+    fetchApi<any>(`/api/v1/appointments/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAppointment: (id: string) =>
+    fetchApi<any>(`/api/v1/appointments/${id}`, { method: "DELETE" }),
+
+  // Clinician Patient Reviews
+  getDoctorReviews: (clinicianId = "doc-pune-001", status?: string) => {
+    const params = new URLSearchParams({ clinician_id: clinicianId });
+    if (status) params.append("status", status);
+    return fetchApi<any[]>(`/api/v1/doctor/reviews?${params.toString()}`);
+  },
+  getDoctorReview: (assessmentId: string) =>
+    fetchApi<any>(`/api/v1/doctor/reviews/${assessmentId}`),
+  updateDoctorReview: (assessmentId: string, payload: any) =>
+    fetchApi<any>(`/api/v1/doctor/reviews/${assessmentId}`, { method: "PATCH", body: JSON.stringify(payload) }),
 
   // Assistant & Voice
   sendAssistantMessage: (payload: { user_id: string; message: string; language: string }) =>
@@ -74,8 +98,23 @@ export const api = {
       body: JSON.stringify({ audio_base64: audioBase64, language }),
     }),
 
+  // What-If Model Simulator
+  runWhatIf: (payload: any) =>
+    fetchApi<any>("/api/v1/what-if", { method: "POST", body: JSON.stringify(payload) }),
+
+  // Clinical Reports & PDF Download
+  getReports: (userId = "demo-user") =>
+    fetchApi<any[]>(`/api/v1/reports?user_id=${userId}`),
+  getReportPdfUrl: (assessmentId: string) =>
+    `${API_BASE}/api/v1/reports/${assessmentId}/pdf`,
+
+  // Assessment History Timeline
+  getAssessmentHistory: (userId = "demo-user") =>
+    fetchApi<any>(`/api/v1/assessment/history/${userId}`),
+
   // Model Laboratory & Governance
   getModels: () => fetchApi<any[]>("/api/v1/models"),
   getGovernanceSummary: () => fetchApi<any>("/api/v1/governance/summary"),
   getDatasetMetadata: () => fetchApi<any>("/api/v1/dataset/metadata"),
 };
+

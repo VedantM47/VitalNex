@@ -46,11 +46,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Topbar onMenuClick={() => setMobileMenuOpen(true)} />
-        <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-8 sm:py-8 focus:outline-none">
-          <div className="max-w-7xl mx-auto space-y-8">
+        <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-8 sm:py-8 focus:outline-none flex flex-col justify-between">
+          <div className="max-w-7xl mx-auto space-y-8 w-full">
             {children}
           </div>
-          <Footer />
+          <footer className="mt-12 pt-6 pb-2 border-t border-[#E2E8F0] text-center text-xs text-[#64748B] w-full">
+            <p className="max-w-3xl mx-auto leading-relaxed">
+              <span className="font-semibold text-[#0B1F33]">VITALNEX Clinical Intelligence</span> • Research & Decision-Support Prototype • Non-diagnostic • Emergency: 108 / 112 (India)
+            </p>
+          </footer>
         </main>
       </div>
     </div>

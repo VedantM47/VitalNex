@@ -23,7 +23,7 @@ from .base import (
 )
 from .dataset_service import DatasetService
 from .prediction_service import PredictionService, TrustPassportService
-from .doctor_service import DoctorService, AppointmentService
+from .doctor_service import DoctorService, AppointmentService, PatientReviewService
 from .assistant_service import AgentService, VoiceService
 from .governance_service import GovernanceService, ModelRegistryService, HealthProfileService
 
@@ -33,6 +33,7 @@ prediction_service = PredictionService()
 trust_passport_service = TrustPassportService()
 doctor_service = DoctorService()
 appointment_service = AppointmentService(doctor_service)
+patient_review_service = PatientReviewService()
 agent_service = AgentService()
 voice_service = VoiceService()
 governance_service = GovernanceService()

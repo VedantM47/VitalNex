@@ -1,7 +1,6 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { createClient } from "./supabase/client";
 
 export type UserRole = "patient" | "doctor" | "researcher" | "admin";
 
@@ -20,9 +19,10 @@ interface AuthContextType {
   role: UserRole;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, role?: UserRole) => Promise<void>;
+  login: (email: string, role?: UserRole, name?: string) => Promise<void>;
   logout: () => Promise<void>;
   switchRole: (newRole: UserRole) => void;
+  updateProfile: (updates: Partial<UserProfile>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -67,31 +67,55 @@ const DEMO_USERS: Record<UserRole, UserProfile> = {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<UserRole>(() => {
+  const [role, setRole] = useState<UserRole>("patient");
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
+      const savedUserStr = localStorage.getItem("vitalnex_user_profile");
       const savedRole = localStorage.getItem("vitalnex_demo_role") as UserRole;
-      if (savedRole && DEMO_USERS[savedRole]) return savedRole;
+      if (savedUserStr) {
+        try {
+          const parsed = JSON.parse(savedUserStr);
+          setUser(parsed);
+          setRole(parsed.role || savedRole || "patient");
+        } catch {
+          setUser(DEMO_USERS.patient);
+        }
+      } else if (savedRole && DEMO_USERS[savedRole]) {
+        setUser(DEMO_USERS[savedRole]);
+        setRole(savedRole);
+      } else {
+        setUser(DEMO_USERS.patient);
+        setRole("patient");
+      }
+      setIsLoading(false);
     }
-    return "patient";
-  });
+  }, []);
 
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    if (typeof window !== "undefined") {
-      const savedRole = localStorage.getItem("vitalnex_demo_role") as UserRole;
-      if (savedRole && DEMO_USERS[savedRole]) return DEMO_USERS[savedRole];
-    }
-    return DEMO_USERS.patient;
-  });
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const login = async (email: string, targetRole: UserRole = "patient") => {
+  const login = async (email: string, targetRole: UserRole = "patient", customName?: string) => {
     setIsLoading(true);
     try {
-      const selected = DEMO_USERS[targetRole];
-      setUser({ ...selected, email });
+      const baseDemo = DEMO_USERS[targetRole];
+      const isDemoUser = email.endsWith("@vitalnex.health") && (email.startsWith("rajesh") || email.startsWith("dr.anand") || email.startsWith("admin"));
+      const derivedName = customName || (isDemoUser ? baseDemo.fullName : email.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()));
+      const derivedId = isDemoUser ? baseDemo.id : `usr-${email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "-")}`;
+
+      const newUser: UserProfile = {
+        id: derivedId,
+        email,
+        fullName: derivedName,
+        role: targetRole,
+        phone: baseDemo.phone,
+        preferredLanguage: baseDemo.preferredLanguage,
+        isDemo: isDemoUser,
+      };
+
+      setUser(newUser);
       setRole(targetRole);
       localStorage.setItem("vitalnex_demo_role", targetRole);
+      localStorage.setItem("vitalnex_user_profile", JSON.stringify(newUser));
     } finally {
       setIsLoading(false);
     }
@@ -102,6 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setUser(null);
       localStorage.removeItem("vitalnex_demo_role");
+      localStorage.removeItem("vitalnex_user_profile");
     } finally {
       setIsLoading(false);
     }
@@ -109,8 +134,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const switchRole = (newRole: UserRole) => {
     setRole(newRole);
-    setUser(DEMO_USERS[newRole]);
+    const selected = DEMO_USERS[newRole];
+    setUser(selected);
     localStorage.setItem("vitalnex_demo_role", newRole);
+    localStorage.setItem("vitalnex_user_profile", JSON.stringify(selected));
+  };
+
+  const updateProfile = (updates: Partial<UserProfile>) => {
+    if (!user) return;
+    const updated = { ...user, ...updates };
+    setUser(updated);
+    localStorage.setItem("vitalnex_user_profile", JSON.stringify(updated));
   };
 
   return (
@@ -123,6 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         switchRole,
+        updateProfile,
       }}
     >
       {children}
@@ -137,3 +172,4 @@ export function useAuth() {
   }
   return context;
 }
+

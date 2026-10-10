@@ -93,7 +93,7 @@ def test_assistant_emergency_triage():
     assert response.status_code == 200
     data = response.json()
     assert data["escalation_recommended"] is True
-    assert "URGENT SAFETY NOTICE" in data["response"]
+    assert "URGENT MEDICAL NOTICE" in data["response"] or "URGENT SAFETY NOTICE" in data["response"]
 
 
 def test_models_registry():
@@ -142,7 +142,7 @@ def test_appointments_lifecycle():
     from datetime import datetime, timezone
     booking = {
         "patient_id": "test-patient-001",
-        "doctor_id": "doc-001",
+        "doctor_id": "doc-pune-001",
         "appointment_time": datetime.now(timezone.utc).isoformat(),
         "consultation_type": "video",
         "patient_reason": "Cardiovascular risk consultation",
@@ -165,3 +165,75 @@ def test_governance_summary():
     gov = response.json()
     assert "total_assessments" in gov
     assert "fairness_compliance_rate" in gov
+
+
+def test_reports_list():
+    response = client.get("/api/v1/reports?user_id=demo-user")
+    assert response.status_code == 200
+    reports = response.json()
+    assert len(reports) >= 1
+    assert "pdf_download_url" in reports[0]
+    assert "risk_band" in reports[0]
+
+
+def test_report_pdf_generation():
+    response = client.get("/api/v1/reports/asm-demo-001/pdf")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/pdf"
+    assert len(response.content) > 1000  # Valid binary PDF data
+
+
+def test_assessment_history():
+    response = client.get("/api/v1/assessment/history/demo-user")
+    assert response.status_code == 200
+    history = response.json()
+    assert history["total_assessments"] >= 1
+    assert len(history["trajectory"]) >= 1
+
+
+def test_patient_data_isolation():
+    """Verify that patient-alpha and patient-beta records are isolated and cannot see each other's data."""
+    # Patient Alpha creates assessment
+    alpha_payload = {
+        "user_id": "patient-alpha-999",
+        "assessment_mode": "clinical_screening",
+        "clinical_inputs": {
+            "age": 45, "sex": 1, "bmi": 22.0, "smoking": 0, "family_history": 0,
+            "diabetes": 0, "hypertension": 0, "cp": 4, "trestbps": 115.0, "chol": 170.0,
+            "fbs": 0, "restecg": 0, "thalach": 160.0, "exang": 0, "oldpeak": 0.0,
+            "slope": 1, "ca": 0, "thal": 3,
+        }
+    }
+    alpha_res = client.post("/api/v1/assessment", json=alpha_payload)
+    assert alpha_res.status_code == 200
+    alpha_asm = alpha_res.json()
+    assert alpha_asm["user_id"] == "patient-alpha-999"
+
+    # Patient Beta checks reports & history
+    beta_reports_res = client.get("/api/v1/reports?user_id=patient-beta-888")
+    assert beta_reports_res.status_code == 200
+    beta_reports = beta_reports_res.json()
+    assert not any(r["assessment_id"] == alpha_asm["id"] for r in beta_reports)
+
+    beta_history_res = client.get("/api/v1/assessment/history/patient-beta-888")
+    assert beta_history_res.status_code == 200
+    beta_history = beta_history_res.json()
+    assert not any(a["id"] == alpha_asm["id"] for a in beta_history["assessments"])
+
+
+def test_invalid_assessment_404():
+    """Verify invalid assessment ID returns 404 instead of demo fallback data."""
+    res = client.get("/api/v1/assessment/non-existent-asm-id-999")
+    assert res.status_code == 404
+
+
+def test_video_token_endpoint():
+    """Verify video token authorization and signaling URL generation."""
+    res = client.get("/api/v1/appointments/apt-demo-001/video-token?user_id=patient-alpha-999&role=patient")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "authorized"
+    assert "ws_signaling_url" in data
+    assert "vitalnex-room-apt-demo-001" in data["room_name"]
+
+

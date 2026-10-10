@@ -212,7 +212,11 @@ class HealthProfileService(IHealthProfileService):
         }
 
     async def get_profile(self, user_id: str) -> Optional[HealthProfileResponse]:
-        return self._profiles.get(user_id) or self._profiles.get("demo-user")
+        if user_id in self._profiles:
+            return self._profiles[user_id]
+        if user_id in ["demo-user", "usr-demo-patient-001"]:
+            return self._profiles.get("demo-user")
+        return None
 
     async def save_profile(self, profile: HealthProfileCreate) -> HealthProfileResponse:
         resp = HealthProfileResponse(
@@ -228,3 +232,4 @@ class HealthProfileService(IHealthProfileService):
         )
         self._profiles[profile.user_id] = resp
         return resp
+
