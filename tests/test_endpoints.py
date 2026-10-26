@@ -7,6 +7,18 @@ from apps.api.main import app
 
 client = TestClient(app)
 
+# Old 18-feature request shape, still accepted by the schema until P4 replaces it.
+OLD_ASSESSMENT_PAYLOAD = {
+    "user_id": "test-patient-001",
+    "assessment_mode": "demo",
+    "clinical_inputs": {
+    "age": 55, "sex": 1, "bmi": 26.2, "smoking": 1, "family_history": 1,
+    "diabetes": 0, "hypertension": 1, "cp": 4, "trestbps": 140.0, "chol": 220.0,
+    "fbs": 0, "restecg": 0, "thalach": 145.0, "exang": 0, "oldpeak": 0.5,
+    "slope": 1, "ca": 0, "thal": 3,
+},
+}
+
 
 def test_root_endpoint():
     response = client.get("/")
@@ -24,37 +36,12 @@ def test_health_endpoint():
     assert data["demo_mode"] is True
 
 
-def test_assessment_endpoint():
-    payload = {
-        "user_id": "test-patient-001",
-        "assessment_mode": "demo",
-        "clinical_inputs": {
-            "age": 55,
-            "sex": 1,
-            "bmi": 26.2,
-            "smoking": 1,
-            "family_history": 1,
-            "diabetes": 0,
-            "hypertension": 1,
-            "cp": 4,
-            "trestbps": 140.0,
-            "chol": 220.0,
-            "fbs": 0,
-            "restecg": 0,
-            "thalach": 145.0,
-            "exang": 0,
-            "oldpeak": 0.5,
-            "slope": 1,
-            "ca": 0,
-            "thal": 3,
-        }
-    }
-    response = client.post("/api/v1/assessment", json=payload)
-    assert response.status_code == 200
-    data = response.json()
-    assert "risk_score" in data
-    assert data["risk_band"] in ["Low", "Moderate", "High"]
-    assert "disclaimer" in data
+def test_assessment_returns_503_without_models():
+    """P0: no trained model exists, so no score may be produced (hard rule 4)."""
+    response = client.post("/api/v1/assessment", json=OLD_ASSESSMENT_PAYLOAD)
+    assert response.status_code == 503
+    assert "not available" in response.json()["detail"]
+    assert "risk_score" not in response.json()
 
 
 def test_doctors_endpoint():
@@ -67,19 +54,21 @@ def test_doctors_endpoint():
         assert doc["is_demo"] is True
 
 
-def test_trust_passport_endpoint():
+def test_missing_medical_input_is_rejected_not_defaulted():
+    """Hard rule 3: a missing medical input must never be silently filled in."""
+    import copy
+    payload = copy.deepcopy(OLD_ASSESSMENT_PAYLOAD)
+    for field in ("ca", "thal", "oldpeak", "cp"):
+        del payload["clinical_inputs"][field]
+    response = client.post("/api/v1/assessment", json=payload)
+    assert response.status_code == 422
+    missing = {err["loc"][-1] for err in response.json()["detail"]}
+    assert {"ca", "thal", "oldpeak", "cp"} <= missing
+
+
+def test_trust_passport_not_available():
     response = client.get("/api/v1/trust-passport/asm-12345")
-    assert response.status_code == 200
-    passport = response.json()
-    assert "prediction" in passport
-    assert "confidence" in passport
-    assert "data_quality" in passport
-    assert "explainability" in passport
-    assert "fairness" in passport
-    assert "uncertainty" in passport
-    assert "safety" in passport
-    assert "human_review" in passport
-    assert len(passport["limitations"]) > 0
+    assert response.status_code == 503
 
 
 def test_assistant_emergency_triage():
@@ -96,46 +85,15 @@ def test_assistant_emergency_triage():
     assert "URGENT MEDICAL NOTICE" in data["response"] or "URGENT SAFETY NOTICE" in data["response"]
 
 
-def test_models_registry():
+def test_models_registry_empty_until_trained():
     response = client.get("/api/v1/models")
     assert response.status_code == 200
-    models = response.json()
-    assert len(models) >= 4
-    model_ids = [m["id"] for m in models]
-    assert "gradient_boosting" in model_ids
-    assert "logistic_regression" in model_ids
+    assert response.json() == []
 
 
-def test_what_if_simulation():
-    payload = {
-        "user_id": "test-patient-001",
-        "assessment_mode": "demo",
-        "clinical_inputs": {
-            "age": 55,
-            "sex": 1,
-            "bmi": 28.5,
-            "smoking": 1,
-            "family_history": 1,
-            "diabetes": 0,
-            "hypertension": 1,
-            "cp": 2,
-            "trestbps": 140.0,
-            "chol": 220.0,
-            "fbs": 0,
-            "restecg": 0,
-            "thalach": 145.0,
-            "exang": 0,
-            "oldpeak": 0.5,
-            "slope": 1,
-            "ca": 0,
-            "thal": 3,
-        }
-    }
-    response = client.post("/api/v1/what-if", json=payload)
-    assert response.status_code == 200
-    data = response.json()
-    assert "simulation_result" in data
-    assert "MODEL-BEHAVIOR SIMULATION" in data["disclaimer"]
+def test_what_if_returns_503_without_models():
+    response = client.post("/api/v1/what-if", json=OLD_ASSESSMENT_PAYLOAD)
+    assert response.status_code == 503
 
 
 def test_appointments_lifecycle():
@@ -159,66 +117,34 @@ def test_appointments_lifecycle():
     assert len(list_res.json()) >= 1
 
 
-def test_governance_summary():
+def test_governance_summary_has_no_invented_metrics():
     response = client.get("/api/v1/governance/summary")
     assert response.status_code == 200
     gov = response.json()
-    assert "total_assessments" in gov
-    assert "fairness_compliance_rate" in gov
+    assert gov["total_assessments"] == 0
+    assert gov["fairness_compliance_rate"] is None
+    assert gov["data_quality_index"] is None
+    assert gov["recent_events"] == []
 
 
-def test_reports_list():
+def test_reports_list_empty_without_assessments():
     response = client.get("/api/v1/reports?user_id=demo-user")
     assert response.status_code == 200
-    reports = response.json()
-    assert len(reports) >= 1
-    assert "pdf_download_url" in reports[0]
-    assert "risk_band" in reports[0]
+    assert response.json() == []
 
 
-def test_report_pdf_generation():
+def test_report_pdf_unknown_assessment_404():
     response = client.get("/api/v1/reports/asm-demo-001/pdf")
-    assert response.status_code == 200
-    assert response.headers["content-type"] == "application/pdf"
-    assert len(response.content) > 1000  # Valid binary PDF data
+    assert response.status_code == 404
 
 
-def test_assessment_history():
+def test_assessment_history_empty():
     response = client.get("/api/v1/assessment/history/demo-user")
     assert response.status_code == 200
     history = response.json()
-    assert history["total_assessments"] >= 1
-    assert len(history["trajectory"]) >= 1
+    assert history["total_assessments"] == 0
+    assert history["trajectory"] == []
 
-
-def test_patient_data_isolation():
-    """Verify that patient-alpha and patient-beta records are isolated and cannot see each other's data."""
-    # Patient Alpha creates assessment
-    alpha_payload = {
-        "user_id": "patient-alpha-999",
-        "assessment_mode": "clinical_screening",
-        "clinical_inputs": {
-            "age": 45, "sex": 1, "bmi": 22.0, "smoking": 0, "family_history": 0,
-            "diabetes": 0, "hypertension": 0, "cp": 4, "trestbps": 115.0, "chol": 170.0,
-            "fbs": 0, "restecg": 0, "thalach": 160.0, "exang": 0, "oldpeak": 0.0,
-            "slope": 1, "ca": 0, "thal": 3,
-        }
-    }
-    alpha_res = client.post("/api/v1/assessment", json=alpha_payload)
-    assert alpha_res.status_code == 200
-    alpha_asm = alpha_res.json()
-    assert alpha_asm["user_id"] == "patient-alpha-999"
-
-    # Patient Beta checks reports & history
-    beta_reports_res = client.get("/api/v1/reports?user_id=patient-beta-888")
-    assert beta_reports_res.status_code == 200
-    beta_reports = beta_reports_res.json()
-    assert not any(r["assessment_id"] == alpha_asm["id"] for r in beta_reports)
-
-    beta_history_res = client.get("/api/v1/assessment/history/patient-beta-888")
-    assert beta_history_res.status_code == 200
-    beta_history = beta_history_res.json()
-    assert not any(a["id"] == alpha_asm["id"] for a in beta_history["assessments"])
 
 
 def test_invalid_assessment_404():
@@ -227,13 +153,31 @@ def test_invalid_assessment_404():
     assert res.status_code == 404
 
 
-def test_video_token_endpoint():
-    """Verify video token authorization and signaling URL generation."""
-    res = client.get("/api/v1/appointments/apt-demo-001/video-token?user_id=patient-alpha-999&role=patient")
-    assert res.status_code == 200
-    data = res.json()
-    assert data["status"] == "authorized"
-    assert "ws_signaling_url" in data
-    assert "vitalnex-room-apt-demo-001" in data["room_name"]
+def test_video_token_not_in_mvp():
+    res = client.get("/api/v1/appointments/apt-demo-001/video-token")
+    assert res.status_code == 503
+    assert "Not in MVP" in res.json()["detail"]
 
 
+def test_voice_routes_not_in_mvp():
+    res = client.post("/api/v1/voice/transcribe", json={"audio_base64": "", "language": "en"})
+    assert res.status_code == 503
+    assert "Not in MVP" in res.json()["detail"]
+
+
+def test_assistant_non_emergency_reply_is_fixed_text():
+    payload = {"user_id": "test-patient-001", "message": "hello", "language": "en"}
+    response = client.post("/api/v1/assistant/message", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["escalation_recommended"] is False
+    assert data["citations"] == []
+
+
+def test_no_external_ai_integrations_remain():
+    """Jev/TypeSafe and Gemini were removed (D-16, hard rule 6)."""
+    import importlib.util
+    import pathlib
+    assert importlib.util.find_spec("apps.api.services.jev_service") is None
+    src = pathlib.Path("apps/api/services/assistant_service.py").read_text(encoding="utf-8")
+    assert "GEMINI" not in src and "httpx" not in src

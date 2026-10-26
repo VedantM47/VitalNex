@@ -159,32 +159,8 @@ class DoctorService(IDoctorService):
 class AppointmentService(IAppointmentService):
     def __init__(self, doctor_service: DoctorService):
         self._doctor_service = doctor_service
+        # In-memory store (Supabase in P1). Starts empty.
         self._appointments: Dict[str, AppointmentResponse] = {}
-        self._init_demo_appointments()
-
-    def _init_demo_appointments(self):
-        apt_time = datetime.now(timezone.utc) + timedelta(days=2, hours=3)
-        apt1 = AppointmentResponse(
-            id="apt-demo-001",
-            patient_id="patient-demo-01",
-            doctor_id="doc-pune-001",
-            doctor_name="Dr. Anand Joshi",
-            specialization="Cardiology & Preventive Heart Health",
-            appointment_date=apt_time.strftime("%Y-%m-%d"),
-            start_time=apt_time.strftime("%H:%M"),
-            end_time=(apt_time + timedelta(minutes=30)).strftime("%H:%M"),
-            appointment_time=apt_time,
-            status="scheduled",
-            consultation_type="video",
-            reason="Preventive cardiac screening review following VITALNEX assessment.",
-            patient_reason="Preventive cardiac screening review following VITALNEX assessment.",
-            doctor_notes="Patient has family history of hypertension. Review vitals and lifestyle.",
-            meeting_link="https://meet.vitalnex.health/room-demo-8492",
-            assessment_id="asm-demo-001",
-            created_at=datetime.now(timezone.utc) - timedelta(hours=12),
-            updated_at=datetime.now(timezone.utc) - timedelta(hours=12),
-        )
-        self._appointments[apt1.id] = apt1
 
     async def create_appointment(self, appointment: AppointmentCreate) -> AppointmentResponse:
         doc = await self._doctor_service.get_doctor_by_id(appointment.doctor_id)
@@ -309,48 +285,8 @@ class AppointmentService(IAppointmentService):
 class PatientReviewService:
     """Clinician Patient Review Service for Human Oversight."""
     def __init__(self):
+        # Starts empty: reviews are created from real assessments (P4/P6), never seeded with scores.
         self._reviews: Dict[str, PatientReviewResponse] = {}
-        self._init_demo_reviews()
-
-    def _init_demo_reviews(self):
-        rev1 = PatientReviewResponse(
-            id="rev-001",
-            assessment_id="asm-hist-003",
-            patient_id="patient-demo-01",
-            patient_name="Rajesh Sharma",
-            evaluated_at=datetime(2026, 5, 10, 9, 45, tzinfo=timezone.utc),
-            risk_score=42.8,
-            risk_band="Moderate",
-            model_version="v1.0.0-random_forest",
-            human_review_required=True,
-            review_status="reviewed",
-            assigned_clinician_id="doc-pune-001",
-            review_notes="Elevated resting BP (148 mmHg) and serum cholesterol (225 mg/dL). Recommended lifestyle modification and 6-month follow up.",
-            data_quality_score=94.2,
-            explainability_summary="Resting BP (+12.4%) and Smoking (+14.0%) were primary risk contributors.",
-            input_snapshot={"age": 52, "trestbps": 148, "chol": 225, "smoking": 1, "bmi": 26.2},
-            reviewed_at=datetime(2026, 5, 11, 14, 20, tzinfo=timezone.utc),
-        )
-        rev2 = PatientReviewResponse(
-            id="rev-002",
-            assessment_id="asm-hist-002",
-            patient_id="patient-demo-02",
-            patient_name="Pooja Kulkarni",
-            evaluated_at=datetime(2026, 7, 20, 14, 15, tzinfo=timezone.utc),
-            risk_score=34.6,
-            risk_band="Moderate",
-            model_version="v1.1.0-gradient_boosting",
-            human_review_required=False,
-            review_status="in_review",
-            assigned_clinician_id="doc-pune-001",
-            review_notes="Under active assessment evaluation.",
-            data_quality_score=98.0,
-            explainability_summary="Resting BP (+8.2%) and Age (+5.1%) balanced by non-smoker factor (-6.4%).",
-            input_snapshot={"age": 48, "trestbps": 142, "chol": 210, "smoking": 0, "bmi": 24.9},
-            reviewed_at=None,
-        )
-        self._reviews[rev1.assessment_id] = rev1
-        self._reviews[rev2.assessment_id] = rev2
 
     async def list_reviews(
         self,

@@ -106,7 +106,7 @@ export default function DoctorPatientsPage() {
               <DemoBadge label="Human-in-the-Loop Oversight" />
             </div>
             <p className="text-xs sm:text-sm text-[#475569]">
-              Review AI-flagged patient screening assessments, verify TreeSHAP feature attributions, and submit clinical sign-offs.
+              Review flagged screening results and record your decision.
             </p>
           </div>
 
@@ -286,7 +286,7 @@ export default function DoctorPatientsPage() {
                 <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-1">
                   <span className="font-bold text-[#0B1F33]">Model Risk Assessment:</span>
                   <p className="text-[#475569]">
-                    Score: <strong>{selectedReview.risk_score}%</strong> ({selectedReview.risk_band} Risk) • Platt Calibrated.
+                    Score: <strong>{selectedReview.risk_score}%</strong> ({selectedReview.risk_band} Risk)
                   </p>
                 </div>
 

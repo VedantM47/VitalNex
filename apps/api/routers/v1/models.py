@@ -11,7 +11,6 @@ from apps.api.schemas import (
 from apps.api.services import (
     model_registry_service,
     governance_service,
-    dataset_service,
 )
 
 router = APIRouter(tags=["Model Registry & Governance"])
@@ -34,23 +33,3 @@ async def get_model(model_id: str):
 async def get_governance_summary():
     return await governance_service.get_summary()
 
-
-@router.get("/governance/{assessment_id}")
-async def get_assessment_governance(assessment_id: str):
-    return {
-        "assessment_id": assessment_id,
-        "governance_status": "COMPLIANT",
-        "data_provenance": "Synthetic Pune Clinical Risk Research Set",
-        "audited_by": "VITALNEX Continuous Safety Monitor",
-        "human_oversight_status": "Not_Required",
-    }
-
-
-@router.get("/dataset/metadata")
-async def get_dataset_metadata():
-    return dataset_service.get_metadata()
-
-
-@router.get("/dataset/schema")
-async def get_dataset_schema():
-    return dataset_service.get_feature_schema()

@@ -1,101 +1,88 @@
-# VITALNEX — Health. Humanity. High-Tech.
-### AI-Powered Healthcare Intelligence & Connected Care Platform
+# VITALNEX
 
-> **Clinical Research Disclaimer**: VITALNEX is an academic research and clinical decision-support prototype. It is calibrated on synthetic cardiometabolic screening data from the Pune metropolitan region. It does not provide medical diagnoses, prescribe medications, or replace certified healthcare practitioners. High-risk outputs and borderline cases require mandatory human-in-the-loop clinical review.
+**Project status: MVP in progress.** This repository is being rebuilt phase by phase
+(see `docs/PROMPTS.md`). This README describes only what exists today.
 
----
+> **Not a diagnostic tool.** VITALNEX is a screening and care-navigation prototype. It does not
+> diagnose disease, does not name or dose medicines, and does not replace a doctor. All accounts
+> are demo accounts. In an emergency call **108 / 112** (India).
 
-## 🌟 Key Highlights & Capabilities
+## What VITALNEX is meant to be
 
-1. **AI Trust Passport & Responsible AI (11 Dimensions)**
-   - Transparent model governance with real-time explainability (feature attribution).
-   - Platt isotonic scaling calibration & Brier scores for confidence bounds.
-   - Demographic parity & equalized odds fairness auditing across age, sex, and socioeconomic subgroups.
-   - Physiological safety guardrails and deterministic human-in-the-loop review triage.
+A multilingual (English / Hindi / Marathi) platform for patients and clinicians. It estimates how
+similar a person's self-reported answers are to people who have been told they have
+diabetes/prediabetes, heart disease or stroke, explains the main factors, and suggests what kind
+of care to seek and how soon. The full specification is in `docs/SPEC.md`; decisions are in
+`docs/DECISIONS.md`.
 
-2. **Multi-Model Clinical Risk Machine Learning Suite**
-   - Trained on 20,000 synthetic clinical records (`data/raw/Pune_Clinical_Risk_Synthetic_Dataset_20000.csv`).
-   - Ensemble of 4 architectures: **Logistic Regression**, **Random Forest**, **Gradient Boosting (Production)**, and **MLP Neural Network**.
-   - Model Registry and offline artifact persistence (`ml/models/`).
+## What works right now (after Phase P0)
 
-3. **Connected Care Ecosystem**
-   - **Triage & Emergency Assistant**: Rule-guided triage routing with automated red-flag detection.
-   - **Care Connect & Telehealth**: Doctor discovery, verified credentials, and appointment scheduling.
-   - **Voice Health Assistant**: Conversational screening with real-time speech and auditory responses.
-   - **What-If Risk Simulator**: Interactive scenario modeling to assess how lifestyle modifications affect risk trajectory.
-   - **Admin Governance Portal**: Dataset provenance inspection, bias metrics, and model registry management.
+| Area | State |
+|---|---|
+| Web app shell, navigation, EN/HI/MR language switch | Works |
+| Risk screening | **Not available.** The old models were trained on a synthetic dataset and have been removed. `POST /api/v1/assessment` returns HTTP 503 until the new models are trained (P3) and wired in (P4). |
+| Health profile | **Being rebuilt** (P5). The old form pre-filled clinical values. |
+| AI Trust Passport | **Not available** until it can be generated from real model cards (P7). |
+| Assistant | Emergency keyword check (shows 108 / 112) and a few fixed, pre-written replies. No external AI service is called. Rebuilt in P8. |
+| Care Connect / appointments | Demo clinicians and demo bookings, in memory only (moves to Supabase in P1). |
+| Clinician and admin pages | Show real counts from the API, which are zero until assessments exist. |
+| Login | Demo-only, stored in the browser. Real Supabase Auth comes in P1. |
+| Voice, video consultation, model lab, datasets, health insights | Frozen for the MVP. These pages show "Not in MVP". |
 
----
-
-## 📂 Repository Structure
+## Repository layout
 
 ```
-VITALNEX/
-├── apps/
-│   ├── api/                     # FastAPI backend
-│   │   ├── core/                # Settings & middleware
-│   │   ├── routers/v1/          # Endpoints (assessment, trust-passport, doctors, assistant, etc.)
-│   │   ├── schemas/             # Pydantic v2 data contracts
-│   │   └── services/            # Business logic & ML inference adapters
-│   └── web/                     # Next.js 16 (App Router, Turbopack, TailwindCSS)
-│       └── src/app/             # Pages (dashboard, risk-assessment, ai-trust, admin, care-connect, etc.)
-├── data/
-│   └── raw/                     # Synthetic Pune clinical dataset & data dictionaries
-├── ml/
-│   ├── models/                  # Serialized .pkl artifacts & model_metadata.json
-│   └── pipelines/               # train_pipeline.py & model_loader.py
-├── supabase/
-│   └── migrations/              # Database schemas, RLS policies & seed data
-├── tests/                       # Pytest test suite (100% passing)
-└── README.md
+apps/api/        FastAPI backend (routers/v1 → services → schemas, core/config)
+apps/web/        Next.js 16 app (src/app pages, components, messages/{en,hi,mr}.json)
+data/synthetic/  Pune Clinical Risk Synthetic Dataset — demo profiles and stress tests only (D-4)
+ml/              ml/requirements.txt; training code arrives in P2/P3
+supabase/        Database migration and old demo seed
+tests/           pytest suite for the API
+docs/            SPEC, DECISIONS, PROMPTS, AUDIT, i18n review list
 ```
 
----
+## Running locally
 
-## 🚀 Quickstart & Local Setup
+Requirements: Python 3.11+, Node.js 20+.
 
-### 1. Prerequisites
-- Python 3.11+ (tested on Python 3.13)
-- Node.js 18+ & npm
-
-### 2. Environment Configuration
-Create a `.env` file from `.env.example`:
 ```bash
-cp .env.example .env
-```
+# 1. Environment
+cp .env.example .env          # fill in values; never commit .env
 
-### 3. ML Pipeline Training
-Train all 4 clinical risk models on the Pune synthetic dataset:
-```bash
-python -m ml.pipelines.train_pipeline
-```
-*Output: Serializes model artifacts and saves `ml/models/model_metadata.json` with subgroup fairness benchmarks.*
-
-### 4. Running Backend Tests
-```bash
-python -m pytest tests -v
-```
-
-### 5. Starting the FastAPI Backend
-```bash
+# 2. Backend
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install -r apps/api/requirements.txt
 uvicorn apps.api.main:app --reload --port 8000
+# API docs: http://localhost:8000/docs · health check: http://localhost:8000/health
+
+# 3. Frontend (second terminal)
+npm --prefix apps/web install
+npm --prefix apps/web run dev
+# App: http://localhost:3000
+
+# Or run both from the repo root:
+npm install && npm run dev
+
+# 4. Tests
+python -m pytest tests -v
+npm --prefix apps/web run lint
 ```
-- API Docs: `http://localhost:8000/docs`
-- Health check: `http://localhost:8000/api/v1/health`
 
-### 6. Starting the Next.js Frontend
-```bash
-cd apps/web
-npm run dev
-```
-- Application: `http://localhost:3000`
+`ml/requirements.txt` (scikit-learn, LightGBM, PyTorch CPU, SHAP, fairlearn, sentence-transformers …)
+is only needed from Phase P2 onward.
 
----
+## Data
 
-## 🛡️ Responsible AI & Governance
+- `data/synthetic/` holds a **synthetic** dataset made by the team. It contains no real patient
+  data and is never used to train or evaluate the production models (decision D-4). See
+  `data/README.md`.
+- The real training data (CDC BRFSS Diabetes Health Indicators, UCI id 891) is downloaded in
+  Phase P2 into `data/raw/`, which is git-ignored.
 
-VITALNEX follows the WHO guidelines for AI in Health:
-- **Ethics by Design**: Models do not auto-diagnose; all predictions are risk indices with confidence intervals.
-- **Fairness Guarantee**: Audited against the 80% four-fifths demographic parity rule.
-- **Explainability**: Both positive and negative risk contributors are surfaced for clinician review.
-- **Human-in-the-Loop**: High-risk scores or data anomalies automatically transition to a `Pending` clinician review status.
+## Responsible AI
+
+The rules VITALNEX follows are in `CLAUDE.md` ("What VITALNEX must never do"). In short: no
+diagnosis wording, no medicine advice, no invented inputs, no metric that the code did not compute,
+no health data sent to third-party APIs, emergency symptoms always override, and high-risk or
+uncertain results go to a clinician.

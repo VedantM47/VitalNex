@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, Mail, ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
@@ -33,14 +33,18 @@ function LoginFormContent() {
   const [password, setPassword] = useState("••••••••••••");
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
+  // When the ?role= param changes, reset the form during render (React's
+  // "adjusting state when a prop changes" pattern) instead of in an effect.
+  const [prevRoleParam, setPrevRoleParam] = useState(initialRoleParam);
+  if (initialRoleParam !== prevRoleParam) {
+    setPrevRoleParam(initialRoleParam);
     if (initialRoleParam && ["patient", "doctor", "admin", "researcher"].includes(initialRoleParam)) {
       setSelectedRole(initialRoleParam);
       if (initialRoleParam === "doctor") setEmail("dr.anand.joshi@vitalnex.health");
       else if (initialRoleParam === "admin" || initialRoleParam === "researcher") setEmail("admin@vitalnex.health");
       else setEmail("rajesh.sharma@vitalnex.health");
     }
-  }, [initialRoleParam]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

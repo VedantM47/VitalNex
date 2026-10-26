@@ -12,7 +12,6 @@ from apps.api.schemas import (
     ContextFeatures,
     AssessmentRequest,
     DoctorResponse,
-    TrustPassportResponse,
 )
 
 

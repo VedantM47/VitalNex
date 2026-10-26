@@ -41,11 +41,11 @@ export default function AIAssistantPage() {
       id: "msg-welcome",
       role: "assistant",
       content:
-        "Hello! I am your VITALNEX Health Intelligence Assistant. I can help interpret your continuous cardiometabolic risk screening, explain feature contributions from your AI Trust Passport, and help connect you to certified clinicians in Pune.",
+        "Hello! I am the VITALNEX assistant. My answers are fixed, pre-written text; I do not generate medical advice. I can help you find your way around the app or find a demo clinician. In an emergency, call 108 / 112.",
       suggestions: [
         { id: "s1", label: "Explain my health profile", action_type: "navigate", payload: { path: "/health-profile" } },
         { id: "s2", label: "What does my risk assessment mean?", action_type: "navigate", payload: { path: "/risk-assessment" } },
-        { id: "s3", label: "Help me find a specialist in Pune", action_type: "navigate", payload: { path: "/care-connect" } },
+        { id: "s3", label: "Help me find a demo clinician", action_type: "navigate", payload: { path: "/care-connect" } },
       ],
       citations: [{ source: "VITALNEX Clinical Guidance Protocol v1.0" }],
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -96,12 +96,12 @@ export default function AIAssistantPage() {
             ? "सूचना: थेट सहाय्यक सर्व्हरशी संपर्क होऊ शकला नाही. स्थानिक सुरक्षा नियमांनुसार: तीव्र अस्वस्थता असल्यास त्वरित 108 वर संपर्क साधा किंवा आपल्या डॉक्टरांचा सल्ला घ्या."
             : language === "hi"
             ? "सूचना: सहायक सर्वर से संपर्क नहीं हो पाया। आपातकालीन स्थिति में तुरंत 108 पर कॉल करें अथवा अपने चिकित्सक से संपर्क करें।"
-            : "Notice: Unable to reach the live intelligence service. Using offline clinical guidance: For acute symptoms please contact emergency services (108/112). For routine review, please check your AI Trust Passport or consult a licensed clinician.",
+            : "Notice: The assistant could not be reached. For acute symptoms please contact emergency services (108 / 112). For anything else, please consult a doctor.",
         suggestions: [
           { id: "fb-1", label: "Inspect AI Trust Passport", action_type: "navigate", payload: { path: "/ai-trust" } },
           { id: "fb-2", label: "Discover Clinicians", action_type: "navigate", payload: { path: "/care-connect" } },
         ],
-        citations: [{ source: "VITALNEX Offline Safety Protocol" }],
+        citations: [],
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, fallback]);
@@ -118,7 +118,7 @@ export default function AIAssistantPage() {
         content: "Conversation history cleared. How may I assist your health journey?",
         suggestions: [
           { id: "s1", label: "Explain my health profile", action_type: "navigate", payload: { path: "/health-profile" } },
-          { id: "s2", label: "Help me find a cardiologist in Pune", action_type: "navigate", payload: { path: "/care-connect" } },
+          { id: "s2", label: "Help me find a demo clinician", action_type: "navigate", payload: { path: "/care-connect" } },
         ],
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       },

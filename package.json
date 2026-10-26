@@ -10,7 +10,6 @@
     "build:web": "npm --prefix apps/web run build",
     "lint": "npm --prefix apps/web run lint",
     "dev:api": "python -m uvicorn apps.api.main:app --reload --port 8000",
-    "train:ml": "python -m ml.pipelines.train_pipeline",
     "test:api": "python -m pytest tests -v",
     "test": "npm run test:api"
   },

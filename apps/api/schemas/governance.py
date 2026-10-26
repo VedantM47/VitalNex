@@ -20,7 +20,8 @@ class GovernanceEvent(BaseModel):
 class GovernanceSummaryResponse(BaseModel):
     total_assessments: int
     models_in_production: int
-    fairness_compliance_rate: float
+    # None = not computed yet. Never fill with a placeholder number (CLAUDE.md hard rule 4).
+    fairness_compliance_rate: Optional[float] = None
     human_reviews_pending: int
-    data_quality_index: float
+    data_quality_index: Optional[float] = None
     recent_events: List[GovernanceEvent]

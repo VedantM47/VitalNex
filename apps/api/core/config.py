@@ -26,10 +26,6 @@ class Settings(BaseSettings):
     SUPABASE_URL: str = "https://demo.vitalnex.supabase.co"
     SUPABASE_SECRET_KEY: str = "demo-service-role-key"
 
-    # Dataset Paths
-    DATASET_PATH: str = "data/raw/Pune_Clinical_Risk_Synthetic_Dataset_20000.csv"
-    DATA_DICTIONARY_PATH: str = "data/raw/Pune_Clinical_Risk_Data_Dictionary.csv"
-
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

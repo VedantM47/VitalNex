@@ -9,9 +9,8 @@ from fastapi.responses import StreamingResponse
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 
-from apps.api.services import prediction_service, trust_passport_service
+from apps.api.services import prediction_service
 from apps.api.services.report_service import generate_pdf_report
-from apps.api.services.jev_service import classify_report_review, classify_review_routing, is_jev_available
 
 router = APIRouter(tags=["Clinical Reports & Documentation"])
 
@@ -67,46 +66,8 @@ async def download_report_pdf(assessment_id: str):
     if not asm:
         raise HTTPException(status_code=404, detail=f"Assessment record '{assessment_id}' not found")
 
-    # Fetch trust passport data for this assessment
-    passport = await trust_passport_service.generate_passport(
-        assessment_id=asm.id,
-        inputs_dict=asm.input_snapshot,
-        risk_score=asm.risk_score,
-        risk_band=asm.risk_band,
-    )
-    passport_dict = passport.model_dump()
-
-    # Fetch explanation data if available
-    explanation_data = {
-        "available": True,
-        "method": "TreeSHAP Local Feature Attribution",
-        "summary": "Resting Blood Pressure (+8.2%) and Age (+5.1%) elevated risk, moderated by Max Heart Rate (-5.5%) and Non-Smoking (-6.4%).",
-        "top_positive_contributors": [
-            {"label": "Resting BP (135 mmHg)", "impact": "+8.2% Risk", "value": "135 mmHg"},
-            {"label": "Age (59 years)", "impact": "+5.1% Risk", "value": "59 yrs"},
-        ],
-        "top_negative_contributors": [
-            {"label": "Non-Smoker", "impact": "-6.4% Protective", "value": "No"},
-            {"label": "Max Heart Rate (148 bpm)", "impact": "-5.5% Protective", "value": "148 bpm"},
-        ],
-    }
-
-    # Bounded Jev decision routing
-    jev_routing = await classify_review_routing(
-        risk_band=asm.risk_band,
-        risk_score=asm.risk_score,
-        data_quality_score=passport.data_quality.quality_score,
-        uncertainty=passport.uncertainty.total_entropy,
-        human_review_required=asm.human_review_required,
-        out_of_range_fields=[],
-    )
-
-    pdf_bytes = generate_pdf_report(
-        assessment_data=asm.model_dump(),
-        trust_passport_data=passport_dict,
-        explanation_data=explanation_data,
-        jev_routing=jev_routing,
-    )
+    # TODO(P9): add factor explanations once real models produce them.
+    pdf_bytes = generate_pdf_report(assessment_data=asm.model_dump())
 
     if not pdf_bytes:
         raise HTTPException(status_code=500, detail="PDF generation service failed")

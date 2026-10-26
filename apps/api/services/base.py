@@ -10,17 +10,12 @@ from apps.api.schemas import (
     ClinicalModelFeatures,
     AssessmentRequest,
     AssessmentResponse,
-    TrustPassportResponse,
     DoctorResponse,
     DoctorFilter,
     AppointmentCreate,
     AppointmentResponse,
     AssistantMessageRequest,
     AssistantMessageResponse,
-    VoiceTranscribeRequest,
-    VoiceTranscribeResponse,
-    VoiceSynthesizeRequest,
-    VoiceSynthesizeResponse,
     GovernanceSummaryResponse,
     ModelRegistryItem,
     HealthProfileCreate,
@@ -44,23 +39,6 @@ class IModelRegistryService(ABC):
     @abstractmethod
     async def get_model(self, model_id: str) -> Optional[ModelRegistryItem]:
         """Get model details by ID."""
-        pass
-
-
-class IDatasetService(ABC):
-    @abstractmethod
-    def load_dataset(self) -> Any:
-        """Load registered dataset."""
-        pass
-
-    @abstractmethod
-    def get_metadata(self) -> Dict[str, Any]:
-        """Return dataset provenance, shapes, columns, and quality metrics."""
-        pass
-
-    @abstractmethod
-    def get_feature_schema(self) -> Dict[str, Any]:
-        """Return schema definition of all 26 clinical and demographic features."""
         pass
 
 
@@ -89,13 +67,6 @@ class ISafetyService(ABC):
     @abstractmethod
     async def validate_safety_boundaries(self, features: ClinicalModelFeatures) -> Dict[str, Any]:
         """Perform out-of-distribution and clinical boundary checks."""
-        pass
-
-
-class ITrustPassportService(ABC):
-    @abstractmethod
-    async def generate_passport(self, assessment_id: str) -> TrustPassportResponse:
-        """Assemble the 11-dimension AI Trust Passport."""
         pass
 
 
@@ -146,18 +117,6 @@ class IAppointmentService(ABC):
     @abstractmethod
     async def list_appointments(self, user_id: str, role: str) -> List[AppointmentResponse]:
         """List appointments for a user or doctor."""
-        pass
-
-
-class IVoiceService(ABC):
-    @abstractmethod
-    async def transcribe_audio(self, request: VoiceTranscribeRequest) -> VoiceTranscribeResponse:
-        """Speech to text transcription."""
-        pass
-
-    @abstractmethod
-    async def synthesize_speech(self, request: VoiceSynthesizeRequest) -> VoiceSynthesizeResponse:
-        """Text to speech synthesis."""
         pass
 
 

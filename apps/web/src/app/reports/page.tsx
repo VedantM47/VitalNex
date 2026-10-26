@@ -110,7 +110,7 @@ export default function ReportsPage() {
               <DemoBadge label="ReportLab PDF Engine" />
             </div>
             <p className="text-xs sm:text-sm text-[#475569]">
-              Verified clinical screening documents, explainability summaries, and printable physician-ready PDF reports.
+              Printable PDF summaries of your screenings.
             </p>
           </div>
 
@@ -137,9 +137,9 @@ export default function ReportsPage() {
         <div className="p-4 bg-[#0E7490]/5 border border-[#0E7490]/20 rounded-2xl flex items-start gap-3">
           <ShieldCheck className="w-5 h-5 text-[#0E7490] shrink-0 mt-0.5" />
           <div className="space-y-1 text-xs text-[#0B1F33]">
-            <p className="font-bold">Physician-Ready Decision Support Reports</p>
+            <p className="font-bold">Screening reports</p>
             <p className="text-[#475569] leading-relaxed">
-              Every VITALNEX report includes audited physiological inputs, Platt Isotonic confidence intervals, local TreeSHAP attributions, and bounded safety governance metadata.
+              A report lists your answers, your screening level, the model version and the limitations. It is not a diagnosis.
             </p>
           </div>
         </div>
@@ -153,7 +153,7 @@ export default function ReportsPage() {
           {loading ? (
             <div className="p-12 text-center text-[#64748B] text-xs">
               <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#0E7490]" />
-              Loading verified clinical documents...
+              Loading...
             </div>
           ) : reports.length === 0 ? (
             <Card className="p-8 text-center space-y-4">

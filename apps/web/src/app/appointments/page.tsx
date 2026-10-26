@@ -126,10 +126,10 @@ export default function AppointmentsPage() {
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B1F33]">
                 {t("nav.appointments") || "Care Consultations & Appointments"}
               </h1>
-              <DemoBadge label="Verified Scheduling Engine" />
+              <DemoBadge label="Demo appointments" />
             </div>
             <p className="text-xs sm:text-sm text-[#475569]">
-              Manage upcoming teleconsultations, doctor reviews, and clinic visits with specialists across Pune & PCMC.
+              Manage your demo appointments with demo clinicians.
             </p>
           </div>
 
@@ -257,7 +257,7 @@ export default function AppointmentsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-[#0E7490]" />
-                      <span>Pune Regional Care Network</span>
+                      <span>Demo clinic</span>
                     </div>
                   </div>
 

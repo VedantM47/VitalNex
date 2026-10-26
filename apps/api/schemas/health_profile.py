@@ -10,42 +10,44 @@ from datetime import datetime
 
 class ClinicalModelFeatures(BaseModel):
     """
-    Strictly validated clinical features consumed by the predictive ML/DL pipeline.
+    Old heart-disease feature set (replaced by the 14-feature contract in P4).
+    No field has a default: a missing medical input is rejected, never filled in
+    (CLAUDE.md hard rule 3).
     """
     age: int = Field(..., ge=18, le=100, description="Age in years")
     sex: int = Field(..., ge=0, le=1, description="0=Female, 1=Male")
     bmi: float = Field(..., ge=10.0, le=60.0, description="Body Mass Index")
-    smoking: int = Field(0, ge=0, le=1, description="0=No, 1=Yes")
-    family_history: int = Field(0, ge=0, le=1, description="Cardiovascular family history 0=No, 1=Yes")
-    diabetes: int = Field(0, ge=0, le=1, description="Diagnosed diabetes 0=No, 1=Yes")
-    hypertension: int = Field(0, ge=0, le=1, description="Diagnosed hypertension 0=No, 1=Yes")
-    cp: int = Field(4, ge=1, le=4, description="Chest pain type (1=typical, 2=atypical, 3=non-anginal, 4=asymptomatic)")
-    trestbps: float = Field(120.0, ge=80.0, le=220.0, description="Resting blood pressure (mm Hg)")
-    chol: float = Field(190.0, ge=100.0, le=550.0, description="Serum cholesterol (mg/dL)")
-    fbs: int = Field(0, ge=0, le=1, description="Fasting blood sugar > 120 mg/dL")
-    restecg: int = Field(0, ge=0, le=2, description="Resting electrocardiographic results")
-    thalach: float = Field(150.0, ge=60.0, le=220.0, description="Maximum heart rate achieved")
-    exang: int = Field(0, ge=0, le=1, description="Exercise-induced angina (0=No, 1=Yes)")
-    oldpeak: float = Field(0.0, ge=0.0, le=10.0, description="ST depression induced by exercise relative to rest")
-    slope: int = Field(1, ge=1, le=3, description="Slope of the peak exercise ST segment")
-    ca: int = Field(0, ge=0, le=3, description="Number of major vessels (0-3) colored by flourosopy")
-    thal: int = Field(3, description="3=normal, 6=fixed defect, 7=reversible defect")
+    smoking: int = Field(..., ge=0, le=1, description="0=No, 1=Yes")
+    family_history: int = Field(..., ge=0, le=1, description="Cardiovascular family history 0=No, 1=Yes")
+    diabetes: int = Field(..., ge=0, le=1, description="Diagnosed diabetes 0=No, 1=Yes")
+    hypertension: int = Field(..., ge=0, le=1, description="Diagnosed hypertension 0=No, 1=Yes")
+    cp: int = Field(..., ge=1, le=4, description="Chest pain type (1=typical, 2=atypical, 3=non-anginal, 4=asymptomatic)")
+    trestbps: float = Field(..., ge=80.0, le=220.0, description="Resting blood pressure (mm Hg)")
+    chol: float = Field(..., ge=100.0, le=550.0, description="Serum cholesterol (mg/dL)")
+    fbs: int = Field(..., ge=0, le=1, description="Fasting blood sugar > 120 mg/dL")
+    restecg: int = Field(..., ge=0, le=2, description="Resting electrocardiographic results")
+    thalach: float = Field(..., ge=60.0, le=220.0, description="Maximum heart rate achieved")
+    exang: int = Field(..., ge=0, le=1, description="Exercise-induced angina (0=No, 1=Yes)")
+    oldpeak: float = Field(..., ge=0.0, le=10.0, description="ST depression induced by exercise relative to rest")
+    slope: int = Field(..., ge=1, le=3, description="Slope of the peak exercise ST segment")
+    ca: int = Field(..., ge=0, le=3, description="Number of major vessels (0-3) colored by flourosopy")
+    thal: int = Field(..., description="3=normal, 6=fixed defect, 7=reversible defect")
 
 
 class LifestyleFeatures(BaseModel):
-    physical_activity: str = Field("Moderate", pattern="^(Low|Moderate|High)$")
-    sedentary_hours_per_day: float = Field(6.0, ge=0.0, le=24.0)
-    sleep_hours_per_night: float = Field(7.0, ge=2.0, le=16.0)
-    stress_level: str = Field("Moderate", pattern="^(Low|Moderate|High|Severe)$")
-    hydration_liters_per_day: float = Field(2.0, ge=0.5, le=10.0)
+    physical_activity: str = Field(..., pattern="^(Low|Moderate|High)$")
+    sedentary_hours_per_day: float = Field(..., ge=0.0, le=24.0)
+    sleep_hours_per_night: float = Field(..., ge=2.0, le=16.0)
+    stress_level: str = Field(..., pattern="^(Low|Moderate|High|Severe)$")
+    hydration_liters_per_day: float = Field(..., ge=0.5, le=10.0)
 
 
 class NutritionFeatures(BaseModel):
-    diet_quality: str = Field("Moderate", pattern="^(Needs_Improvement|Moderate|Healthy)$")
-    diet_pattern: str = Field("Mixed", pattern="^(Vegetarian|Non-Vegetarian|Vegan|Jain|Mixed)$")
-    meal_frequency_per_day: int = Field(3, ge=1, le=6)
-    daily_fruit_veg_servings: int = Field(2, ge=0, le=15)
-    processed_food_frequency: str = Field("Occasional", pattern="^(Rarely|Occasional|Frequent|Daily)$")
+    diet_quality: str = Field(..., pattern="^(Needs_Improvement|Moderate|Healthy)$")
+    diet_pattern: str = Field(..., pattern="^(Vegetarian|Non-Vegetarian|Vegan|Jain|Mixed)$")
+    meal_frequency_per_day: int = Field(..., ge=1, le=6)
+    daily_fruit_veg_servings: int = Field(..., ge=0, le=15)
+    processed_food_frequency: str = Field(..., pattern="^(Rarely|Occasional|Frequent|Daily)$")
 
 
 class ContextFeatures(BaseModel):

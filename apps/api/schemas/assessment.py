@@ -22,7 +22,7 @@ class AssessmentResponse(BaseModel):
     risk_score: float = Field(..., ge=0.0, le=100.0, description="Risk index estimate (0-100)")
     risk_band: str = Field(..., pattern="^(Low|Moderate|High)$")
     confidence_interval: List[float] = Field(..., min_length=2, max_length=2)
-    calibration_status: str = "Calibrated"
+    calibration_status: str = "Not calibrated"
     human_review_required: bool = False
     human_review_status: str = Field("Not_Required", pattern="^(Not_Required|Pending|Approved|Modified|Rejected)$")
     model_version: str = "v1.0.0-demo"

@@ -13,17 +13,6 @@ from .health_profile import (
     HealthProfileResponse,
 )
 from .assessment import AssessmentRequest, AssessmentResponse
-from .trust_passport import (
-    TrustPassportResponse,
-    PredictionTrustSummary,
-    ConfidenceMetrics,
-    DataQualityMetrics,
-    ExplainabilitySummary,
-    FairnessMetrics,
-    UncertaintyProfile,
-    SafetyBoundaryCheck,
-    HumanReviewSummary,
-)
 from .doctor import DoctorResponse, DoctorFilter, DoctorLocation, DoctorAvailabilitySlot
 from .appointment import AppointmentCreate, AppointmentUpdate, AppointmentResponse
 from .review import PatientReviewResponse, PatientReviewUpdate
@@ -46,15 +35,6 @@ __all__ = [
     "HealthProfileResponse",
     "AssessmentRequest",
     "AssessmentResponse",
-    "TrustPassportResponse",
-    "PredictionTrustSummary",
-    "ConfidenceMetrics",
-    "DataQualityMetrics",
-    "ExplainabilitySummary",
-    "FairnessMetrics",
-    "UncertaintyProfile",
-    "SafetyBoundaryCheck",
-    "HumanReviewSummary",
     "DoctorResponse",
     "DoctorFilter",
     "DoctorLocation",

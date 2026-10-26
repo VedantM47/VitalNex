@@ -45,3 +45,10 @@ htmlcov/
 # Local database / artifacts
 *.sqlite3
 *.db
+
+# Real datasets are downloaded, never committed (docs/SPEC.md §3, PROMPTS P2)
+data/raw/
+data/processed/
+
+# Local folder-tree dump
+structure.txt

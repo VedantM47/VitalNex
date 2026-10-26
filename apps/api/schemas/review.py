@@ -27,7 +27,7 @@ class PatientReviewResponse(BaseModel):
     review_status: str = Field("pending", pattern="^(pending|in_review|reviewed)$")
     assigned_clinician_id: Optional[str] = None
     review_notes: Optional[str] = None
-    data_quality_score: float = 96.5
+    data_quality_score: Optional[float] = None
     explainability_summary: str
     input_snapshot: Dict[str, Any] = {}
     reviewed_at: Optional[datetime] = None

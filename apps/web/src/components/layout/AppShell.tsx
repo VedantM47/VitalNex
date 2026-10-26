@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
-import { Footer } from "./Footer";
 import { X } from "lucide-react";
 
 export function AppShell({ children }: { children: React.ReactNode }) {

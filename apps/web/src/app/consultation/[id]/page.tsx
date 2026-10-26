@@ -219,8 +219,13 @@ export default function ConsultationRoomPage() {
   }, [appointmentId, tokenInfo]);
 
   useEffect(() => {
-    startMediaAndSignaling();
+    // Start from a callback, not synchronously in the effect body (react-hooks/set-state-in-effect).
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (!cancelled) startMediaAndSignaling();
+    });
     return () => {
+      cancelled = true;
       if (wsRef.current) wsRef.current.close();
       if (pcRef.current) pcRef.current.close();
       if (localStream) localStream.getTracks().forEach((t) => t.stop());

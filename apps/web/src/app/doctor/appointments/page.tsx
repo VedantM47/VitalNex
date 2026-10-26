@@ -166,7 +166,7 @@ export default function DoctorAppointmentsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-[#0E7490]" />
-                      <span>Kothrud Clinic Hub (Pune)</span>
+                      <span>Demo clinic</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <FileText className="w-4 h-4 text-[#0E7490]" />

@@ -85,11 +85,11 @@ export default function LandingPage() {
               <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-[#64748B]">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#0F766E]" />
-                  <span>Calibrated Risk Prediction</span>
+                  <span>Screening, not diagnosis</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-[#0F766E]" />
-                  <span>11-Dimension AI Trust Passport</span>
+                  <span>Clinician review for high-risk results</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-[#0F766E]" />
@@ -98,56 +98,25 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Hero Visual Mockup: Clean Clinical Glass UI, NOT a generic AI Brain */}
+            {/* Hero card: what VITALNEX is and is not (no example scores, P0 honesty pass) */}
             <div className="lg:col-span-5 relative">
-              <div className="relative bg-white rounded-2xl border border-[#D8E2EA] p-6 shadow-xl space-y-5">
-                {/* Visual Header */}
-                <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-4">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-[#0B1F33] text-[#22C1DC] flex items-center justify-center font-bold text-xs">
-                      VN
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-[#0B1F33]">Clinical Decision Snapshot</p>
-                      <p className="text-[10px] text-[#64748B]">Patient Profile: PUN_SYN_00001 (Demo)</p>
-                    </div>
-                  </div>
-                  <RiskBadge band="Low" />
+              <div className="relative bg-white rounded-2xl border border-[#D8E2EA] p-6 shadow-xl space-y-4">
+                <p className="text-xs font-bold text-[#0B1F33] border-b border-[#F1F5F9] pb-3">What VITALNEX is</p>
+                <ul className="space-y-2 text-xs text-[#475569]">
+                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-[#0F766E] shrink-0" />A screening and care-navigation aid for diabetes, heart disease and stroke.</li>
+                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-[#0F766E] shrink-0" />Tells you what kind of care to seek and how soon.</li>
+                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-[#0F766E] shrink-0" />Available in English, Hindi and Marathi.</li>
+                </ul>
+                <p className="text-xs font-bold text-[#0B1F33] border-b border-[#F1F5F9] pb-3 pt-2">What it is not</p>
+                <ul className="space-y-2 text-xs text-[#475569]">
+                  <li className="flex gap-2"><Lock className="w-4 h-4 text-[#B42318] shrink-0" />Not a diagnosis and not a replacement for a doctor.</li>
+                  <li className="flex gap-2"><Lock className="w-4 h-4 text-[#B42318] shrink-0" />Never names or doses medicines.</li>
+                  <li className="flex gap-2"><Lock className="w-4 h-4 text-[#B42318] shrink-0" />Not yet validated on Indian patients. Accounts are demo accounts.</li>
+                </ul>
+                <div className="p-3 bg-[#FEF2F2] rounded-xl border border-[#B42318]/20 text-xs text-[#B42318] font-semibold">
+                  Emergency? Call 108 / 112 now.
                 </div>
-
-                {/* Metric Grid */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA]">
-                    <p className="text-[11px] text-[#64748B]">Estimated Risk Score</p>
-                    <p className="text-xl font-bold text-[#0B1F33]">18.1%</p>
-                    <p className="text-[10px] text-[#0F766E] font-medium">95% CI: [13.6 - 22.6]</p>
-                  </div>
-                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA]">
-                    <p className="text-[11px] text-[#64748B]">Data Completeness</p>
-                    <p className="text-xl font-bold text-[#0E7490]">100%</p>
-                    <p className="text-[10px] text-[#64748B]">All 26 Features Validated</p>
-                  </div>
-                </div>
-
-                {/* Mini SHAP Feature Attribution Indicator */}
-                <div className="space-y-1.5 pt-1">
-                  <div className="flex justify-between text-[11px] text-[#475569]">
-                    <span className="font-medium">Primary Attribution Driver</span>
-                    <span className="text-[#0E7490] font-semibold">Resting BP (132 mmHg)</span>
-                  </div>
-                  <div className="w-full h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
-                    <div className="w-2/3 h-full bg-[#0E7490] rounded-full" />
-                  </div>
-                </div>
-
-                {/* Trust Verification Stamp */}
-                <div className="p-3 bg-[#F0FDF4] rounded-xl border border-[#0F766E]/20 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2 text-[#0F766E]">
-                    <ShieldCheck className="w-4 h-4 shrink-0" />
-                    <span className="font-semibold">AI Trust Passport Verified</span>
-                  </div>
-                  <span className="text-[10px] text-[#0F766E] font-medium">Fairness: 94% Parity</span>
-                </div>
+                <p className="text-[11px] text-[#64748B]">Project status: MVP in progress. The risk screening is being rebuilt.</p>
               </div>
             </div>
           </div>
@@ -163,7 +132,7 @@ export default function LandingPage() {
               From Vitals to Verifiable AI and Connected Care
             </h2>
             <p className="text-sm sm:text-base text-[#475569]">
-              Built with rigorous separation of validated clinical inputs, responsible AI guardrails, and real-world regional physician discovery.
+              Planned for the MVP. Features are being rebuilt; anything not yet working says so in the app.
             </p>
           </div>
 
@@ -174,7 +143,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-lg font-bold text-[#0B1F33]">1. Clinical Risk Prediction</h3>
               <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                Separates validated clinical model features (ECG, blood pressure, fasting sugar) from contextual lifestyle habits to generate calibrated risk intervals.
+                About 15 simple questions you can answer yourself. Results show a screening level, the main factors and a next step. Being rebuilt on real survey data.
               </p>
             </Card>
 
@@ -184,7 +153,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-lg font-bold text-[#0B1F33]">2. AI Trust Passport</h3>
               <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                Inspect 11 rigorous dimensions including SHAP explainability, demographic parity across Pune subgroups, uncertainty quantification, and clinical review flags.
+                A public page explaining how the models work and where they fail. Every number on it will come from the real model cards.
               </p>
             </Card>
 
@@ -194,7 +163,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-lg font-bold text-[#0B1F33]">3. Connected Care</h3>
               <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                Transparent physician matching without biased &quot;best doctor&quot; labels. Discover specialists in Kothrud, Baner, and Shivajinagar by language and proximity.
+                Browse demo clinicians by specialty and language and book a demo appointment. All doctors in the MVP are synthetic.
               </p>
             </Card>
           </div>
@@ -211,33 +180,33 @@ export default function LandingPage() {
                 No Black Boxes. Total Transparency with the AI Trust Passport.
               </h2>
               <p className="text-xs sm:text-sm text-[#CBD5E1] leading-relaxed">
-                Healthcare predictions cannot be trusted on raw probabilities alone. Every VITALNEX risk calculation generates an immutable AI Trust Passport answering how, why, and with what confidence an assessment was derived.
+                Health predictions should not be trusted on numbers alone. The Trust Passport will explain how the models were built, how well they work and where they fail. It is being rebuilt; no metrics are shown until they are computed.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                <p className="text-xs font-bold text-[#22C1DC]">Local Attribution</p>
-                <p className="text-xs text-[#CBD5E1]">SHAP values pinpoint exactly which vitals drove the risk score.</p>
+                <p className="text-xs font-bold text-[#22C1DC]">Main factors</p>
+                <p className="text-xs text-[#CBD5E1]">Planned: the main factors behind each result, in plain language.</p>
               </div>
               <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                <p className="text-xs font-bold text-[#22C1DC]">Subgroup Fairness</p>
-                <p className="text-xs text-[#CBD5E1]">Demographic parity audited across sex, locality, and socioeconomic bands.</p>
+                <p className="text-xs font-bold text-[#22C1DC]">Fairness checks</p>
+                <p className="text-xs text-[#CBD5E1]">Planned: how results differ across groups, with the gaps reported openly.</p>
               </div>
               <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                <p className="text-xs font-bold text-[#22C1DC]">Uncertainty Bounds</p>
-                <p className="text-xs text-[#CBD5E1]">Separates data noise (aleatoric) from model knowledge gaps (epistemic).</p>
+                <p className="text-xs font-bold text-[#22C1DC]">Knowing when it is unsure</p>
+                <p className="text-xs text-[#CBD5E1]">Planned: when the model is not confident, it says so and asks you to see a doctor.</p>
               </div>
               <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                <p className="text-xs font-bold text-[#22C1DC]">Physiological Guardrails</p>
-                <p className="text-xs text-[#CBD5E1]">Catches biological anomalies and triggers mandatory clinician review.</p>
+                <p className="text-xs font-bold text-[#22C1DC]">Safety rules first</p>
+                <p className="text-xs text-[#CBD5E1]">Emergency symptoms always override everything and show 108 / 112.</p>
               </div>
             </div>
 
             <div className="pt-2">
               <Link href="/ai-trust">
                 <Button variant="teal" size="md">
-                  Inspect Trust Passport Architecture
+                  About the Trust Passport
                 </Button>
               </Link>
             </div>
@@ -252,37 +221,30 @@ export default function LandingPage() {
                 Accessibility For All
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1F33]">
-                Multilingual Voice & Screen Reader Native
+                Available in English, Hindi and Marathi
               </h2>
               <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                Health technology should leave no one behind. VITALNEX incorporates complete English, Hindi (हिन्दी), and Marathi (मराठी) localization, voice speech-to-text, and WCAG 2.2 AA compliant focus and contrast states.
+                Health technology should leave no one behind. VITALNEX is being built in English, Hindi (हिन्दी) and Marathi (मराठी). Hindi and Marathi medical wording is still awaiting human review.
               </p>
-              <div className="flex gap-4 pt-2">
-                <Link href="/voice">
-                  <Button variant="outline" size="md" leftIcon={<Mic className="w-4 h-4 text-[#0E7490]" />}>
-                    Experience Voice Interface
-                  </Button>
-                </Link>
-              </div>
             </div>
 
             <div className="bg-white rounded-2xl border border-[#D8E2EA] p-6 space-y-4 shadow-sm">
               <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3">
                 <span className="text-xs font-bold text-[#0B1F33]">Supported Regional Languages</span>
-                <span className="text-xs text-[#0F766E] font-medium">3 Active Dictionaries</span>
+                <span className="text-xs text-[#0F766E] font-medium">3 languages</span>
               </div>
               <div className="space-y-3">
                 <div className="p-3 bg-[#F8FAFC] rounded-xl flex items-center justify-between">
                   <span className="text-xs font-medium text-[#0B1F33]">English (en)</span>
-                  <span className="text-xs text-[#64748B]">Complete Clinical Terminology</span>
+                  <span className="text-xs text-[#64748B]">Interface language</span>
                 </div>
                 <div className="p-3 bg-[#F8FAFC] rounded-xl flex items-center justify-between">
                   <span className="text-xs font-medium text-[#0B1F33]">हिन्दी - Hindi (hi)</span>
-                  <span className="text-xs text-[#64748B]">Devanagari Typography & Voice</span>
+                  <span className="text-xs text-[#64748B]">Translation review pending</span>
                 </div>
                 <div className="p-3 bg-[#F8FAFC] rounded-xl flex items-center justify-between">
                   <span className="text-xs font-medium text-[#0B1F33]">मराठी - Marathi (mr)</span>
-                  <span className="text-xs text-[#64748B]">Maharashtra Regional Healthcare</span>
+                  <span className="text-xs text-[#64748B]">Translation review pending</span>
                 </div>
               </div>
             </div>
@@ -293,10 +255,10 @@ export default function LandingPage() {
         <section className="px-4 sm:px-8 max-w-7xl mx-auto pb-16">
           <div className="bg-gradient-to-br from-[#0B1F33] to-[#132E4A] rounded-3xl p-8 sm:p-14 text-center text-white space-y-6">
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Ready to experience modern healthcare intelligence?
+              Try the MVP
             </h2>
             <p className="text-xs sm:text-sm text-[#CBD5E1] max-w-xl mx-auto leading-relaxed">
-              Step into VITALNEX to configure your profile, test transparent clinical risk screening, and verify responsible AI governance.
+              Explore the demo with a dummy account. Some features are still being rebuilt and say so.
             </p>
             <div className="flex justify-center gap-4 pt-2">
               <Link href="/onboarding">

@@ -6,8 +6,7 @@ Uses ReportLab for server-side PDF generation.
 
 IMPORTANT MEDICAL & COMPLIANCE RULES:
 - Uses ACTUAL assessment data from the prediction pipeline.
-- Does NOT fabricate SHAP values or metrics.
-- Labels dataset provenance clearly as Synthetic Academic Cohort.
+- Does NOT fabricate attribution values or metrics; sections without real data say so.
 - Includes mandatory medical disclaimer.
 - Uses clean A4 layout, dynamic page numbering, units, and clear hierarchy.
 """
@@ -161,7 +160,7 @@ def _create_feature_chart(pos_contributors: List[Dict[str, Any]], neg_contributo
     d = Drawing(460, 100)
     d.add(Rect(0, 0, 460, 100, fillColor=LIGHT_BG, strokeColor=BORDER, strokeWidth=0.5, rx=4, ry=4))
     
-    d.add(String(10, 85, "TOP CONTRIBUTING FACTORS (SHAP LOCAL ATTRIBUTION)", fontName="Helvetica-Bold", fontSize=8, fillColor=NAVY))
+    d.add(String(10, 85, "TOP CONTRIBUTING FACTORS", fontName="Helvetica-Bold", fontSize=8, fillColor=NAVY))
     
     y = 65
     all_contribs = pos_contributors[:2] + neg_contributors[:2]
@@ -188,9 +187,7 @@ def _create_feature_chart(pos_contributors: List[Dict[str, Any]], neg_contributo
 
 def generate_assessment_pdf(
     assessment_data: Dict[str, Any],
-    trust_passport_data: Optional[Dict[str, Any]] = None,
     explanation_data: Optional[Dict[str, Any]] = None,
-    jev_routing: Optional[Dict[str, Any]] = None,
     language: str = "en",
 ) -> Optional[bytes]:
     """
@@ -263,26 +260,22 @@ def generate_assessment_pdf(
     elements.append(Paragraph("EXECUTIVE CLINICAL SUMMARY", styles["VNSectionHeader"]))
     risk_score = float(assessment_data.get("risk_score", 0.0))
     risk_band = str(assessment_data.get("risk_band", "Low"))
-    ci = assessment_data.get("confidence_interval", [max(0.0, round(risk_score - 4.5, 1)), round(risk_score + 4.5, 1)])
     hr_status = assessment_data.get("human_review_status", "Not_Required")
-    cal_status = assessment_data.get("calibration_status", "Platt Isotonic Calibrated")
     risk_color = _get_risk_color(risk_band)
 
     risk_summary_data = [
         [
             Paragraph("Cardiometabolic Risk Score", styles["TableCellBold"]),
             Paragraph("Risk Stratification", styles["TableCellBold"]),
-            Paragraph("95% Empirical Confidence Interval", styles["TableCellBold"]),
-            Paragraph("Model Calibration", styles["TableCellBold"]),
+            Paragraph("Model Version", styles["TableCellBold"]),
         ],
         [
             Paragraph(f"<font size=16 color={NAVY.hexval()}><b>{risk_score}%</b></font>", styles["TableCell"]),
             Paragraph(f"<font size=12 color={risk_color.hexval()}><b>{risk_band.upper()} RISK</b></font>", styles["TableCell"]),
-            Paragraph(f"<b>[{ci[0]}% – {ci[1]}%]</b>", styles["TableCell"]),
-            Paragraph(cal_status, styles["TableCell"]),
+            Paragraph(str(assessment_data.get("model_version", "not available")), styles["TableCell"]),
         ],
     ]
-    risk_table = Table(risk_summary_data, colWidths=[120, 110, 120, 110])
+    risk_table = Table(risk_summary_data, colWidths=[150, 150, 160])
     risk_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
         ("BOX", (0, 0), (-1, -1), 0.5, BORDER),
@@ -293,7 +286,7 @@ def generate_assessment_pdf(
     elements.append(risk_table)
 
     summary_explanation = (
-        f"This evaluation indicates a <b>{risk_band}</b> estimated probability ({risk_score}%) of 10-year cardiometabolic adverse events based on submitted clinical vitals. "
+        f"Screening level: <b>{risk_band}</b>. This is not a diagnosis. "
     )
     if risk_band == "High":
         summary_explanation += "High-risk indicators detected. Secondary clinical review and physician confirmation are strongly recommended."
@@ -337,7 +330,7 @@ def generate_assessment_pdf(
     if input_snapshot:
         for k, v in input_snapshot.items():
             name, unit = param_labels_units.get(k, (k.upper(), "Standard"))
-            status_str = "<font color=#0F766E><b>Verified</b></font>"
+            status_str = "Self-reported"
             param_rows.append([
                 Paragraph(name, styles["TableCellBold"]),
                 Paragraph(str(v), styles["TableCell"]),
@@ -346,10 +339,10 @@ def generate_assessment_pdf(
             ])
     else:
         param_rows.append([
-            Paragraph("Standard Clinical Profile", styles["TableCellBold"]),
-            Paragraph("Baseline", styles["TableCell"]),
-            Paragraph("N/A", styles["TableCell"]),
-            Paragraph("Default Preset", styles["TableCell"]),
+            Paragraph("No inputs recorded", styles["TableCellBold"]),
+            Paragraph("—", styles["TableCell"]),
+            Paragraph("—", styles["TableCell"]),
+            Paragraph("—", styles["TableCell"]),
         ])
 
     param_table = Table(param_rows, colWidths=[150, 80, 130, 100])
@@ -373,18 +366,15 @@ def generate_assessment_pdf(
         chart = _create_feature_chart(pos, neg)
         elements.append(chart)
     else:
-        elements.append(Paragraph("Feature attribution (TreeSHAP) evaluated across clinical input dimensions.", styles["VNBodyMuted"]))
+        elements.append(Paragraph("Factor explanations are not available for this report.", styles["VNBodyMuted"]))
     elements.append(Spacer(1, 10))
 
     # ── MODEL & DATASET METADATA ──
     elements.append(Paragraph("MODEL GOVERNANCE & DATASET PROVENANCE", styles["VNSectionHeader"]))
-    model_version = assessment_data.get("model_version", "v1.1.0-gradient_boosting")
+    model_version = assessment_data.get("model_version", "not available")
     
     gov_data = [
-        [Paragraph("<b>Model Architecture:</b>", styles["TableCell"]), Paragraph("Scikit-Learn Gradient Boosting Classifier", styles["TableCell"])],
         [Paragraph("<b>Model Artifact Version:</b>", styles["TableCell"]), Paragraph(model_version, styles["TableCellBold"])],
-        [Paragraph("<b>Training Cohort:</b>", styles["TableCell"]), Paragraph("Pune Regional Population Synthetic Dataset (20,000 cohort sample)", styles["TableCell"])],
-        [Paragraph("<b>Dataset Provenance Notice:</b>", styles["TableCell"]), Paragraph("Synthetic academic dataset for research decision-support testing.", styles["TableCell"])],
         [Paragraph("<b>Human Oversight Gate:</b>", styles["TableCell"]), Paragraph("Required" if hr_status == "Pending" else "Automated Baseline Gate", styles["TableCellBold"])],
     ]
     gov_table = Table(gov_data, colWidths=[140, 320])
@@ -427,9 +417,8 @@ def generate_assessment_pdf(
     disclaimer_text = (
         "<b>THIS REPORT IS AN ACADEMIC DECISION-SUPPORT PROTOTYPE AND NOT A CLINICALLY VALIDATED DIAGNOSTIC DEVICE.</b><br/>"
         "1. This report does not diagnose medical conditions, prescribe treatment, or replace qualified physician consultation.<br/>"
-        "2. Risk scores are estimates generated from mathematical machine learning models trained on synthetic research datasets.<br/>"
-        "3. Laboratory reference ranges are not guaranteed accredited clinical lab values.<br/>"
-        "4. In case of severe chest pain, shortness of breath, or emergency symptoms, contact local emergency services immediately (108 / 112 in India)."
+        "2. Screening levels are estimates from statistical models and can be wrong.<br/>"
+        "3. In case of severe chest pain, shortness of breath, or emergency symptoms, contact local emergency services immediately (108 / 112 in India)."
     )
     elements.append(Paragraph(disclaimer_text, styles["VNDisclaimer"]))
 

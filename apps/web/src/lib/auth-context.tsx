@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useMemo, useState, useSyncExternalStore, ReactNode } from "react";
 
 export type UserRole = "patient" | "doctor" | "researcher" | "admin";
 
@@ -66,36 +66,74 @@ const DEMO_USERS: Record<UserRole, UserProfile> = {
   },
 };
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<UserRole>("patient");
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+// TODO(P1): replaced by Supabase Auth. Until then the demo session lives in localStorage
+// and is read with useSyncExternalStore (no setState inside an effect, no hydration mismatch).
+const USER_KEY = "vitalnex_user_profile";
+const ROLE_KEY = "vitalnex_demo_role";
+const SESSION_EVENT = "vitalnex-session-change";
+const LOGGED_OUT = "logged-out";
+const SERVER_SNAPSHOT = "__server__";
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedUserStr = localStorage.getItem("vitalnex_user_profile");
-      const savedRole = localStorage.getItem("vitalnex_demo_role") as UserRole;
-      if (savedUserStr) {
-        try {
-          const parsed = JSON.parse(savedUserStr);
-          setUser(parsed);
-          setRole(parsed.role || savedRole || "patient");
-        } catch {
-          setUser(DEMO_USERS.patient);
-        }
-      } else if (savedRole && DEMO_USERS[savedRole]) {
-        setUser(DEMO_USERS[savedRole]);
-        setRole(savedRole);
-      } else {
-        setUser(DEMO_USERS.patient);
-        setRole("patient");
-      }
-      setIsLoading(false);
+function subscribeToSession(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(SESSION_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(SESSION_EVENT, onChange);
+  };
+}
+
+function readSessionSnapshot(): string {
+  return JSON.stringify([localStorage.getItem(USER_KEY), localStorage.getItem(ROLE_KEY)]);
+}
+
+function writeSession(user: UserProfile | null, role: UserRole | null) {
+  if (user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  } else {
+    localStorage.setItem(USER_KEY, LOGGED_OUT);
+  }
+  if (role) {
+    localStorage.setItem(ROLE_KEY, role);
+  } else {
+    localStorage.removeItem(ROLE_KEY);
+  }
+  window.dispatchEvent(new Event(SESSION_EVENT));
+}
+
+function resolveSession(snapshot: string): { user: UserProfile | null; role: UserRole } {
+  const [savedUserStr, savedRoleStr] = JSON.parse(snapshot) as [string | null, string | null];
+  const savedRole = savedRoleStr as UserRole | null;
+  if (savedUserStr === LOGGED_OUT) {
+    return { user: null, role: savedRole || "patient" };
+  }
+  if (savedUserStr) {
+    try {
+      const parsed = JSON.parse(savedUserStr) as UserProfile;
+      return { user: parsed, role: parsed.role || savedRole || "patient" };
+    } catch {
+      return { user: DEMO_USERS.patient, role: "patient" };
     }
-  }, []);
+  }
+  if (savedRole && DEMO_USERS[savedRole]) {
+    return { user: DEMO_USERS[savedRole], role: savedRole };
+  }
+  return { user: DEMO_USERS.patient, role: "patient" };
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const snapshot = useSyncExternalStore(subscribeToSession, readSessionSnapshot, () => SERVER_SNAPSHOT);
+  const [pending, setPending] = useState(false);
+
+  const isHydrated = snapshot !== SERVER_SNAPSHOT;
+  const { user, role } = useMemo(
+    () => (isHydrated ? resolveSession(snapshot) : { user: null, role: "patient" as UserRole }),
+    [snapshot, isHydrated]
+  );
+  const isLoading = !isHydrated || pending;
 
   const login = async (email: string, targetRole: UserRole = "patient", customName?: string) => {
-    setIsLoading(true);
+    setPending(true);
     try {
       const baseDemo = DEMO_USERS[targetRole];
       const isDemoUser = email.endsWith("@vitalnex.health") && (email.startsWith("rajesh") || email.startsWith("dr.anand") || email.startsWith("admin"));
@@ -112,39 +150,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isDemo: isDemoUser,
       };
 
-      setUser(newUser);
-      setRole(targetRole);
-      localStorage.setItem("vitalnex_demo_role", targetRole);
-      localStorage.setItem("vitalnex_user_profile", JSON.stringify(newUser));
+      writeSession(newUser, targetRole);
     } finally {
-      setIsLoading(false);
+      setPending(false);
     }
   };
 
   const logout = async () => {
-    setIsLoading(true);
-    try {
-      setUser(null);
-      localStorage.removeItem("vitalnex_demo_role");
-      localStorage.removeItem("vitalnex_user_profile");
-    } finally {
-      setIsLoading(false);
-    }
+    writeSession(null, null);
   };
 
   const switchRole = (newRole: UserRole) => {
-    setRole(newRole);
-    const selected = DEMO_USERS[newRole];
-    setUser(selected);
-    localStorage.setItem("vitalnex_demo_role", newRole);
-    localStorage.setItem("vitalnex_user_profile", JSON.stringify(selected));
+    writeSession(DEMO_USERS[newRole], newRole);
   };
 
   const updateProfile = (updates: Partial<UserProfile>) => {
     if (!user) return;
-    const updated = { ...user, ...updates };
-    setUser(updated);
-    localStorage.setItem("vitalnex_user_profile", JSON.stringify(updated));
+    writeSession({ ...user, ...updates }, role);
   };
 
   return (

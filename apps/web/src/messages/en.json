@@ -52,39 +52,7 @@
   },
   "risk": {
     "title": "Clinical Risk Screening",
-    "subtitle": "Transparent cardiometabolic screening model with confidence metrics and explainability.",
-    "statusReady": "Prediction engine ready",
-    "statusRunning": "Computing transparent attribution...",
-    "statusBaseline": "Demo Baseline Model Active",
-    "modelFeaturesTitle": "Model Features (Validated)",
-    "contextFeaturesTitle": "Context & Lifestyle (Non-Model Inputs)",
-    "btnRunAssessment": "Generate Risk Assessment",
-    "btnReset": "Reset Parameters",
-    "riskScore": "Screening Risk Index",
-    "confidenceInterval": "Confidence Interval (95%)",
-    "calibration": "Calibration Status",
-    "humanReviewNotice": "Clinical review indicator: Routine automated screening.",
-    "humanReviewRequired": "Clinical review recommended by a licensed physician.",
-    "whatIfSimulator": "What-If Lifestyle Sensitivity Simulator",
-    "whatIfNotice": "Test how lifestyle and vital adjustments influence your risk index.",
-    "explainabilityTitle": "Feature Contribution Analysis (SHAP)",
-    "explainabilityDesc": "Transparent breakdown of variables influencing this assessment."
-  },
-  "trust": {
-    "title": "AI Trust Passport",
-    "subtitle": "Understand how the AI reached and qualified this assessment.",
-    "dimensionPrediction": "Prediction & Target",
-    "dimensionConfidence": "Confidence & Calibration",
-    "dimensionQuality": "Data Quality & Completeness",
-    "dimensionExplainability": "Local Attribution (SHAP)",
-    "dimensionFairness": "Demographic Parity & Fairness",
-    "dimensionUncertainty": "Uncertainty & Stability",
-    "dimensionSafety": "Physiological Safety Bounds",
-    "dimensionHumanReview": "Clinician-in-the-Loop",
-    "dimensionModelVersion": "Model Version & Artifact",
-    "dimensionTimestamp": "Evaluation Timestamp",
-    "dimensionLimitations": "Operational Limitations",
-    "limitationsText": "Trained on academic synthetic distributions. Requires licensed medical evaluation before clinical decisions."
+    "subtitle": "Screening for diabetes, heart disease and stroke. This is not a diagnosis."
   },
   "care": {
     "title": "Care Connect",
@@ -98,7 +66,7 @@
     "allLanguages": "All Languages",
     "btnBook": "Schedule Consultation",
     "demoDoctorNotice": "Demo Clinician Record (Synthetic Provider)",
-    "verifiedNotice": "Verified Specialist Profile",
+    "verifiedNotice": "Demo clinician profile (not a real doctor)",
     "experience": "years clinical experience",
     "rating": "Patient Satisfaction",
     "distance": "away"
@@ -160,5 +128,19 @@
     "active": "Active",
     "required": "Required",
     "optional": "Optional"
+  },
+  "status": {
+    "notInMvpTitle": "Not in MVP",
+    "notInMvpBody": "This feature is under development and is not part of the current version of VITALNEX.",
+    "assessmentUnavailableTitle": "Screening is being rebuilt",
+    "assessmentUnavailableBody": "VITALNEX is being rebuilt on real survey data. The risk screening will return once the new models are trained and reviewed. Until then no scores are shown. If you have symptoms such as chest pain, call 108 / 112.",
+    "noAssessmentTitle": "No assessment yet",
+    "noAssessmentBody": "Your screening results will appear here once the screening is available and you have completed it.",
+    "trustUnavailableTitle": "Trust Passport not available yet",
+    "trustUnavailableBody": "The Trust Passport will be generated from the real model cards once the new models are trained. No metrics are shown until then.",
+    "noDataTitle": "No data yet",
+    "noDataBody": "Nothing has been recorded yet. Real figures will appear here once they exist.",
+    "profileRebuildTitle": "Health profile is being rebuilt",
+    "profileRebuildBody": "The old profile asked for lab and test values that most people do not know, and filled in default values when you left them blank. It is being replaced by a short set of questions you can answer yourself."
   }
 }

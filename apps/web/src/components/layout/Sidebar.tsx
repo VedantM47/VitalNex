@@ -7,17 +7,13 @@ import {
   LayoutDashboard,
   User,
   Activity,
-  Sparkles,
   ShieldCheck,
   Stethoscope,
   Bot,
   Calendar,
-  Mic,
   Clock,
   FileText,
   Settings,
-  Cpu,
-  Database,
   Lock,
   ChevronRight,
 } from "lucide-react";
@@ -35,7 +31,6 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
     { label: t("nav.overview"), href: "/dashboard", icon: LayoutDashboard },
     { label: t("nav.myHealth"), href: "/health-profile", icon: User },
     { label: t("nav.riskAssessment"), href: "/risk-assessment", icon: Activity },
-    { label: t("nav.healthInsights"), href: "/health-insights", icon: Sparkles },
     { label: t("nav.aiTrust"), href: "/ai-trust", icon: ShieldCheck },
     { label: t("nav.careConnect"), href: "/care-connect", icon: Stethoscope },
     { label: t("nav.aiAssistant"), href: "/ai-assistant", icon: Bot },
@@ -43,7 +38,6 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
 
   const secondaryNav = [
     { label: t("nav.appointments"), href: "/appointments", icon: Calendar },
-    { label: t("nav.voice"), href: "/voice", icon: Mic },
     { label: t("nav.history"), href: "/history", icon: Clock },
     { label: t("nav.reports"), href: "/reports", icon: FileText },
     { label: t("nav.settings"), href: "/settings", icon: Settings },
@@ -57,8 +51,6 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
 
   const researcherNav = [
     { label: "Research Overview", href: "/admin/dashboard", icon: LayoutDashboard },
-    { label: "Model Laboratory", href: "/admin/model-lab", icon: Cpu },
-    { label: "Synthetic Datasets", href: "/admin/datasets", icon: Database },
     { label: "Governance & Audit", href: "/admin/governance", icon: Lock },
   ];
 

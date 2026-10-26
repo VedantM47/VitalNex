@@ -10,37 +10,31 @@ export function Footer() {
           <div className="space-y-3 md:col-span-1">
             <BrandLogo size="md" />
             <p className="text-xs text-[#64748B] leading-relaxed">
-              Advancing responsible healthcare intelligence, clinical decision support, and connected care.
+              A screening and care-navigation aid. MVP in progress; demo accounts only.
             </p>
           </div>
 
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold text-[#0B1F33] uppercase tracking-wider">Clinical AI Suite</h4>
             <ul className="space-y-1.5 text-xs text-[#475569]">
-              <li><Link href="/risk-assessment" className="hover:text-[#0E7490]">Cardiometabolic Risk</Link></li>
+              <li><Link href="/risk-assessment" className="hover:text-[#0E7490]">Risk Screening</Link></li>
               <li><Link href="/ai-trust" className="hover:text-[#0E7490]">AI Trust Passport</Link></li>
-              <li><Link href="/health-profile" className="hover:text-[#0E7490]">Personal Health Vitals</Link></li>
-              <li><Link href="/care-connect" className="hover:text-[#0E7490]">Pune Regional Care Connect</Link></li>
+              <li><Link href="/health-profile" className="hover:text-[#0E7490]">Health Profile</Link></li>
+              <li><Link href="/care-connect" className="hover:text-[#0E7490]">Care Connect (demo clinicians)</Link></li>
             </ul>
           </div>
 
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold text-[#0B1F33] uppercase tracking-wider">Research & Governance</h4>
             <ul className="space-y-1.5 text-xs text-[#475569]">
-              <li><Link href="/admin/model-lab" className="hover:text-[#0E7490]">Model Laboratory</Link></li>
-              <li><Link href="/admin/datasets" className="hover:text-[#0E7490]">Pune Research Dataset (20k)</Link></li>
-              <li><Link href="/admin/governance" className="hover:text-[#0E7490]">Fairness & Audit Trail</Link></li>
-              <li><Link href="/accessibility" className="hover:text-[#0E7490]">Accessibility Statement (WCAG 2.2)</Link></li>
+              <li><Link href="/admin/governance" className="hover:text-[#0E7490]">Governance & Audit</Link></li>
             </ul>
           </div>
 
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold text-[#0B1F33] uppercase tracking-wider">Legal & Compliance</h4>
             <ul className="space-y-1.5 text-xs text-[#475569]">
-              <li><Link href="/privacy" className="hover:text-[#0E7490]">Privacy Policy & RLS</Link></li>
-              <li><Link href="/terms" className="hover:text-[#0E7490]">Terms of Research Prototype</Link></li>
-              <li><Link href="/how-it-works" className="hover:text-[#0E7490]">How It Works</Link></li>
-              <li><Link href="/about" className="hover:text-[#0E7490]">About the Project</Link></li>
+              <li><Link href="/settings" className="hover:text-[#0E7490]">Settings &amp; privacy</Link></li>
             </ul>
           </div>
         </div>

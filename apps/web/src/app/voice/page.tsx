@@ -39,7 +39,11 @@ export default function VoiceAccessibilityPage() {
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    // Read browser speech support from a callback, not synchronously in the effect body
+    // (react-hooks/set-state-in-effect).
+    let cancelled = false;
+    const detectSpeechSupport = () => {
+      if (cancelled || typeof window === "undefined") return;
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (!SpeechRecognition) {
         setSpeechSupported(false);
@@ -64,7 +68,11 @@ export default function VoiceAccessibilityPage() {
       if ("speechSynthesis" in window) {
         window.speechSynthesis.onvoiceschanged = checkVoices;
       }
-    }
+    };
+    Promise.resolve().then(detectSpeechSupport);
+    return () => {
+      cancelled = true;
+    };
   }, [language]);
 
   const startListening = () => {

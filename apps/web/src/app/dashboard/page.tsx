@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [latestAssessment, setLatestAssessment] = useState<any>(null);
   const [appointments, setAppointments] = useState<any[]>([]);
-  const [profileCompleteness, setProfileCompleteness] = useState<number>(85);
+  const [profileCompleteness, setProfileCompleteness] = useState<number | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -56,7 +56,7 @@ export default function DashboardPage() {
         // Fetch Health Profile for completeness calculation
         const hp = await api.getHealthProfile(userId);
         if (active && hp) {
-          setProfileCompleteness(hp.completeness_score || 90);
+          setProfileCompleteness(typeof hp.completeness_score === "number" ? hp.completeness_score : null);
         }
       } catch (err) {
         console.warn("Dashboard data fetch warning:", err);
@@ -86,7 +86,7 @@ export default function DashboardPage() {
               {user?.isDemo && <DemoBadge label="Demo Environment" />}
             </div>
             <p className="text-xs sm:text-sm text-[#475569]">
-              Personalized cardiometabolic risk overview and care management.
+              Your screening overview and care.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -111,8 +111,8 @@ export default function DashboardPage() {
           {/* Card 2: Profile Completeness */}
           <StatCard
             label="Health Profile Completeness"
-            value={`${profileCompleteness}%`}
-            subtext="Clinical model parameters validated"
+            value={profileCompleteness !== null ? `${profileCompleteness}%` : "No profile yet"}
+            subtext="From your saved health profile"
             icon={<ShieldCheck className="w-5 h-5 text-[#0F766E]" />}
           />
 
@@ -131,7 +131,7 @@ export default function DashboardPage() {
             <Card className="p-6 sm:p-8 space-y-6">
               <CardHeader
                 title="Latest Risk Assessment Summary"
-                subtitle="Calibrated cardiometabolic screening model evaluation."
+                subtitle="Your most recent screening."
                 badge={
                   latestAssessment ? (
                     <RiskBadge band={latestAssessment.risk_band} />
@@ -150,25 +150,17 @@ export default function DashboardPage() {
 
               {latestAssessment ? (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5 bg-[#F8FAFC] rounded-2xl border border-[#D8E2EA]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-[#F8FAFC] rounded-2xl border border-[#D8E2EA]">
                     <div>
                       <p className="text-xs text-[#64748B]">Calculated Risk Index</p>
                       <p className="text-3xl font-extrabold text-[#0B1F33] mt-1">{latestAssessment.risk_score}%</p>
                       <p className="text-[11px] text-[#0F766E] font-semibold mt-0.5">{latestAssessment.risk_band} Risk Stratum</p>
                     </div>
                     <div>
-                      <p className="text-xs text-[#64748B]">95% Confidence Interval</p>
-                      <p className="text-lg font-bold text-[#0B1F33] mt-1">
-                        [{latestAssessment.confidence_interval?.[0]}% - {latestAssessment.confidence_interval?.[1]}%]
-                      </p>
-                      <p className="text-[11px] text-[#64748B] mt-0.5">Platt Isotonic Calibrated</p>
-                    </div>
-                    <div>
                       <p className="text-xs text-[#64748B]">Clinical Review Gate</p>
                       <p className="text-sm font-bold text-[#0F766E] mt-2">
                         {latestAssessment.human_review_status === "Pending" ? "Physician Review Advised" : "Automated Gate"}
                       </p>
-                      <p className="text-[11px] text-[#64748B] mt-0.5">Audited in AI Trust Passport</p>
                     </div>
                   </div>
 
@@ -198,9 +190,9 @@ export default function DashboardPage() {
                 <div className="p-8 text-center space-y-4 bg-[#F8FAFC] rounded-2xl border border-[#D8E2EA]">
                   <Activity className="w-10 h-10 text-[#94A3B8] mx-auto" />
                   <div>
-                    <h3 className="font-bold text-base text-[#0B1F33]">No Cardiometabolic Assessment Completed</h3>
+                    <h3 className="font-bold text-base text-[#0B1F33]">{t("status.noAssessmentTitle")}</h3>
                     <p className="text-xs text-[#64748B] max-w-md mx-auto mt-1">
-                      Enter your physiological parameters to run the calibrated ML screening model and receive personalized risk guidance.
+                      {t("status.noAssessmentBody")}
                     </p>
                   </div>
                   <Link href="/risk-assessment">
@@ -220,7 +212,7 @@ export default function DashboardPage() {
                     <Activity className="w-5 h-5" />
                   </div>
                   <h4 className="font-bold text-xs text-[#0B1F33]">Start Assessment</h4>
-                  <p className="text-[11px] text-[#64748B]">Calculate risk index</p>
+                  <p className="text-[11px] text-[#64748B]">Screening</p>
                 </Card>
               </Link>
 
@@ -240,7 +232,7 @@ export default function DashboardPage() {
                     <Stethoscope className="w-5 h-5" />
                   </div>
                   <h4 className="font-bold text-xs text-[#0B1F33]">Find Clinician</h4>
-                  <p className="text-[11px] text-[#64748B]">Pune specialists</p>
+                  <p className="text-[11px] text-[#64748B]">Demo clinicians</p>
                 </Card>
               </Link>
 
@@ -275,9 +267,9 @@ export default function DashboardPage() {
                   <p className="text-[#0F766E] font-semibold">{nextAppointment.location}</p>
                 </div>
 
-                <Link href={`/consultation/${nextAppointment.id}`} className="block">
+                <Link href="/appointments" className="block">
                   <Button variant="primary" size="md" className="w-full">
-                    Join Video Consultation Room
+                    {t("nav.appointments")}
                   </Button>
                 </Link>
               </Card>
@@ -288,11 +280,11 @@ export default function DashboardPage() {
                   <h3 className="font-bold text-sm">Care Connect</h3>
                 </div>
                 <p className="text-xs text-[#CBD5E1] leading-relaxed">
-                  Schedule a consultation with verified cardiologists and preventive health specialists in Kothrud, Baner, and Shivajinagar.
+                  Browse demo clinicians and book a demo appointment. All doctors in the MVP are synthetic.
                 </p>
                 <Link href="/care-connect" className="block pt-2">
                   <Button variant="teal" size="sm" className="w-full">
-                    Find Pune Specialists
+                    Find a demo clinician
                   </Button>
                 </Link>
               </Card>
@@ -305,7 +297,7 @@ export default function DashboardPage() {
                 <h3 className="font-bold text-sm text-[#0B1F33]">AI Trust &amp; Governance</h3>
               </div>
               <p className="text-xs text-[#475569] leading-relaxed">
-                Inspect 11 transparent governance dimensions including demographic parity, Brier calibration, and Platt scaling metrics.
+                How VITALNEX works and where it can be wrong. Metrics will appear once the new models are trained.
               </p>
               <Link href="/ai-trust" className="block">
                 <Button variant="outline" size="sm" className="w-full">

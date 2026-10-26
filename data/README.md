@@ -1,26 +1,27 @@
-# VITALNEX Data Directory Architecture
-
-This directory houses raw research datasets, processed artifacts, and deterministic demo samples for VITALNEX.
-
-## Directory Structure
+# VITALNEX data directory
 
 ```text
-/data
-  /raw/                  # Raw input datasets (e.g., Pune_Clinical_Risk_Synthetic_Dataset_20000.csv)
-  /processed/            # Cleaned, standardized, or engineered features (used in training/validation)
-  /demo/                 # Deterministic, non-PHI sample records for offline UI and rapid demo mode
+data/
+  raw/         Real training data downloaded in Phase P2 (CDC BRFSS, UCI id 891). Git-ignored.
+  processed/   Prepared data written by ml/data/prepare.py (Phase P2). Git-ignored.
+  synthetic/   Pune Clinical Risk Synthetic Dataset (team-made). Committed.
 ```
 
-## Dataset Specifications
+## `synthetic/` — demo and stress-test use only
 
-- **Current Reference**: `Pune_Clinical_Risk_Synthetic_Dataset_20000.csv`
-- **Rows**: 20,000 synthetic patient records
-- **Columns**: 26 features (demographic, lifestyle, clinical, UCI-aligned cardiac metrics, and target labels)
-- **Provenance**: Synthetic academic research dataset for AI fairness, safety, and clinical decision support evaluation. Contains **NO real patient data**.
-- **Data Dictionary**: See `data/raw/Pune_Clinical_Risk_Data_Dictionary.csv` and `data/raw/Pune_Clinical_Risk_Dataset_Provenance.txt`.
+`synthetic/Pune_Clinical_Risk_Synthetic_Dataset_20000.csv` (20,000 rows), its data dictionary and
+provenance note are **synthetic**. They contain no real patient data.
 
-## Data Governance & Safety Rule
+Per decision D-4 (`docs/DECISIONS.md`) this dataset is used **only** for:
 
-1. Never place unanonymized or real protected health information (PHI) in this directory.
-2. In production, datasets are registered via the `DatasetService` and `DatasetVersion` schemas.
-3. Frontends must **never** load raw CSV files directly from the browser; all data access goes through the authenticated FastAPI / Supabase data interfaces.
+- demo patient profiles (age, sex, locality), clearly labelled "synthetic demo patient";
+- stress tests (missing, out-of-range and contradictory inputs).
+
+It is **never** used to train or evaluate the production models, and no metric computed on it is
+reported anywhere. Its labels come from a formula, so metrics on it describe that formula, not people.
+
+## Rules
+
+1. Never place real or identifiable health data in this directory.
+2. Never commit `raw/` or `processed/`.
+3. Browsers never load these files directly; all access goes through the API.

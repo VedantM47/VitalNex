@@ -47,11 +47,11 @@ export default function OnboardingPage() {
     hypertension: "1",
     diabetes: "0",
     familyHistory: "1",
-    restingBp: 135,
-    cholesterol: 215,
+    restingBp: "",
+    cholesterol: "",
     locality: "Urban_Pune",
     preferredLanguage: "en",
-    consentHealthData: true,
+    consentHealthData: false,
   });
 
   const handleChange = (field: string, value: any) => {
@@ -128,7 +128,7 @@ export default function OnboardingPage() {
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold text-[#0B1F33]">Basic Demographics</h2>
                   <p className="text-xs text-[#64748B] mt-0.5">
-                    Essential demographics used for calibrated baseline clinical distributions.
+                    Basic details about you.
                   </p>
                 </div>
                 <div className="space-y-4">
@@ -395,7 +395,7 @@ export default function OnboardingPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold text-[#0B1F33]">Data Completeness:</span>
-                    <span className="text-[#0F766E] font-bold">100% Calibrated</span>
+                    <span className="text-[#475569]">Not checked yet</span>
                   </div>
                 </div>
               </div>

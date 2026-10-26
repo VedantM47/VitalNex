@@ -1,17 +1,16 @@
 """
-AI Assistant and Voice Endpoints.
+AI Assistant and (frozen) Voice Endpoints.
 """
 
 from fastapi import APIRouter
+from apps.api.core.frozen import not_in_mvp
 from apps.api.schemas import (
     AssistantMessageRequest,
     AssistantMessageResponse,
     VoiceTranscribeRequest,
-    VoiceTranscribeResponse,
     VoiceSynthesizeRequest,
-    VoiceSynthesizeResponse,
 )
-from apps.api.services import agent_service, voice_service
+from apps.api.services import agent_service
 
 router = APIRouter(tags=["AI Assistant & Voice"])
 
@@ -21,11 +20,12 @@ async def chat_message(request: AssistantMessageRequest):
     return await agent_service.handle_message(request)
 
 
-@router.post("/voice/transcribe", response_model=VoiceTranscribeResponse)
+# Voice is frozen for the MVP (docs/SPEC.md §1.2).
+@router.post("/voice/transcribe")
 async def transcribe_voice(request: VoiceTranscribeRequest):
-    return await voice_service.transcribe_audio(request)
+    raise not_in_mvp()
 
 
-@router.post("/voice/synthesize", response_model=VoiceSynthesizeResponse)
+@router.post("/voice/synthesize")
 async def synthesize_voice(request: VoiceSynthesizeRequest):
-    return await voice_service.synthesize_speech(request)
+    raise not_in_mvp()

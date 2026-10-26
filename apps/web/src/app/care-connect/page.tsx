@@ -182,9 +182,9 @@ export default function CareConnectPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredDoctors.map((doc) => {
             const primaryLocation = doc.locations?.[0] || {
-              facility_name: "Pune Diagnostic Center",
-              locality: "Pune",
-              distance_estimate_km: 2.5,
+              facility_name: "Location not listed",
+              locality: "",
+              distance_estimate_km: null,
             };
 
             return (
@@ -216,7 +216,7 @@ export default function CareConnectPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 text-xs border-t border-[#F1F5F9]">
                     <div className="flex items-center gap-1.5 text-[#475569]">
                       <MapPin className="w-3.5 h-3.5 text-[#0E7490] shrink-0" />
-                      <span className="truncate">{primaryLocation.locality} ({primaryLocation.distance_estimate_km} km)</span>
+                      <span className="truncate">{primaryLocation.locality}{primaryLocation.distance_estimate_km != null ? ` (${primaryLocation.distance_estimate_km} km)` : ""}</span>
                     </div>
 
                     <div className="flex items-center gap-1.5 text-[#475569]">

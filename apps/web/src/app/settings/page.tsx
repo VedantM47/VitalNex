@@ -6,7 +6,6 @@ import {
   Globe,
   Shield,
   Bell,
-  Cpu,
   User,
   CheckCircle2,
   Lock,
@@ -27,13 +26,12 @@ export default function SettingsPage() {
 
   const [saved, setSaved] = useState(false);
   const [formData, setFormData] = useState({
-    name: user?.fullName || "Rajesh Sharma",
-    email: user?.email || "rajesh.sharma@vitalnex.health",
+    name: user?.fullName || "",
+    email: user?.email || "",
     language: language,
     notificationsEnabled: true,
-    researchConsent: true,
+    researchConsent: false,
     dataRetentionDays: "365",
-    preferredModel: "gradient_boosting",
   });
 
   const handleSave = (e: React.FormEvent) => {
@@ -56,7 +54,7 @@ export default function SettingsPage() {
               <DemoBadge label="Client Configuration" />
             </div>
             <p className="text-xs sm:text-sm text-[#475569]">
-              Manage your language, privacy consents, explainability preferences, and clinical decision support settings.
+              Manage your language and privacy settings.
             </p>
           </div>
         </div>
@@ -118,33 +116,6 @@ export default function SettingsPage() {
             </div>
           </Card>
 
-          {/* AI Explainability & Model Preferences */}
-          <Card className="p-6 sm:p-8 space-y-6">
-            <CardHeader
-              title="Clinical Model & Explainability Engine"
-              subtitle="Configure which underlying predictive model architecture is used for your risk assessments"
-              badge={<Cpu className="w-5 h-5 text-[#0E7490]" />}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Select
-                label="Default Risk Model"
-                value={formData.preferredModel}
-                onChange={(e) => setFormData({ ...formData, preferredModel: e.target.value })}
-                options={[
-                  { value: "gradient_boosting", label: "Gradient Boosting (Trained ML - Recommended)" },
-                  { value: "random_forest", label: "Random Forest Ensemble" },
-                  { value: "logistic_regression", label: "Calibrated Logistic Regression" },
-                ]}
-              />
-
-              <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-1 text-xs text-[#475569]">
-                <span className="font-semibold text-[#0B1F33]">Responsible AI Guarantee:</span>
-                <p>All models adhere to Platt Isotonic calibration, demographic parity checks (≥80%), and local TreeSHAP attribution.</p>
-              </div>
-            </div>
-          </Card>
-
           {/* Privacy & Research Governance Consent */}
           <Card className="p-6 sm:p-8 space-y-6">
             <CardHeader
@@ -164,7 +135,7 @@ export default function SettingsPage() {
                 <div>
                   <span className="font-semibold text-[#0B1F33]">Anonymized Research Participation</span>
                   <p className="text-[#64748B]">
-                    Allow de-identified risk screening values to contribute to aggregate Pune regional epidemiological research benchmarks.
+                    Allow de-identified screening values to be included in aggregate statistics. (Purpose-specific consent is rebuilt in a later phase.)
                   </p>
                 </div>
               </label>
