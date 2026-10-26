@@ -15,7 +15,7 @@ diabetes/prediabetes, heart disease or stroke, explains the main factors, and su
 of care to seek and how soon. The full specification is in `docs/SPEC.md`; decisions are in
 `docs/DECISIONS.md`.
 
-## What works right now (after Phase P0)
+## What works right now (after Phase P1)
 
 | Area | State |
 |---|---|
@@ -24,9 +24,9 @@ of care to seek and how soon. The full specification is in `docs/SPEC.md`; decis
 | Health profile | **Being rebuilt** (P5). The old form pre-filled clinical values. |
 | AI Trust Passport | **Not available** until it can be generated from real model cards (P7). |
 | Assistant | Emergency keyword check (shows 108 / 112) and a few fixed, pre-written replies. No external AI service is called. Rebuilt in P8. |
-| Care Connect / appointments | Demo clinicians and demo bookings, in memory only (moves to Supabase in P1). |
-| Clinician and admin pages | Show real counts from the API, which are zero until assessments exist. |
-| Login | Demo-only, stored in the browser. Real Supabase Auth comes in P1. |
+| Care Connect / appointments | Three synthetic demo doctors with real bookable slots in Supabase (book the earliest slot, cancel). Full slot picker and filters in P9. |
+| Clinician and admin pages | Clinicians see a read-only review queue limited to consenting patients (RLS); Agree / Override in P6. Admin sees aggregate counts only. |
+| Login | Supabase Auth for patient / clinician / admin dummy accounts. The role comes from the `profiles` table, never from the login page. Patient self-signup only. Every page and API endpoint is role-protected; Postgres Row Level Security limits every row. Sensitive actions are written to `audit_logs`. |
 | Voice, video consultation, model lab, datasets, health insights | Frozen for the MVP. These pages show "Not in MVP". |
 
 ## Repository layout
@@ -36,7 +36,7 @@ apps/api/        FastAPI backend (routers/v1 → services → schemas, core/conf
 apps/web/        Next.js 16 app (src/app pages, components, messages/{en,hi,mr}.json)
 data/synthetic/  Pune Clinical Risk Synthetic Dataset — demo profiles and stress tests only (D-4)
 ml/              ml/requirements.txt; training code arrives in P2/P3
-supabase/        Database migration and old demo seed
+supabase/        migrations/, seed/seed_demo.py (demo accounts), tests/rls.sql (RLS proof)
 tests/           pytest suite for the API
 docs/            SPEC, DECISIONS, PROMPTS, AUDIT, i18n review list
 ```
@@ -49,14 +49,19 @@ Requirements: Python 3.11+, Node.js 20+.
 # 1. Environment
 cp .env.example .env          # fill in values; never commit .env
 
-# 2. Backend
+# 2. Database (Supabase): apply supabase/migrations/*.sql in order (SQL editor or psql),
+#    then create the demo accounts (needs SUPABASE_URL, SUPABASE_SECRET_KEY, DEMO_PASSWORD):
+python supabase/seed/seed_demo.py
+#    Prove RLS: run supabase/tests/rls.sql in the SQL editor -> "all RLS checks passed"
+
+# 3. Backend
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r apps/api/requirements.txt
 uvicorn apps.api.main:app --reload --port 8000
 # API docs: http://localhost:8000/docs · health check: http://localhost:8000/health
 
-# 3. Frontend (second terminal)
+# 4. Frontend (second terminal)
 npm --prefix apps/web install
 npm --prefix apps/web run dev
 # App: http://localhost:3000
@@ -64,10 +69,15 @@ npm --prefix apps/web run dev
 # Or run both from the repo root:
 npm install && npm run dev
 
-# 4. Tests
-python -m pytest tests -v
+# 5. Tests
+python -m pytest tests -v       # live Supabase tests run only when .env is configured
 npm --prefix apps/web run lint
 ```
+
+Demo accounts (password = `DEMO_PASSWORD` from your `.env`): `admin@vitalnex.demo`,
+`dr.joshi@vitalnex.demo`, `dr.khan@vitalnex.demo`, `dr.patil@vitalnex.demo`,
+`patient1@vitalnex.demo` … `patient6@vitalnex.demo` (patients 1–4 share with clinicians,
+5–6 do not). All are synthetic.
 
 `ml/requirements.txt` (scikit-learn, LightGBM, PyTorch CPU, SHAP, fairlearn, sentence-transformers …)
 is only needed from Phase P2 onward.

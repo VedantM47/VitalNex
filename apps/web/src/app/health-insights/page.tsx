@@ -42,7 +42,7 @@ interface InsightCardProps {
 export default function HealthInsightsPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const userId = user?.id || "usr-demo-patient-001";
+  const userId = user?.id ?? null;
 
   const [loading, setLoading] = useState(true);
   const [healthProfile, setHealthProfile] = useState<any>(null);
@@ -55,10 +55,10 @@ export default function HealthInsightsPage() {
     const loadInsightsData = async () => {
       setLoading(true);
       try {
-        const hp = await api.getHealthProfile(userId);
+        const hp = await api.getHealthProfile();
         if (active && hp) setHealthProfile(hp);
 
-        const history = await api.getAssessmentHistory(userId);
+        const history = await api.getAssessmentHistory();
         if (active && history) {
           setHistoryCount(history.total_assessments || (history.assessments?.length || 0));
           if (history.assessments && history.assessments.length > 0) {

@@ -16,10 +16,9 @@ from apps.api.schemas import (
     AssistantMessageResponse,
     ActionSuggestion,
 )
-from .base import IAgentService
 
 
-class AgentService(IAgentService):
+class AgentService:
     async def handle_message(self, request: AssistantMessageRequest) -> AssistantMessageResponse:
         msg = request.message.strip()
         msg_lower = msg.lower()

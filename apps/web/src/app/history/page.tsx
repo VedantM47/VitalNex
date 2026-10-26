@@ -18,7 +18,7 @@ import { useAuth } from "../../lib/auth-context";
 export default function HistoryPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const userId = user?.id || "usr-demo-patient-001";
+  const userId = user?.id ?? null;
 
   const [assessments, setAssessments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ export default function HistoryPage() {
 
   const fetchHistory = async () => {
     try {
-      const data = await api.getAssessmentHistory(userId);
+      const data = await api.getAssessmentHistory();
       return { assessments: data?.assessments || [], error: false };
     } catch (err) {
       console.error("Failed to load history:", err);

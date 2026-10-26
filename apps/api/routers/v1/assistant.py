@@ -2,7 +2,8 @@
 AI Assistant and (frozen) Voice Endpoints.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from apps.api.core.auth import CurrentUser, require_role
 from apps.api.core.frozen import not_in_mvp
 from apps.api.schemas import (
     AssistantMessageRequest,
@@ -16,7 +17,9 @@ router = APIRouter(tags=["AI Assistant & Voice"])
 
 
 @router.post("/assistant/message", response_model=AssistantMessageResponse)
-async def chat_message(request: AssistantMessageRequest):
+async def chat_message(
+    request: AssistantMessageRequest, user: CurrentUser = Depends(require_role("patient", "doctor", "admin"))
+):
     return await agent_service.handle_message(request)
 
 

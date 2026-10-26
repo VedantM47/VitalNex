@@ -45,3 +45,32 @@ Non-medical status strings added in P0 (`status.notInMvp*`, `status.noData*`,
 | `apps/api/services/assistant_service.py` — emergency reply (HI, MR) | Safety-critical emergency text (108 / 112). **Highest priority for review.** | pending |
 | `apps/web/src/app/ai-assistant/page.tsx` — offline fallback (HI, MR) | Tells the user to call 108 when the assistant is unreachable. | pending |
 | `apps/web/src/messages/hi.json`, `mr.json` — all other keys | Existing UI translations. Full inventory of medical strings happens in P9. | pending |
+
+---
+
+## Added or changed in Phase P1
+
+### Web UI — `apps/web/src/messages/{en,hi,mr}.json`
+
+| Key | EN | HI | MR | _review |
+|---|---|---|---|---|
+| `auth.demoNotice` | MVP with dummy accounts only. Do not enter real personal health information. | यह केवल डमी खातों वाला MVP है। अपनी असली स्वास्थ्य जानकारी न डालें। | हे फक्त डमी खात्यांसह MVP आहे. तुमची खरी आरोग्य माहिती टाकू नका. | pending |
+| `auth.signupNoHealthData` | No health information is collected when you create an account. | खाता बनाते समय कोई स्वास्थ्य जानकारी नहीं ली जाती। | खाते तयार करताना कोणतीही आरोग्य माहिती घेतली जात नाही. | pending |
+| `reviewQueue.emptyBody` | A result appears here when a consenting patient's screening is High, not confident, flagged for data quality, or an emergency. | परिणाम यहाँ तब आता है जब सहमति देने वाले मरीज़ की स्क्रीनिंग उच्च हो, VITALNEX निश्चित न हो, डेटा-गुणवत्ता की समस्या हो, या आपातकालीन लक्षण हों। | संमती दिलेल्या रुग्णाची स्क्रीनिंग उच्च असल्यास, VITALNEX खात्रीशीर नसल्यास, डेटा-गुणवत्तेची समस्या असल्यास किंवा आपत्कालीन लक्षणे असल्यास निकाल येथे दिसतो. | pending |
+| `reviewQueue.reason.high_band` | High screening level | उच्च स्क्रीनिंग स्तर | उच्च स्क्रीनिंग स्तर | pending |
+| `reviewQueue.reason.abstained` | VITALNEX not confident | VITALNEX निश्चित नहीं है | VITALNEX खात्रीशीर नाही | pending |
+| `reviewQueue.reason.data_quality` | Data-quality flag | डेटा-गुणवत्ता चेतावनी | डेटा-गुणवत्ता इशारा | pending |
+| `reviewQueue.reason.emergency` | Emergency symptoms reported | आपातकालीन लक्षण बताए गए | आपत्कालीन लक्षणे नोंदवली | pending |
+| `reviewQueue.status.overridden` | Overridden | बदला गया | बदलले | pending |
+| `care.noSlots` | This demo doctor has no free slots in the next 14 days. | इस डेमो डॉक्टर के पास अगले 14 दिनों में कोई खाली स्लॉट नहीं है। | या डेमो डॉक्टरकडे पुढील 14 दिवसांत रिकामा स्लॉट नाही. | pending |
+
+### Database seed — `supabase/seed/seed_demo.py` (`doctor_specializations`)
+
+| Code | EN | HI | MR | _review |
+|---|---|---|---|---|
+| `cardiology` | Cardiology | हृदय रोग (कार्डियोलॉजी) | हृदयरोग (कार्डिओलॉजी) | pending |
+| `endocrinology` | Endocrinology (diabetes) | एंडोक्रिनोलॉजी (मधुमेह) | एंडोक्रिनोलॉजी (मधुमेह) | pending |
+| `neurology` | Neurology (stroke) | न्यूरोलॉजी (स्ट्रोक) | न्यूरोलॉजी (स्ट्रोक) | pending |
+
+Other P1 strings (`auth.*` sign-in / sign-up / password texts, `reviewQueue` titles and
+buttons, `care.bookedWith`, `care.bookingFailed`) are UI text only and are not listed.

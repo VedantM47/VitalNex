@@ -1,15 +1,15 @@
 """
 Clinical Risk Assessment Endpoints.
 
-Phase P0: no trained model exists, so assessment and what-if return HTTP 503
+No trained model exists yet, so assessment and what-if return HTTP 503
 (see prediction_service.ModelsUnavailableError). Rebuilt in P4.
 """
 
-from fastapi import APIRouter, HTTPException
-from apps.api.schemas import (
-    AssessmentRequest,
-    AssessmentResponse,
-)
+from fastapi import APIRouter, Depends, HTTPException
+from postgrest import AsyncPostgrestClient
+
+from apps.api.core.auth import CurrentUser, get_user_db, require_role
+from apps.api.schemas import AssessmentRecord, AssessmentRequest, AssessmentResponse
 from apps.api.services import prediction_service
 from apps.api.services.prediction_service import ModelsUnavailableError
 
@@ -17,16 +17,34 @@ router = APIRouter(tags=["Clinical Intelligence & AI Trust"])
 
 
 @router.post("/assessment", response_model=AssessmentResponse)
-async def create_assessment(request: AssessmentRequest):
+async def create_assessment(request: AssessmentRequest, user: CurrentUser = Depends(require_role("patient"))):
     try:
         return await prediction_service.predict_risk(request)
     except ModelsUnavailableError as e:
         raise HTTPException(status_code=503, detail=str(e))
 
 
-@router.get("/assessment/{assessment_id}", response_model=AssessmentResponse)
-async def get_assessment(assessment_id: str):
-    asm = prediction_service.get_assessment(assessment_id)
+@router.get("/assessment/history")
+async def get_assessment_history(
+    user: CurrentUser = Depends(require_role("patient")), db: AsyncPostgrestClient = Depends(get_user_db)
+):
+    """The signed-in patient's assessments, newest first."""
+    assessments = await prediction_service.list_assessments(db, user.id)
+    return {
+        "user_id": user.id,
+        "total_assessments": len(assessments),
+        "assessments": [a.model_dump(mode="json") for a in assessments],
+    }
+
+
+@router.get("/assessment/{assessment_id}", response_model=AssessmentRecord)
+async def get_assessment(
+    assessment_id: str,
+    user: CurrentUser = Depends(require_role("patient", "doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+):
+    # RLS: own assessment, or a consented patient's for a clinician. Anything else is 404.
+    asm = await prediction_service.get_assessment(db, assessment_id)
     if asm:
         return asm
     raise HTTPException(status_code=404, detail=f"Assessment {assessment_id} not found")
@@ -42,14 +60,10 @@ async def get_trust_passport(assessment_id: str):
 
 
 @router.post("/what-if")
-async def what_if_simulation(request: AssessmentRequest):
+async def what_if_simulation(request: AssessmentRequest, user: CurrentUser = Depends(require_role("patient"))):
     """What-if simulator. Rebuilt in P4 (changeable features only, SPEC §4.6)."""
     try:
-        result = await prediction_service.predict_risk(request)
+        await prediction_service.predict_risk(request)
     except ModelsUnavailableError as e:
         raise HTTPException(status_code=503, detail=str(e))
-    return {
-        "simulation_result": result,
-        "disclaimer": "MODEL-BEHAVIOR SIMULATION ONLY. Not a medical advice or guaranteed health outcome prediction.",
-        "simulated_inputs": request.clinical_inputs.model_dump(),
-    }
+    raise HTTPException(status_code=503, detail="What-if is rebuilt in P4.")

@@ -29,7 +29,7 @@ import { api } from "../../lib/api-client";
 export default function DashboardPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const userId = user?.id || "usr-demo-patient-001";
+  const userId = user?.id ?? null;
 
   const [loading, setLoading] = useState(true);
   const [latestAssessment, setLatestAssessment] = useState<any>(null);
@@ -42,19 +42,19 @@ export default function DashboardPage() {
       setLoading(true);
       try {
         // Fetch Assessment History
-        const historyData = await api.getAssessmentHistory(userId);
+        const historyData = await api.getAssessmentHistory();
         if (active && historyData?.assessments && historyData.assessments.length > 0) {
           setLatestAssessment(historyData.assessments[0]);
         }
 
         // Fetch Scheduled Appointments
-        const aptsData = await api.getAppointments(userId, "patient");
+        const aptsData = await api.getAppointments();
         if (active && Array.isArray(aptsData)) {
           setAppointments(aptsData);
         }
 
         // Fetch Health Profile for completeness calculation
-        const hp = await api.getHealthProfile(userId);
+        const hp = await api.getHealthProfile();
         if (active && hp) {
           setProfileCompleteness(typeof hp.completeness_score === "number" ? hp.completeness_score : null);
         }

@@ -1,80 +1,62 @@
 """
-User Profile and Health Profile Endpoints.
+User Profile and Health Profile Endpoints. The user is always the signed-in user.
 """
 
-from fastapi import APIRouter, HTTPException, Query
-from datetime import datetime, timezone
-from typing import Dict
+from fastapi import APIRouter, Depends, HTTPException
+from postgrest import AsyncPostgrestClient
+
+from apps.api.core.auth import CurrentUser, get_current_user, get_user_db, require_role
 from apps.api.schemas import (
     ProfileResponse,
     ProfileUpdate,
     HealthProfileResponse,
     HealthProfileCreate,
 )
-from apps.api.services import health_profile_service
 
 router = APIRouter(tags=["User & Health Profiles"])
 
-# Multi-tenant user profile memory store
-_user_profiles_store: Dict[str, ProfileResponse] = {
-    "usr-demo-patient-001": ProfileResponse(
-        id="usr-demo-patient-001",
-        email="rajesh.sharma@vitalnex.health",
-        full_name="Rajesh Sharma",
-        role="patient",
-        phone_number="+91 98220 12345",
-        preferred_language="en",
-        avatar_url=None,
-        is_demo=True,
-        created_at=datetime.now(timezone.utc),
-        updated_at=datetime.now(timezone.utc),
-    )
-}
-
 
 @router.get("/profile", response_model=ProfileResponse)
-async def get_profile(user_id: str = Query("usr-demo-patient-001")):
-    if user_id in _user_profiles_store:
-        return _user_profiles_store[user_id]
-    
-    # Return dynamic default for non-demo users if not stored yet
-    return ProfileResponse(
-        id=user_id,
-        email=f"{user_id}@vitalnex.health" if "@" not in user_id else user_id,
-        full_name=user_id.split("@")[0].replace(".", " ").title() if "@" in user_id else "Patient User",
-        role="patient",
-        phone_number="+91 90000 00000",
-        preferred_language="en",
-        avatar_url=None,
-        is_demo=user_id.startswith("usr-demo"),
-        created_at=datetime.now(timezone.utc),
-        updated_at=datetime.now(timezone.utc),
-    )
+async def get_profile(user: CurrentUser = Depends(get_current_user), db: AsyncPostgrestClient = Depends(get_user_db)):
+    res = await db.table("profiles").select("*").eq("id", user.id).limit(1).execute()
+    if not res.data:
+        raise HTTPException(status_code=404, detail="Profile not found.")
+    return res.data[0]
 
 
 @router.put("/profile", response_model=ProfileResponse)
-async def update_profile(update: ProfileUpdate, user_id: str = Query("usr-demo-patient-001")):
-    current = await get_profile(user_id)
-    if update.full_name:
-        current.full_name = update.full_name
-    if update.phone_number is not None:
-        current.phone_number = update.phone_number
-    if update.preferred_language:
-        current.preferred_language = update.preferred_language
-    current.updated_at = datetime.now(timezone.utc)
-    _user_profiles_store[user_id] = current
-    return current
+async def update_profile(
+    update: ProfileUpdate,
+    user: CurrentUser = Depends(get_current_user),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+):
+    # ProfileUpdate has no role/email field; the DB trigger also rejects such changes.
+    changes = update.model_dump(exclude_unset=True)
+    if changes:
+        await db.table("profiles").update(changes).eq("id", user.id).execute()
+    return await get_profile(user=user, db=db)
 
 
 @router.get("/health-profile", response_model=HealthProfileResponse)
-async def get_health_profile(user_id: str = Query("usr-demo-patient-001")):
-    profile = await health_profile_service.get_profile(user_id)
-    if not profile:
-        raise HTTPException(status_code=404, detail=f"Health profile for '{user_id}' not found")
-    return profile
+async def get_health_profile(
+    user: CurrentUser = Depends(require_role("patient")), db: AsyncPostgrestClient = Depends(get_user_db)
+):
+    res = await db.table("health_profiles").select("*").eq("user_id", user.id).limit(1).execute()
+    if not res.data:
+        raise HTTPException(status_code=404, detail="No health profile saved yet.")
+    return res.data[0]
 
 
 @router.put("/health-profile", response_model=HealthProfileResponse)
-async def update_health_profile(profile_data: HealthProfileCreate):
-    return await health_profile_service.save_profile(profile_data)
-
+async def update_health_profile(
+    profile_data: HealthProfileCreate,
+    user: CurrentUser = Depends(require_role("patient")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+):
+    row = {"user_id": user.id, "answers": profile_data.model_dump(mode="json", exclude_none=True)}
+    if profile_data.height_cm is not None:
+        row["height_cm"] = profile_data.height_cm
+    if profile_data.weight_kg is not None:
+        row["weight_kg"] = profile_data.weight_kg
+    await db.table("health_profiles").upsert(row, on_conflict="user_id").execute()
+    return await get_health_profile(user=user, db=db)

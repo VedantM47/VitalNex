@@ -58,14 +58,15 @@ def test_doctor_schema_demo_flag():
         full_name="Dr. Test Joshi",
         medical_license_number="TEST-1234",
         specialization="Cardiology",
+        specialization_code="cardiology",
         years_of_experience=10,
         languages_spoken=["English", "Marathi"],
-        consultation_modes=["video"],
-        rating=4.9,
-        review_count=20,
+        consultation_modes=["in_person"],
         is_demo=True,
     )
     assert doc.is_demo is True
+    # Demo doctors have no ratings; nothing is filled in.
+    assert doc.rating is None and doc.review_count is None
     assert "English" in doc.languages_spoken
 
 

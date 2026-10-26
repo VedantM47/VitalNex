@@ -1,33 +1,38 @@
 """
-Care Connect: Doctor Discovery, Appointment Booking, Clinician Patient Reviews, and Telehealth Video Access.
+Care Connect: doctor directory, appointment booking and the clinician review queue.
 """
 
 from typing import List, Optional
-from fastapi import APIRouter, HTTPException, Query, WebSocket
+
+from fastapi import APIRouter, Depends, HTTPException, Query, WebSocket
+from postgrest import AsyncPostgrestClient
+
+from apps.api.core.auth import CurrentUser, get_user_db, require_role
 from apps.api.core.frozen import NOT_IN_MVP_DETAIL, not_in_mvp
 from apps.api.schemas import (
-    DoctorResponse,
-    DoctorFilter,
     AppointmentCreate,
-    AppointmentUpdate,
     AppointmentResponse,
+    AppointmentUpdate,
+    DoctorFilter,
+    DoctorResponse,
+    ReviewQueueItem,
 )
-from apps.api.schemas.review import PatientReviewResponse, PatientReviewUpdate
-from apps.api.services import doctor_service, appointment_service, patient_review_service
+from apps.api.services import appointment_service, doctor_service, review_queue_service
 
 router = APIRouter(tags=["Care Connect & Appointments"])
 
+any_role = require_role("patient", "doctor", "admin")
 
-# ── DOCTOR DIRECTORY ──
+
+# ── DOCTOR DIRECTORY (public: synthetic demo doctors only) ──
 
 @router.get("/doctors", response_model=List[DoctorResponse])
 async def list_doctors(
-    specialization: Optional[str] = Query(None),
+    specialization: Optional[str] = Query(None, description="Specialization code, e.g. cardiology"),
     locality: Optional[str] = Query(None),
     language: Optional[str] = Query(None),
     consultation_mode: Optional[str] = Query(None),
 ):
-    """Search verified demo clinicians across Pune, PCMC, and peri-urban locations."""
     filters = DoctorFilter(
         specialization=specialization,
         locality=locality,
@@ -39,61 +44,56 @@ async def list_doctors(
 
 @router.get("/doctors/{doctor_id}", response_model=DoctorResponse)
 async def get_doctor(doctor_id: str):
-    """Retrieve detailed doctor profile and verified availability schedule."""
     doc = await doctor_service.get_doctor_by_id(doctor_id)
     if not doc:
         raise HTTPException(status_code=404, detail=f"Doctor '{doctor_id}' not found")
     return doc
 
 
-# ── APPOINTMENT LIFECYCLE ──
+# ── APPOINTMENTS ──
 
 @router.get("/appointments", response_model=List[AppointmentResponse])
 async def list_appointments(
-    user_id: str = Query("demo-user"),
-    role: str = Query("patient"),
     status: Optional[str] = Query(None),
-    doctor_id: Optional[str] = Query(None),
+    user: CurrentUser = Depends(require_role("patient", "doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
 ):
-    """List appointments filtered by patient, clinician role, or status."""
-    return await appointment_service.list_appointments(
-        user_id=user_id,
-        role=role,
-        status=status,
-        doctor_id=doctor_id,
-    )
+    """A patient sees their own bookings; a doctor sees bookings with them."""
+    return await appointment_service.list_appointments(user, db, status=status)
 
 
 @router.post("/appointments", response_model=AppointmentResponse)
-async def create_appointment(appointment: AppointmentCreate):
-    """Book a new consultation with double-booking prevention."""
-    return await appointment_service.create_appointment(appointment)
+async def create_appointment(
+    booking: AppointmentCreate,
+    user: CurrentUser = Depends(require_role("patient")),
+):
+    return await appointment_service.create_appointment(user, booking)
 
 
 @router.get("/appointments/{appointment_id}", response_model=AppointmentResponse)
-async def get_appointment(appointment_id: str):
-    """Retrieve a single appointment by ID."""
-    apt = await appointment_service.get_appointment(appointment_id)
+async def get_appointment(
+    appointment_id: str,
+    user: CurrentUser = Depends(require_role("patient", "doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+):
+    apt = await appointment_service.get_appointment(user, db, appointment_id)
     if not apt:
         raise HTTPException(status_code=404, detail=f"Appointment '{appointment_id}' not found")
     return apt
 
 
 @router.patch("/appointments/{appointment_id}", response_model=AppointmentResponse)
-async def update_appointment(appointment_id: str, update: AppointmentUpdate):
-    """Reschedule, cancel, confirm, or complete an appointment."""
-    return await appointment_service.update_appointment(appointment_id, update)
-
-
-@router.delete("/appointments/{appointment_id}")
-async def delete_appointment(appointment_id: str):
-    """Delete or permanently remove an appointment record."""
-    return await appointment_service.delete_appointment(appointment_id)
+async def update_appointment(
+    appointment_id: str,
+    update: AppointmentUpdate,
+    user: CurrentUser = Depends(require_role("patient", "doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+):
+    """Patients can cancel. Doctors can confirm, complete or cancel and add notes."""
+    return await appointment_service.update_appointment(user, db, appointment_id, update)
 
 
 # ── TELEHEALTH VIDEO (frozen for the MVP, docs/SPEC.md §1.2) ──
-# The WebRTC signalling relay and LiveKit token code were removed from the active
-# path; both endpoints answer "Not in MVP" until video consultation is in scope.
 
 @router.websocket("/ws/signaling/{room_name}")
 async def websocket_signaling_endpoint(websocket: WebSocket, room_name: str):
@@ -105,27 +105,31 @@ async def get_video_call_token(appointment_id: str):
     raise not_in_mvp()
 
 
-# ── CLINICIAN PATIENT REVIEWS ──
+# ── CLINICIAN REVIEW QUEUE ──
 
-@router.get("/doctor/reviews", response_model=List[PatientReviewResponse])
-async def list_patient_reviews(
-    clinician_id: Optional[str] = Query("doc-pune-001"),
-    status: Optional[str] = Query(None),
+@router.get("/doctor/reviews", response_model=List[ReviewQueueItem])
+async def list_review_queue(
+    status: Optional[str] = Query(None, pattern="^(pending|agreed|overridden)$"),
+    user: CurrentUser = Depends(require_role("doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
 ):
-    """List patient screening assessments flagged for clinician human oversight."""
-    return await patient_review_service.list_reviews(clinician_id=clinician_id, status=status)
+    """Only patients with an active share_with_clinician consent appear (RLS)."""
+    return await review_queue_service.list_items(db, status=status)
 
 
-@router.get("/doctor/reviews/{assessment_id}", response_model=PatientReviewResponse)
-async def get_patient_review(assessment_id: str):
-    """Retrieve detailed clinical review dossier for a patient assessment."""
-    review = await patient_review_service.get_review(assessment_id)
-    if not review:
-        raise HTTPException(status_code=404, detail=f"Review record for assessment '{assessment_id}' not found")
-    return review
+@router.get("/doctor/reviews/{assessment_id}", response_model=ReviewQueueItem)
+async def get_review_item(
+    assessment_id: str,
+    user: CurrentUser = Depends(require_role("doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+):
+    item = await review_queue_service.get_item(db, assessment_id)
+    if not item:
+        raise HTTPException(status_code=404, detail=f"No review item for assessment '{assessment_id}'")
+    return item
 
 
-@router.patch("/doctor/reviews/{assessment_id}", response_model=PatientReviewResponse)
-async def update_patient_review(assessment_id: str, update: PatientReviewUpdate):
-    """Submit clinician review notes, update review status (in_review, reviewed), and record timestamp."""
-    return await patient_review_service.update_review(assessment_id, update)
+@router.patch("/doctor/reviews/{assessment_id}")
+async def update_review_item(assessment_id: str, user: CurrentUser = Depends(require_role("doctor"))):
+    # TODO(P6): Agree / Override with a required reason code (writes clinician_overrides).
+    raise HTTPException(status_code=503, detail="Clinician review actions are not available yet (P6).")

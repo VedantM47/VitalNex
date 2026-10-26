@@ -49,8 +49,8 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
     { label: "Doctor Appointments", href: "/doctor/appointments", icon: Calendar },
   ];
 
-  const researcherNav = [
-    { label: "Research Overview", href: "/admin/dashboard", icon: LayoutDashboard },
+  const adminNav = [
+    { label: "Admin Overview", href: "/admin/dashboard", icon: LayoutDashboard },
     { label: "Governance & Audit", href: "/admin/governance", icon: Lock },
   ];
 
@@ -86,6 +86,8 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
           <DemoBadge label="Demo Environment" />
         </div>
 
+        {role === "patient" && (
+        <>
         {/* Primary Patient Section */}
         <div className="space-y-1">
           <p className="px-3 text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
@@ -101,33 +103,41 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
           </p>
           {secondaryNav.map(renderNavLink)}
         </div>
+        </>
+        )}
 
-        {/* Clinician Portal Link */}
-        <div className="space-y-1 pt-2 border-t border-[#F1F5F9]">
+        {/* Clinician Portal (nav shows only the signed-in role's area; access is enforced server-side) */}
+        {role === "doctor" && (
+        <div className="space-y-1">
           <p className="px-3 text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
             Clinician Portal
           </p>
           {doctorNav.map(renderNavLink)}
+          {renderNavLink({ label: t("nav.settings"), href: "/settings", icon: Settings })}
         </div>
+        )}
 
-        {/* Research / Admin Portal */}
-        <div className="space-y-1 pt-2 border-t border-[#F1F5F9]">
+        {/* Admin / Governance Portal */}
+        {role === "admin" && (
+        <div className="space-y-1">
           <p className="px-3 text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
-            Researcher & Governance
+            Governance
           </p>
-          {researcherNav.map(renderNavLink)}
+          {adminNav.map(renderNavLink)}
+          {renderNavLink({ label: t("nav.settings"), href: "/settings", icon: Settings })}
         </div>
+        )}
       </div>
 
       {/* User Footer Profile & Role Status */}
       <div className="p-4 border-t border-[#D8E2EA] bg-[#F8FAFC]">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-[#0B1F33] text-[#22C1DC] flex items-center justify-center font-bold text-xs shrink-0">
-            {user?.fullName ? user.fullName[0] : "P"}
+            {user?.fullName ? user.fullName[0] : ""}
           </div>
           <div className="truncate flex-1 min-w-0">
-            <p className="text-xs font-semibold text-[#0B1F33] truncate">{user?.fullName || "Demo Patient"}</p>
-            <p className="text-[11px] text-[#64748B] capitalize truncate">{role} role</p>
+            <p className="text-xs font-semibold text-[#0B1F33] truncate">{user?.fullName ?? ""}</p>
+            <p className="text-[11px] text-[#64748B] truncate">{role ? t(`auth.role.${role}`) : ""}</p>
           </div>
         </div>
       </div>

@@ -28,7 +28,7 @@ export default function DoctorAppointmentsPage() {
   const fetchAppointments = async () => {
     setLoading(true);
     try {
-      const data = await api.getAppointments("doc-pune-001", "doctor");
+      const data = await api.getAppointments();
       if (Array.isArray(data)) {
         setAppointments(data);
       }
@@ -41,7 +41,7 @@ export default function DoctorAppointmentsPage() {
 
   useEffect(() => {
     let active = true;
-    api.getAppointments("doc-pune-001", "doctor")
+    api.getAppointments()
       .then((data) => {
         if (active && Array.isArray(data)) {
           setAppointments(data);

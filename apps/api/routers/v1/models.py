@@ -3,7 +3,8 @@ Model Laboratory and Governance Endpoints.
 """
 
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from apps.api.core.auth import CurrentUser, require_role
 from apps.api.schemas import (
     ModelRegistryItem,
     GovernanceSummaryResponse,
@@ -30,6 +31,7 @@ async def get_model(model_id: str):
 
 
 @router.get("/governance/summary", response_model=GovernanceSummaryResponse)
-async def get_governance_summary():
+async def get_governance_summary(user: CurrentUser = Depends(require_role("admin"))):
+    """Aggregates only, no patient identities."""
     return await governance_service.get_summary()
 

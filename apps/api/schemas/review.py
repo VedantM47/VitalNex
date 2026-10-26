@@ -1,33 +1,23 @@
 """
-Clinician Review Pydantic Schemas for VITALNEX Decision Support.
+Clinician review queue schemas (docs/SPEC.md §1.3, §2.1).
+Agree / override actions are built in P6.
 """
 
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel
 
 
-class PatientReviewUpdate(BaseModel):
-    review_status: str = Field(..., pattern="^(pending|in_review|reviewed)$")
-    clinician_id: Optional[str] = "doc-pune-001"
-    review_notes: Optional[str] = None
-    override_risk_band: Optional[str] = Field(None, pattern="^(Low|Moderate|High)$")
-
-
-class PatientReviewResponse(BaseModel):
+class ReviewQueueItem(BaseModel):
     id: str
     assessment_id: str
     patient_id: str
-    patient_name: str
-    evaluated_at: datetime
-    risk_score: float
-    risk_band: str
-    model_version: str
-    human_review_required: bool
-    review_status: str = Field("pending", pattern="^(pending|in_review|reviewed)$")
-    assigned_clinician_id: Optional[str] = None
-    review_notes: Optional[str] = None
-    data_quality_score: Optional[float] = None
-    explainability_summary: str
-    input_snapshot: Dict[str, Any] = {}
+    patient_name: Optional[str] = None
+    reasons: List[str]  # high_band | abstained | data_quality | emergency
+    status: str  # pending | agreed | overridden
+    assigned_to: Optional[str] = None
+    reviewed_by: Optional[str] = None
     reviewed_at: Optional[datetime] = None
+    clinician_note: Optional[str] = None
+    created_at: datetime

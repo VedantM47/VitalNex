@@ -2,19 +2,38 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Mail, ArrowLeft } from "lucide-react";
 import { BrandLogo } from "../../../components/layout/BrandLogo";
 import { Card } from "../../../components/ui/Card";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
+import { createClient } from "../../../lib/supabase/client";
+import { useTranslation } from "../../../lib/i18n";
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const { error: resetError } = await createClient().auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+      if (resetError) throw resetError;
+      // Same message whether or not the account exists (no account enumeration).
+      setSubmitted(true);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      setError(message.includes("not configured") ? t("auth.notConfigured") : message || t("common.error"));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -26,54 +45,45 @@ export default function ForgotPasswordPage() {
       <main className="max-w-md mx-auto w-full my-auto">
         <Card className="p-8 sm:p-10 space-y-6 shadow-md border-[#D8E2EA]">
           <div className="space-y-1.5 text-center">
-            <h1 className="text-2xl font-extrabold text-[#0B1F33]">Reset Password</h1>
-            <p className="text-xs sm:text-sm text-[#475569]">
-              Enter your email address to receive password recovery instructions.
-            </p>
+            <h1 className="text-2xl font-extrabold text-[#0B1F33]">{t("auth.forgotTitle")}</h1>
+            <p className="text-xs sm:text-sm text-[#475569]">{t("auth.forgotSubtitle")}</p>
           </div>
 
           {submitted ? (
-            <div className="p-4 bg-[#F0FDF4] rounded-2xl border border-[#0F766E]/20 text-center space-y-2 text-xs text-[#0F766E]">
-              <CheckCircle2 className="w-8 h-8 mx-auto" />
-              <p className="font-semibold text-sm">Recovery Link Dispatched</p>
-              <p>We have sent a secure password reset link to {email}.</p>
-              <div className="pt-2">
-                <Link href="/auth/login">
-                  <Button variant="outline" size="sm">
-                    Return to Login
-                  </Button>
-                </Link>
-              </div>
-            </div>
+            <p role="status" className="p-4 bg-[#F0FDF4] rounded-2xl border border-[#0F766E]/20 text-center text-xs text-[#0F766E]">
+              {t("auth.resetSent")}
+            </p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
-                label="Email Address"
+                label={t("auth.email")}
                 type="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
                 leftIcon={<Mail className="w-4 h-4" />}
                 required
               />
-
-              <Button type="submit" variant="primary" size="lg" className="w-full">
-                Send Reset Link
+              {error && (
+                <p role="alert" className="text-xs text-[#B42318] bg-[#B42318]/5 border border-[#B42318]/20 rounded-xl p-3">
+                  {error}
+                </p>
+              )}
+              <Button type="submit" variant="primary" size="lg" className="w-full" isLoading={isLoading}>
+                {t("auth.sendResetLink")}
               </Button>
-
-              <div className="text-center pt-2">
-                <Link href="/auth/login" className="text-xs text-[#475569] hover:text-[#0B1F33] inline-flex items-center gap-1.5">
-                  <ArrowLeft className="w-3.5 h-3.5" /> Back to Sign in
-                </Link>
-              </div>
             </form>
           )}
+
+          <div className="text-center pt-2">
+            <Link href="/auth/login" className="text-xs text-[#475569] hover:text-[#0B1F33] inline-flex items-center gap-1.5">
+              <ArrowLeft className="w-3.5 h-3.5" /> {t("auth.backToSignIn")}
+            </Link>
+          </div>
         </Card>
       </main>
 
-      <footer className="text-center text-xs text-[#94A3B8] pt-6">
-        Protected by Supabase Auth with Row-Level Security (RLS).
-      </footer>
+      <footer />
     </div>
   );
 }

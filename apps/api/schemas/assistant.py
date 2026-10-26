@@ -15,8 +15,8 @@ class ChatMessage(BaseModel):
 
 
 class AssistantMessageRequest(BaseModel):
-    user_id: str
-    message: str
+    """The user is the signed-in user. The message text is never stored (SPEC §5)."""
+    message: str = Field(..., min_length=1, max_length=2000)
     language: str = Field("en", pattern="^(en|hi|mr)$")
     context: Optional[Dict[str, Any]] = None
 

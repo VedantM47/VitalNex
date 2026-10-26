@@ -15,7 +15,6 @@ import { api } from "../../../lib/api-client";
 import { useTranslation } from "../../../lib/i18n";
 
 // TODO(P1): clinician id comes from the Supabase session, not a constant.
-const DEMO_CLINICIAN_ID = "doc-pune-001";
 
 export default function DoctorDashboardPage() {
   const { t } = useTranslation();
@@ -25,13 +24,13 @@ export default function DoctorDashboardPage() {
   useEffect(() => {
     let active = true;
     api
-      .getDoctorReviews(DEMO_CLINICIAN_ID)
+      .getDoctorReviews("pending")
       .then((reviews: any[]) => {
-        if (active) setPendingReviews(reviews.filter((r) => r.review_status !== "reviewed").length);
+        if (active) setPendingReviews(reviews.length);
       })
       .catch(() => active && setPendingReviews(null));
     api
-      .getAppointments(DEMO_CLINICIAN_ID, "doctor")
+      .getAppointments()
       .then((apts: any[]) => {
         if (active) setUpcomingAppointments(apts.filter((a) => a.status !== "cancelled" && a.status !== "completed").length);
       })

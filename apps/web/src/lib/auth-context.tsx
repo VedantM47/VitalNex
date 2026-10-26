@@ -1,8 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useMemo, useState, useSyncExternalStore, ReactNode } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState, ReactNode } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { createClient } from "./supabase/client";
+import { isUserRole, type UserRole } from "./roles";
+import { api } from "./api-client";
 
-export type UserRole = "patient" | "doctor" | "researcher" | "admin";
+export type { UserRole } from "./roles";
 
 export interface UserProfile {
   id: string;
@@ -14,177 +18,160 @@ export interface UserProfile {
   isDemo: boolean;
 }
 
+interface SignUpResult {
+  /** False when Supabase requires e-mail confirmation before the first sign-in. */
+  signedIn: boolean;
+}
+
 interface AuthContextType {
   user: UserProfile | null;
-  role: UserRole;
+  /** Role from the `profiles` table. Null while signed out or loading. */
+  role: UserRole | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, role?: UserRole, name?: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<UserProfile>;
+  signUp: (email: string, password: string, fullName: string, language: string) => Promise<SignUpResult>;
   logout: () => Promise<void>;
-  switchRole: (newRole: UserRole) => void;
-  updateProfile: (updates: Partial<UserProfile>) => void;
+  updateProfile: (updates: { fullName?: string; phone?: string; preferredLanguage?: string }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const DEMO_USERS: Record<UserRole, UserProfile> = {
-  patient: {
-    id: "usr-demo-patient-001",
-    email: "rajesh.sharma@vitalnex.health",
-    fullName: "Rajesh Sharma",
-    role: "patient",
-    phone: "+91 98220 12345",
-    preferredLanguage: "en",
-    isDemo: true,
-  },
-  doctor: {
-    id: "d0000001-0000-0000-0000-000000000001",
-    email: "dr.anand.joshi@vitalnex.health",
-    fullName: "Dr. Anand Joshi",
-    role: "doctor",
-    phone: "+91 98220 54321",
-    preferredLanguage: "mr",
-    isDemo: true,
-  },
-  researcher: {
-    id: "usr-demo-researcher-001",
-    email: "research.ai@vitalnex.health",
-    fullName: "Prof. Arvind Patil",
-    role: "researcher",
-    phone: "+91 98220 67890",
-    preferredLanguage: "en",
-    isDemo: true,
-  },
-  admin: {
-    id: "usr-demo-admin-001",
-    email: "admin@vitalnex.health",
-    fullName: "VITALNEX Governance Admin",
-    role: "admin",
-    phone: "+91 98220 99999",
-    preferredLanguage: "en",
-    isDemo: true,
-  },
-};
+interface ProfileRow {
+  id: string;
+  email: string;
+  full_name: string;
+  role: string;
+  phone_number: string | null;
+  preferred_language: string;
+  is_demo: boolean;
+}
 
-// TODO(P1): replaced by Supabase Auth. Until then the demo session lives in localStorage
-// and is read with useSyncExternalStore (no setState inside an effect, no hydration mismatch).
-const USER_KEY = "vitalnex_user_profile";
-const ROLE_KEY = "vitalnex_demo_role";
-const SESSION_EVENT = "vitalnex-session-change";
-const LOGGED_OUT = "logged-out";
-const SERVER_SNAPSHOT = "__server__";
-
-function subscribeToSession(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  window.addEventListener(SESSION_EVENT, onChange);
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(SESSION_EVENT, onChange);
+function toProfile(row: ProfileRow): UserProfile | null {
+  if (!isUserRole(row.role)) return null;
+  return {
+    id: row.id,
+    email: row.email,
+    fullName: row.full_name,
+    role: row.role,
+    phone: row.phone_number ?? undefined,
+    preferredLanguage: row.preferred_language,
+    isDemo: row.is_demo,
   };
 }
 
-function readSessionSnapshot(): string {
-  return JSON.stringify([localStorage.getItem(USER_KEY), localStorage.getItem(ROLE_KEY)]);
-}
-
-function writeSession(user: UserProfile | null, role: UserRole | null) {
-  if (user) {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-  } else {
-    localStorage.setItem(USER_KEY, LOGGED_OUT);
-  }
-  if (role) {
-    localStorage.setItem(ROLE_KEY, role);
-  } else {
-    localStorage.removeItem(ROLE_KEY);
-  }
-  window.dispatchEvent(new Event(SESSION_EVENT));
-}
-
-function resolveSession(snapshot: string): { user: UserProfile | null; role: UserRole } {
-  const [savedUserStr, savedRoleStr] = JSON.parse(snapshot) as [string | null, string | null];
-  const savedRole = savedRoleStr as UserRole | null;
-  if (savedUserStr === LOGGED_OUT) {
-    return { user: null, role: savedRole || "patient" };
-  }
-  if (savedUserStr) {
-    try {
-      const parsed = JSON.parse(savedUserStr) as UserProfile;
-      return { user: parsed, role: parsed.role || savedRole || "patient" };
-    } catch {
-      return { user: DEMO_USERS.patient, role: "patient" };
-    }
-  }
-  if (savedRole && DEMO_USERS[savedRole]) {
-    return { user: DEMO_USERS[savedRole], role: savedRole };
-  }
-  return { user: DEMO_USERS.patient, role: "patient" };
+async function fetchProfile(session: Session | null): Promise<UserProfile | null> {
+  if (!session) return null;
+  // RLS: a user can read only their own profile row.
+  const { data, error } = await createClient()
+    .from("profiles")
+    .select("id, email, full_name, role, phone_number, preferred_language, is_demo")
+    .eq("id", session.user.id)
+    .single<ProfileRow>();
+  if (error || !data) return null;
+  return toProfile(data);
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const snapshot = useSyncExternalStore(subscribeToSession, readSessionSnapshot, () => SERVER_SNAPSHOT);
-  const [pending, setPending] = useState(false);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const isHydrated = snapshot !== SERVER_SNAPSHOT;
-  const { user, role } = useMemo(
-    () => (isHydrated ? resolveSession(snapshot) : { user: null, role: "patient" as UserRole }),
-    [snapshot, isHydrated]
-  );
-  const isLoading = !isHydrated || pending;
-
-  const login = async (email: string, targetRole: UserRole = "patient", customName?: string) => {
-    setPending(true);
+  useEffect(() => {
+    let active = true;
+    let supabase;
     try {
-      const baseDemo = DEMO_USERS[targetRole];
-      const isDemoUser = email.endsWith("@vitalnex.health") && (email.startsWith("rajesh") || email.startsWith("dr.anand") || email.startsWith("admin"));
-      const derivedName = customName || (isDemoUser ? baseDemo.fullName : email.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()));
-      const derivedId = isDemoUser ? baseDemo.id : `usr-${email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "-")}`;
-
-      const newUser: UserProfile = {
-        id: derivedId,
-        email,
-        fullName: derivedName,
-        role: targetRole,
-        phone: baseDemo.phone,
-        preferredLanguage: baseDemo.preferredLanguage,
-        isDemo: isDemoUser,
+      supabase = createClient();
+    } catch (err) {
+      console.error(err);
+      // Supabase not configured: nobody is signed in.
+      queueMicrotask(() => active && setIsLoading(false));
+      return () => {
+        active = false;
       };
-
-      writeSession(newUser, targetRole);
-    } finally {
-      setPending(false);
     }
-  };
+    // Fires once with the current session, then on every sign-in / sign-out / refresh.
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "TOKEN_REFRESHED") return;
+      // Supabase advises not awaiting other Supabase calls inside this callback.
+      setTimeout(async () => {
+        const profile = await fetchProfile(session);
+        if (!active) return;
+        setUser(profile);
+        setIsLoading(false);
+      }, 0);
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
-  const logout = async () => {
-    writeSession(null, null);
-  };
+  const signIn = useCallback(async (email: string, password: string) => {
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    const profile = await fetchProfile(data.session);
+    if (!profile) {
+      await supabase.auth.signOut();
+      throw new Error("No VITALNEX profile for this account.");
+    }
+    setUser(profile);
+    // Audit the login. A failure here must not block sign-in, but it is reported.
+    api.recordLogin().catch((err) => console.error("[VITALNEX] login audit failed", err));
+    return profile;
+  }, []);
 
-  const switchRole = (newRole: UserRole) => {
-    writeSession(DEMO_USERS[newRole], newRole);
-  };
+  const signUp = useCallback(async (email: string, password: string, fullName: string, language: string) => {
+    // Patient self-signup only. The database always creates a 'patient' profile,
+    // whatever is in the metadata; doctor and admin accounts are seeded.
+    const { data, error } = await createClient().auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName, preferred_language: language } },
+    });
+    if (error) throw error;
+    if (data.session) {
+      setUser(await fetchProfile(data.session));
+      api.recordLogin().catch((err) => console.error("[VITALNEX] login audit failed", err));
+    }
+    return { signedIn: !!data.session };
+  }, []);
 
-  const updateProfile = (updates: Partial<UserProfile>) => {
-    if (!user) return;
-    writeSession({ ...user, ...updates }, role);
-  };
+  const logout = useCallback(async () => {
+    await api.recordLogout().catch(() => undefined);
+    await createClient().auth.signOut();
+    setUser(null);
+  }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        role,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        logout,
-        switchRole,
-        updateProfile,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const updateProfile = useCallback(
+    async (updates: { fullName?: string; phone?: string; preferredLanguage?: string }) => {
+      if (!user) return;
+      const row: Record<string, string> = {};
+      if (updates.fullName !== undefined) row.full_name = updates.fullName;
+      if (updates.phone !== undefined) row.phone_number = updates.phone;
+      if (updates.preferredLanguage !== undefined) row.preferred_language = updates.preferredLanguage;
+      const { error } = await createClient().from("profiles").update(row).eq("id", user.id);
+      if (error) throw error;
+      setUser({ ...user, ...updates });
+    },
+    [user]
   );
+
+  const value = useMemo(
+    () => ({
+      user,
+      role: user?.role ?? null,
+      isAuthenticated: !!user,
+      isLoading,
+      signIn,
+      signUp,
+      logout,
+      updateProfile,
+    }),
+    [user, isLoading, signIn, signUp, logout, updateProfile]
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
@@ -194,4 +181,3 @@ export function useAuth() {
   }
   return context;
 }
-

@@ -40,7 +40,7 @@ import { useAuth } from "../../lib/auth-context";
 export default function ReportsPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const userId = user?.id || "usr-demo-patient-001";
+  const userId = user?.id ?? null;
 
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +49,7 @@ export default function ReportsPage() {
   const handleRefresh = async () => {
     setLoading(true);
     try {
-      const data = await api.getReports(userId);
+      const data = await api.getReports();
       if (Array.isArray(data)) {
         setReports(data);
       }
@@ -63,7 +63,7 @@ export default function ReportsPage() {
 
   useEffect(() => {
     let active = true;
-    api.getReports(userId)
+    api.getReports()
       .then((data) => {
         if (active && Array.isArray(data)) {
           setReports(data);

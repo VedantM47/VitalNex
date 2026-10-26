@@ -8,20 +8,17 @@ from datetime import datetime
 
 
 class AppointmentCreate(BaseModel):
-    doctor_id: str
-    patient_id: str
-    appointment_time: datetime
-    consultation_type: str = Field("video", pattern="^(video|in_person|audio)$")
-    patient_reason: Optional[str] = None
+    """The patient is the signed-in user; the time comes from the chosen slot."""
+    slot_id: str
+    consultation_type: str = Field("in_person", pattern="^(in_person|audio)$")
+    patient_reason: Optional[str] = Field(None, max_length=500)
     assessment_id: Optional[str] = None
 
 
 class AppointmentUpdate(BaseModel):
-    appointment_time: Optional[datetime] = None
-    status: Optional[str] = Field(None, pattern="^(scheduled|rescheduled|confirmed|in_progress|completed|cancelled)$")
-    patient_reason: Optional[str] = None
-    doctor_notes: Optional[str] = None
-    consultation_type: Optional[str] = Field(None, pattern="^(video|in_person|audio)$")
+    """Patients may only cancel; the doctor may confirm, complete or cancel and add notes."""
+    status: Optional[str] = Field(None, pattern="^(confirmed|completed|cancelled)$")
+    doctor_notes: Optional[str] = Field(None, max_length=2000)
 
 
 class AppointmentResponse(BaseModel):
@@ -34,12 +31,13 @@ class AppointmentResponse(BaseModel):
     start_time: str
     end_time: str
     appointment_time: datetime
-    status: str = Field("scheduled", pattern="^(scheduled|rescheduled|confirmed|in_progress|completed|cancelled)$")
+    status: str = Field("scheduled", pattern="^(scheduled|confirmed|in_progress|completed|cancelled)$")
     consultation_type: str
     reason: Optional[str] = None
     patient_reason: Optional[str] = None
     doctor_notes: Optional[str] = None
-    meeting_link: Optional[str] = None
+    patient_name: Optional[str] = None  # shown to the booked doctor only
+    slot_id: Optional[str] = None
     assessment_id: Optional[str] = None
     created_at: datetime
     updated_at: datetime

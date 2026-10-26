@@ -69,7 +69,6 @@ export default function AIAssistantPage() {
 
     try {
       const res = await api.sendAssistantMessage({
-        user_id: "demo-user",
         message: text,
         language: language,
       });

@@ -69,7 +69,10 @@
     "verifiedNotice": "Demo clinician profile (not a real doctor)",
     "experience": "years clinical experience",
     "rating": "Patient Satisfaction",
-    "distance": "away"
+    "distance": "away",
+    "bookedWith": "Appointment booked (demo) with",
+    "noSlots": "This demo doctor has no free slots in the next 14 days.",
+    "bookingFailed": "Booking failed."
   },
   "assistant": {
     "title": "AI Health Intelligence Assistant",
@@ -142,5 +145,75 @@
     "noDataBody": "Nothing has been recorded yet. Real figures will appear here once they exist.",
     "profileRebuildTitle": "Health profile is being rebuilt",
     "profileRebuildBody": "The old profile asked for lab and test values that most people do not know, and filled in default values when you left them blank. It is being replaced by a short set of questions you can answer yourself."
+  },
+  "auth": {
+    "signInTitle": "Sign in to VITALNEX",
+    "portal": {
+      "patient": "Patient portal",
+      "doctor": "Clinician portal",
+      "admin": "Governance portal"
+    },
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "New patient?",
+    "createAccount": "Create an account",
+    "invalidCredentials": "Email or password is incorrect.",
+    "notConfigured": "Sign-in is not available: Supabase is not configured for this app.",
+    "noProfile": "This account has no VITALNEX profile.",
+    "demoNotice": "MVP with dummy accounts only. Do not enter real personal health information.",
+    "roleNotice": "Your access depends on your account, not on the portal you choose.",
+    "signupTitle": "Create a patient account",
+    "signupSubtitle": "Clinician and admin accounts are created by the VITALNEX team.",
+    "fullName": "Full name",
+    "choosePassword": "Choose a password (at least 8 characters)",
+    "signupButton": "Create account",
+    "haveAccount": "Already have an account?",
+    "checkEmail": "Check your email to confirm your account, then sign in.",
+    "signupFailed": "Could not create the account.",
+    "signupNoHealthData": "No health information is collected when you create an account.",
+    "forgotTitle": "Reset your password",
+    "forgotSubtitle": "We will email you a link to set a new password.",
+    "sendResetLink": "Send reset link",
+    "resetSent": "If an account exists for this email, a reset link has been sent.",
+    "backToSignIn": "Back to sign in",
+    "resetTitle": "Set a new password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "passwordsDiffer": "The two passwords do not match.",
+    "passwordTooShort": "Use at least 8 characters.",
+    "updatePassword": "Update password",
+    "passwordUpdated": "Password updated. You can now sign in.",
+    "resetLinkInvalid": "This reset link is invalid or has expired. Request a new one.",
+    "signOut": "Sign out",
+    "role": {
+      "patient": "Patient",
+      "doctor": "Clinician",
+      "admin": "Admin"
+    }
+  },
+  "reviewQueue": {
+    "title": "Clinician review queue",
+    "subtitle": "Results from patients who agreed to share with clinicians.",
+    "emptyTitle": "No results waiting for review",
+    "emptyBody": "A result appears here when a consenting patient's screening is High, not confident, flagged for data quality, or an emergency.",
+    "loadFailed": "Could not load the review queue.",
+    "screenedOn": "Screened on",
+    "reasonsLabel": "Why it is here",
+    "reason": {
+      "high_band": "High screening level",
+      "abstained": "VITALNEX not confident",
+      "data_quality": "Data-quality flag",
+      "emergency": "Emergency symptoms reported"
+    },
+    "status": {
+      "pending": "Pending",
+      "agreed": "Agreed",
+      "overridden": "Overridden"
+    },
+    "clinicianNote": "Clinician note",
+    "actionsUnavailable": "Agree / override actions are not available yet.",
+    "refresh": "Refresh"
   }
 }

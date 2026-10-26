@@ -3,7 +3,7 @@ Health Profile Pydantic Schemas.
 Explicitly isolates Model Features, Context Features, Lifestyle Features, and Nutrition.
 """
 
-from typing import Optional
+from typing import Any, Dict, Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
 
@@ -52,7 +52,6 @@ class NutritionFeatures(BaseModel):
 
 class ContextFeatures(BaseModel):
     locality_type: str = Field("Urban_Pune", pattern="^(Urban_Pune|Peri_Urban_Pune|PCMC|Rural_Maharashtra)$")
-    socioeconomic_band: str = Field("Middle", pattern="^(Lower|Lower_Middle|Middle|Upper_Middle|Upper)$")
     city: str = "Pune"
     region: str = "Maharashtra"
     country: str = "India"
@@ -61,7 +60,7 @@ class ContextFeatures(BaseModel):
 
 
 class HealthProfileCreate(BaseModel):
-    user_id: str
+    """The owner is the signed-in user (from the JWT), never a field in the body."""
     clinical_model: ClinicalModelFeatures
     lifestyle: LifestyleFeatures
     nutrition: NutritionFeatures
@@ -82,12 +81,13 @@ class HealthProfileUpdate(BaseModel):
 
 
 class HealthProfileResponse(BaseModel):
+    """Saved profile. `answers` holds only what the user answered; nothing is filled in."""
     id: str
     user_id: str
-    completeness_score: int
-    clinical_model: ClinicalModelFeatures
-    lifestyle: LifestyleFeatures
-    nutrition: NutritionFeatures
-    context: ContextFeatures
+    age: Optional[int] = None
+    sex: Optional[int] = None
+    height_cm: Optional[float] = None
+    weight_kg: Optional[float] = None
+    answers: Dict[str, Any] = {}
     created_at: datetime
     updated_at: datetime

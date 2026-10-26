@@ -10,10 +10,12 @@ from .doctors import router as doctors_router
 from .assistant import router as assistant_router
 from .models import router as models_router
 from .reports import router as reports_router
+from .me import router as me_router
 
 api_v1_router = APIRouter()
 
 api_v1_router.include_router(health_router)
+api_v1_router.include_router(me_router)
 api_v1_router.include_router(profile_router)
 api_v1_router.include_router(assessment_router)
 api_v1_router.include_router(doctors_router)

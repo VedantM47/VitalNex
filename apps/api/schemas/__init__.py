@@ -3,6 +3,7 @@ Schemas package export.
 """
 
 from .profile import ProfileBase, ProfileCreate, ProfileUpdate, ProfileResponse
+from .consent import ConsentStatus, ConsentUpdate
 from .health_profile import (
     ClinicalModelFeatures,
     LifestyleFeatures,
@@ -12,10 +13,10 @@ from .health_profile import (
     HealthProfileUpdate,
     HealthProfileResponse,
 )
-from .assessment import AssessmentRequest, AssessmentResponse
-from .doctor import DoctorResponse, DoctorFilter, DoctorLocation, DoctorAvailabilitySlot
+from .assessment import AssessmentRequest, AssessmentResponse, AssessmentRecord
+from .doctor import DoctorResponse, DoctorFilter, DoctorLocation, DoctorSlot
 from .appointment import AppointmentCreate, AppointmentUpdate, AppointmentResponse
-from .review import PatientReviewResponse, PatientReviewUpdate
+from .review import ReviewQueueItem
 from .assistant import ChatMessage, AssistantMessageRequest, AssistantMessageResponse, ActionSuggestion
 from .voice import VoiceTranscribeRequest, VoiceTranscribeResponse, VoiceSynthesizeRequest, VoiceSynthesizeResponse
 from .governance import GovernanceEvent, GovernanceSummaryResponse
@@ -35,12 +36,17 @@ __all__ = [
     "HealthProfileResponse",
     "AssessmentRequest",
     "AssessmentResponse",
+    "AssessmentRecord",
     "DoctorResponse",
     "DoctorFilter",
     "DoctorLocation",
-    "DoctorAvailabilitySlot",
+    "DoctorSlot",
     "AppointmentCreate",
+    "AppointmentUpdate",
     "AppointmentResponse",
+    "ReviewQueueItem",
+    "ConsentStatus",
+    "ConsentUpdate",
     "ChatMessage",
     "AssistantMessageRequest",
     "AssistantMessageResponse",

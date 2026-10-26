@@ -390,7 +390,7 @@ export default function ConsultationRoomPage() {
                 <span>
                   {remoteStream && isPeerConnected
                     ? role === "doctor" ? `Patient Stream: ${patientName}` : `Clinician Stream: ${doctorName}`
-                    : `Local Preview (${role.toUpperCase()})`}
+                    : `Local Preview (${(role ?? "").toUpperCase()})`}
                 </span>
               </div>
 

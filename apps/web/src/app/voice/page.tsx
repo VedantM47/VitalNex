@@ -161,7 +161,6 @@ export default function VoiceAccessibilityPage() {
     setStatusMessage("Processing query with VITALNEX Clinical AI Engine...");
     try {
       const res = await api.sendAssistantMessage({
-        user_id: "demo-user",
         message: transcript,
         language: language,
       });

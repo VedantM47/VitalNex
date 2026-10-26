@@ -30,16 +30,12 @@ export default function AppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"upcoming" | "past" | "cancelled">("upcoming");
 
-  // Reschedule Modal State
-  const [reschedulingApt, setReschedulingApt] = useState<any | null>(null);
-  const [newDateTime, setNewDateTime] = useState("");
-  const [reschedulingLoading, setReschedulingLoading] = useState(false);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   const fetchAppointments = async () => {
     setLoading(true);
     try {
-      const data = await api.getAppointments("demo-user", "patient");
+      const data = await api.getAppointments();
       if (Array.isArray(data)) {
         setAppointments(data);
       }
@@ -52,7 +48,7 @@ export default function AppointmentsPage() {
 
   useEffect(() => {
     let active = true;
-    api.getAppointments("demo-user", "patient")
+    api.getAppointments()
       .then((data) => {
         if (active && Array.isArray(data)) {
           setAppointments(data);
@@ -78,28 +74,6 @@ export default function AppointmentsPage() {
       setTimeout(() => setActionSuccess(null), 3000);
     } catch (e) {
       console.error("Failed to cancel appointment:", e);
-    }
-  };
-
-  const handleRescheduleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reschedulingApt || !newDateTime) return;
-
-    setReschedulingLoading(true);
-    try {
-      const isoTime = new Date(newDateTime).toISOString();
-      await api.updateAppointment(reschedulingApt.id, {
-        appointment_time: isoTime,
-        status: "rescheduled",
-      });
-      setActionSuccess("Appointment rescheduled successfully!");
-      setReschedulingApt(null);
-      await fetchAppointments();
-      setTimeout(() => setActionSuccess(null), 3000);
-    } catch (err: any) {
-      alert(err.message || "Failed to reschedule. Please try a different slot.");
-    } finally {
-      setReschedulingLoading(false);
     }
   };
 
@@ -280,28 +254,12 @@ export default function AppointmentsPage() {
                         <>
                           <Button
                             size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              setReschedulingApt(apt);
-                              setNewDateTime(new Date(apt.appointment_time).toISOString().slice(0, 16));
-                            }}
-                          >
-                            Reschedule
-                          </Button>
-                          <Button
-                            size="sm"
                             variant="ghost"
                             className="text-[#B42318] hover:bg-[#B42318]/10"
                             onClick={() => handleCancel(apt.id)}
                           >
                             Cancel
                           </Button>
-                          <Link href={`/consultation/${apt.id}`}>
-                            <Button size="sm" variant="primary">
-                              <Video className="w-3.5 h-3.5 mr-1.5" />
-                              Join Teleconsultation
-                            </Button>
-                          </Link>
                         </>
                       )}
                     </div>
@@ -312,46 +270,6 @@ export default function AppointmentsPage() {
           )}
         </div>
 
-        {/* Reschedule Modal */}
-        {reschedulingApt && (
-          <div className="fixed inset-0 z-50 bg-[#0B1F33]/50 backdrop-blur-xs flex items-center justify-center p-4">
-            <Card className="max-w-md w-full p-6 space-y-5 bg-white shadow-2xl">
-              <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3">
-                <h3 className="font-bold text-sm text-[#0B1F33]">Reschedule Consultation</h3>
-                <button
-                  type="button"
-                  onClick={() => setReschedulingApt(null)}
-                  className="p-1 text-[#64748B] hover:text-[#0B1F33]"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <form onSubmit={handleRescheduleSubmit} className="space-y-4 text-xs">
-                <p className="text-[#64748B]">
-                  Select a new date and time for your consultation with <strong>{reschedulingApt.doctor_name}</strong>.
-                </p>
-
-                <Input
-                  label="New Date & Time"
-                  type="datetime-local"
-                  value={newDateTime}
-                  onChange={(e) => setNewDateTime(e.target.value)}
-                  required
-                />
-
-                <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" size="sm" onClick={() => setReschedulingApt(null)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" variant="primary" size="sm" isLoading={reschedulingLoading}>
-                    Confirm New Time
-                  </Button>
-                </div>
-              </form>
-            </Card>
-          </div>
-        )}
       </div>
     </AppShell>
   );

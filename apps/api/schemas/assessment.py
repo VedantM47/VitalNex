@@ -9,10 +9,8 @@ from .health_profile import ClinicalModelFeatures
 
 
 class AssessmentRequest(BaseModel):
-    user_id: str
+    """The patient is the signed-in user. Replaced by the 14-feature contract in P4."""
     clinical_inputs: ClinicalModelFeatures
-    model_version_id: Optional[str] = None
-    assessment_mode: str = Field("demo", pattern="^(demo|clinical_screening|research)$")
 
 
 class AssessmentResponse(BaseModel):
@@ -32,3 +30,18 @@ class AssessmentResponse(BaseModel):
     )
     evaluated_at: datetime
     input_snapshot: Dict[str, Any]
+
+
+class AssessmentRecord(BaseModel):
+    """A stored assessment (risk_assessments row, docs/SPEC.md §2.1)."""
+    id: str
+    user_id: str
+    assessment_mode: str  # live | demo
+    inputs: Dict[str, Any]
+    results: Dict[str, Any]  # per disease: prob, band, conformal_set, abstained, top_factors
+    next_step: str
+    emergency_flag: bool
+    review_status: str
+    model_versions: Dict[str, Any]
+    disclaimer: str
+    created_at: datetime

@@ -68,21 +68,29 @@ export default function CareConnectPage() {
     return true;
   });
 
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [bookedTime, setBookedTime] = useState<string | null>(null);
+
+  // Books the doctor's earliest free slot (synthetic demo slots). Full slot picker: P9.
   const handleBook = async (doc: any) => {
+    setBookingSuccess(false);
+    setBookingError(null);
+    const slot = doc.next_slots?.[0];
+    if (!slot) {
+      setSelectedDoctor(doc);
+      setBookingError(t("care.noSlots"));
+      return;
+    }
     try {
-      await api.createAppointment({
-        doctor_id: doc.id,
-        patient_id: "demo-user",
-        appointment_time: new Date(Date.now() + 86400000 * 2).toISOString(),
-        consultation_type: "video",
-        patient_reason: "Preventive clinical review following VITALNEX risk assessment.",
-      });
+      const apt = await api.createAppointment({ slot_id: slot.id, consultation_type: "in_person" });
       setSelectedDoctor(doc);
+      setBookedTime(new Date(apt.appointment_time).toLocaleString());
       setBookingSuccess(true);
-      setTimeout(() => setBookingSuccess(false), 4000);
-    } catch {
+      // Refresh free slots so the booked one disappears.
+      setDoctors(await api.getDoctors());
+    } catch (err) {
       setSelectedDoctor(doc);
-      setBookingSuccess(true);
+      setBookingError(`${t("care.bookingFailed")} ${err instanceof Error ? err.message : ""}`);
     }
   };
 
@@ -108,12 +116,18 @@ export default function CareConnectPage() {
           </div>
         </div>
 
+        {bookingError && (
+          <p role="alert" className="p-4 rounded-2xl border border-[#B42318]/20 bg-[#B42318]/5 text-xs text-[#B42318]">
+            {bookingError}
+          </p>
+        )}
+
         {bookingSuccess && selectedDoctor && (
           <div className="p-4 bg-[#F0FDF4] rounded-2xl border border-[#0F766E]/30 flex items-center justify-between text-xs text-[#0F766E]">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 shrink-0" />
               <span>
-                <strong>Appointment Confirmed:</strong> Consultation scheduled with {selectedDoctor.full_name} via Secure Video E-Connect.
+                {t("care.bookedWith")} {selectedDoctor.full_name} — {bookedTime}
               </span>
             </div>
             <Link href="/appointments" className="underline font-semibold">

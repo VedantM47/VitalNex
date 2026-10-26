@@ -1,8 +1,18 @@
 import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://demo.vitalnex.supabase.co";
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "demo-anon-key";
+let browserClient: SupabaseClient | null = null;
 
-  return createBrowserClient(supabaseUrl, supabaseKey);
+/** Supabase browser client (session kept in cookies so the proxy can read it). */
+export function createClient(): SupabaseClient {
+  if (browserClient) return browserClient;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) {
+    throw new Error(
+      "Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in .env"
+    );
+  }
+  browserClient = createBrowserClient(url, key);
+  return browserClient;
 }

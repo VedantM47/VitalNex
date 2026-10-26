@@ -1,34 +1,69 @@
 """
-Governance, Model Registry, and Health Profile Service Implementations.
+Governance summary and model registry.
+
+Counts are computed from Supabase with the service role and returned as aggregates
+only (no patient identities). Assessments of users who did not grant `aggregate_audit`
+are excluded (docs/SPEC.md §2.2). Full analytics are built in P6.
 """
 
-import uuid
-from typing import List, Optional, Dict, Any
-from datetime import datetime, timezone
-from apps.api.schemas import (
-    GovernanceSummaryResponse,
-    ModelRegistryItem,
-    HealthProfileCreate,
-    HealthProfileResponse,
-)
-from .base import IGovernanceService, IModelRegistryService, IHealthProfileService
+from typing import List, Optional
+
+from apps.api.core.db import service_db
+from apps.api.schemas import GovernanceEvent, GovernanceSummaryResponse, ModelRegistryItem
+
+RECENT_EVENTS = 10
 
 
-class GovernanceService(IGovernanceService):
+async def _aggregate_consenting_users() -> List[str]:
+    res = (
+        await service_db()
+        .table("consents")
+        .select("user_id")
+        .eq("purpose", "aggregate_audit")
+        .eq("granted", True)
+        .is_("withdrawn_at", "null")
+        .execute()
+    )
+    return [r["user_id"] for r in res.data]
+
+
+class GovernanceService:
     async def get_summary(self) -> GovernanceSummaryResponse:
-        # Real counts come from Supabase in P6. Until then nothing has been computed,
-        # so report zero activity and leave metrics unset rather than inventing them.
+        db = service_db()
+        users = await _aggregate_consenting_users()
+        total = 0
+        if users:
+            res = await db.table("risk_assessments").select("id", count="exact", head=True).in_("user_id", users).execute()
+            total = res.count or 0
+        pending = (
+            await db.table("review_queue").select("id", count="exact", head=True).eq("status", "pending").execute()
+        ).count or 0
+        events = (
+            await db.table("governance_events").select("*").order("created_at", desc=True).limit(RECENT_EVENTS).execute()
+        ).data
         return GovernanceSummaryResponse(
-            total_assessments=0,
+            total_assessments=total,
+            # Model artifacts arrive in P3; nothing is in production until then.
             models_in_production=0,
             fairness_compliance_rate=None,
-            human_reviews_pending=0,
+            human_reviews_pending=pending,
             data_quality_index=None,
-            recent_events=[],
+            recent_events=[
+                GovernanceEvent(
+                    id=e["id"],
+                    event_type=e["event_type"],
+                    severity=e["severity"],
+                    entity_type=e["entity_type"],
+                    entity_id=e.get("entity_id"),
+                    details=e["details"],
+                    timestamp=e["created_at"],
+                )
+                for e in events
+            ],
         )
 
 
-class ModelRegistryService(IModelRegistryService):
+class ModelRegistryService:
     """Model registry. Empty until P3 writes ml/artifacts/<disease>/model_meta.json."""
 
     def __init__(self):
@@ -42,29 +77,3 @@ class ModelRegistryService(IModelRegistryService):
             if m.id == model_id:
                 return m
         return None
-
-
-class HealthProfileService(IHealthProfileService):
-    def __init__(self):
-        # In-memory store (Supabase in P1). Starts empty: no pre-filled medical values.
-        self._profiles: Dict[str, HealthProfileResponse] = {}
-
-    async def get_profile(self, user_id: str) -> Optional[HealthProfileResponse]:
-        return self._profiles.get(user_id)
-
-    async def save_profile(self, profile: HealthProfileCreate) -> HealthProfileResponse:
-        resp = HealthProfileResponse(
-            id=f"hp-{uuid.uuid4().hex[:8]}",
-            user_id=profile.user_id,
-            # Every field is required by the schema, so a saved profile is complete.
-            completeness_score=100,
-            clinical_model=profile.clinical_model,
-            lifestyle=profile.lifestyle,
-            nutrition=profile.nutrition,
-            context=profile.context,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
-        )
-        self._profiles[profile.user_id] = resp
-        return resp
-
