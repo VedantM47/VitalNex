@@ -36,9 +36,14 @@ def sessions():
 
 @pytest.fixture(scope="module")
 def api():
+    from apps.api.core import db
     from apps.api.main import app
 
-    return TestClient(app)
+    # One event loop for the whole module: the cached async DB client must not outlive its loop.
+    db._service_client.cache_clear()
+    with TestClient(app) as client:
+        yield client
+    db._service_client.cache_clear()
 
 
 def auth(sessions, email):
