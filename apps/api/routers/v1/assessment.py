@@ -12,7 +12,7 @@ from pydantic import ValidationError
 
 from apps.api.core.auth import CurrentUser, get_user_db, require_role
 from apps.api.schemas import AssessmentRequest, AssessmentResponse, RecourseRequest, WhatIfRequest
-from apps.api.services import prediction_service, screening
+from apps.api.services import prediction_service, review_service, screening
 from apps.api.services.prediction_service import ConsentRequiredError, shape_record
 
 router = APIRouter(tags=["Clinical Intelligence & AI Trust"])
@@ -53,11 +53,15 @@ async def get_assessment_history(
     user: CurrentUser = Depends(require_role("patient")), db: AsyncPostgrestClient = Depends(get_user_db)
 ):
     """The signed-in patient's assessments, newest first."""
+    # Withdrawing store_history hides saved history immediately (SPEC §2.2, PROMPTS P7 step 3).
+    if "store_history" not in await prediction_service.granted_purposes(user.id):
+        return {"user_id": user.id, "total_assessments": 0, "assessments": [], "hidden": "store_history_withdrawn"}
     assessments = await prediction_service.list_assessments(db, user.id)
+    reviews = await review_service.review_info_for(db, [a.id for a in assessments])
     return {
         "user_id": user.id,
         "total_assessments": len(assessments),
-        "assessments": [shape_record(a, user.role) for a in assessments],
+        "assessments": [{**shape_record(a, user.role), "clinician_review": reviews.get(a.id)} for a in assessments],
     }
 
 
@@ -70,14 +74,7 @@ async def get_assessment(
     # RLS: own assessment, or a consented patient's for a clinician. Anything else is 404.
     asm = await prediction_service.get_assessment(db, assessment_id)
     if asm:
-        return shape_record(asm, user.role)
+        # "Reviewed by a clinician" + the clinician's note (SPEC §1.3 clinician flow step 4).
+        reviews = await review_service.review_info_for(db, [asm.id])
+        return {**shape_record(asm, user.role), "clinician_review": reviews.get(asm.id)}
     raise HTTPException(status_code=404, detail=f"Assessment {assessment_id} not found")
-
-
-@router.get("/trust-passport/{assessment_id}")
-async def get_trust_passport(assessment_id: str):
-    # TODO(P7): Trust Passport generated from ml/artifacts/<disease>/model_meta.json.
-    raise HTTPException(
-        status_code=503,
-        detail="The Trust Passport is not available yet. It will be generated from real model cards.",
-    )

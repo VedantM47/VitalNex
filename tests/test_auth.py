@@ -73,6 +73,16 @@ PROTECTED = [
     ("GET", "/api/v1/reports"),
     ("GET", "/api/v1/governance/summary"),
     ("POST", "/api/v1/assistant/message"),
+    ("PATCH", "/api/v1/doctor/reviews/some-id"),
+    ("GET", "/api/v1/doctor/patients"),
+    ("GET", "/api/v1/doctor/cases/some-id"),
+    ("GET", "/api/v1/admin/governance/audit-logs"),
+    ("GET", "/api/v1/admin/governance/overrides"),
+    ("GET", "/api/v1/shares"),
+    ("POST", "/api/v1/shares"),
+    ("POST", "/api/v1/shares/some-id/revoke"),
+    ("GET", "/api/v1/me/data-export"),
+    ("POST", "/api/v1/me/data-deletion"),
 ]
 
 

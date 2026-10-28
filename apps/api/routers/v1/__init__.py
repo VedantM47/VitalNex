@@ -11,6 +11,9 @@ from .assistant import router as assistant_router
 from .models import router as models_router
 from .reports import router as reports_router
 from .me import router as me_router
+from .admin import router as admin_router
+from .trust import router as trust_router
+from .shares import router as shares_router
 
 api_v1_router = APIRouter()
 
@@ -22,5 +25,8 @@ api_v1_router.include_router(doctors_router)
 api_v1_router.include_router(assistant_router)
 api_v1_router.include_router(models_router)
 api_v1_router.include_router(reports_router)
+api_v1_router.include_router(admin_router)
+api_v1_router.include_router(trust_router)
+api_v1_router.include_router(shares_router)
 
 __all__ = ["api_v1_router"]

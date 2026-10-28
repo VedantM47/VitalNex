@@ -1,17 +1,29 @@
 """
-Current user, session audit and consent endpoints.
+Current user, session audit, consent and data-rights endpoints ("My data", SPEC §2.2).
 """
 
+import json
 from datetime import datetime, timezone
-from typing import List
+from functools import lru_cache
+from pathlib import Path
+from typing import Any, Dict, List, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from postgrest import AsyncPostgrestClient
+from pydantic import BaseModel
 
 from apps.api.core.auth import CurrentUser, get_current_user, get_user_db, require_role
 from apps.api.schemas.consent import CONSENT_PURPOSES, NOTICE_VERSION, ConsentStatus, ConsentUpdate
 from apps.api.schemas.profile import ProfileResponse
-from apps.api.services import audit_service
+from apps.api.services import audit_service, data_rights_service
+
+NOTICES_FILE = Path(__file__).resolve().parents[2] / "content" / "consent_notices.json"
+
+
+@lru_cache(maxsize=1)
+def consent_notices() -> Dict[str, Any]:
+    return json.loads(NOTICES_FILE.read_text(encoding="utf-8"))
 
 router = APIRouter(tags=["Session & Consent"])
 
@@ -37,9 +49,11 @@ async def record_logout(request: Request, user: CurrentUser = Depends(get_curren
 
 def _consent_list(rows: list) -> List[ConsentStatus]:
     by_purpose = {r["purpose"]: r for r in rows}
+    notices = consent_notices()["purposes"]
     out = []
     for purpose in CONSENT_PURPOSES:
         r = by_purpose.get(purpose)
+        n = notices[purpose]
         out.append(
             ConsentStatus(
                 purpose=purpose,
@@ -47,9 +61,19 @@ def _consent_list(rows: list) -> List[ConsentStatus]:
                 granted_at=r["granted_at"] if r else None,
                 withdrawn_at=r["withdrawn_at"] if r else None,
                 notice_version=r["notice_version"] if r else NOTICE_VERSION,
+                required=n["required"],
+                title=n["title"],
+                notice=n["notice"],
+                effect_if_off=n["effect_if_off"],
             )
         )
     return out
+
+
+@router.get("/consents/notice")
+async def get_consent_notice() -> Dict[str, Any]:
+    """The current consent notice (public, so it can be read before signing up)."""
+    return consent_notices()
 
 
 @router.get("/consents", response_model=List[ConsentStatus])
@@ -82,3 +106,29 @@ async def set_consent(
     await db.table("consents").upsert(row, on_conflict="user_id,purpose").execute()
     res = await db.table("consents").select("*").eq("user_id", user.id).execute()
     return _consent_list(res.data)
+
+
+# ── Data rights (PROMPTS P7 step 3) ──
+
+@router.get("/me/data-export")
+async def export_my_data(
+    user: CurrentUser = Depends(require_role("patient")), db: AsyncPostgrestClient = Depends(get_user_db)
+):
+    """Everything VITALNEX holds about me, as a JSON download."""
+    doc = await data_rights_service.export(user, db)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d")
+    return JSONResponse(doc, headers={
+        "Content-Disposition": f'attachment; filename="vitalnex-my-data-{stamp}.json"',
+        "Cache-Control": "no-store",
+    })
+
+
+class DeletionConfirm(BaseModel):
+    confirm: Literal["DELETE"]
+
+
+@router.post("/me/data-deletion")
+async def delete_my_data(body: DeletionConfirm, user: CurrentUser = Depends(require_role("patient"))):
+    """Removes my assessments, shares, profile data and account (SPEC §2.2). Keeps only a
+    minimal audit entry that a deletion happened. The web app confirms in-page first."""
+    return await data_rights_service.delete_everything(user)

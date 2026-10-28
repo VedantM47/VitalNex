@@ -1,0 +1,32 @@
+{
+  "notice_version": "v1",
+  "source": "docs/SPEC.md §2.2 (purposes, required flag, effect if off)",
+  "language": "en",
+  "_note": "English source text. The web app shows these through apps/web/src/messages/{en,hi,mr}.json keyed by purpose.",
+  "purposes": {
+    "assessment_processing": {
+      "required": true,
+      "title": "Process my answers to give me a screening result",
+      "notice": "VITALNEX uses the answers you type in the screening form to estimate how similar your answers are to people who have been told they have diabetes or prediabetes, heart disease or stroke. The calculation runs on the VITALNEX server; your answers are not sent to any other company.",
+      "effect_if_off": "You cannot run a screening."
+    },
+    "store_history": {
+      "required": false,
+      "title": "Save my results so I can see my history",
+      "notice": "Your answers and results are saved so you can see your history and trend, download a report and create a share link.",
+      "effect_if_off": "Each result is shown once and not saved. Your saved history is hidden while this is off."
+    },
+    "share_with_clinician": {
+      "required": false,
+      "title": "Let VITALNEX clinicians review my results",
+      "notice": "Results that are high, uncertain or flagged as an emergency are put in a review list for VITALNEX clinicians. A clinician can see your answers, results and history while this is on.",
+      "effect_if_off": "No clinician review. If a result is high or uncertain, you are told to see a doctor directly. Clinicians lose access immediately."
+    },
+    "aggregate_audit": {
+      "required": false,
+      "title": "Count my results in anonymous safety statistics",
+      "notice": "Your results are counted, without your name, in totals that VITALNEX administrators use to check how the system behaves (for example how often it is not confident).",
+      "effect_if_off": "Your results are left out of governance statistics."
+    }
+  }
+}

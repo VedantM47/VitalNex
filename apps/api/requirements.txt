@@ -14,3 +14,5 @@ PyJWT[crypto]==2.12.1
 scikit-learn==1.6.1
 reportlab==4.2.5
 supabase==2.33.0
+qrcode[pil]==8.0
+pillow==11.0.0

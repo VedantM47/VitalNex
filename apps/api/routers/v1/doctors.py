@@ -2,9 +2,9 @@
 Care Connect: doctor directory, appointment booking and the clinician review queue.
 """
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, WebSocket
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, WebSocket
 from postgrest import AsyncPostgrestClient
 
 from apps.api.core.auth import CurrentUser, get_user_db, require_role
@@ -17,7 +17,8 @@ from apps.api.schemas import (
     DoctorResponse,
     ReviewQueueItem,
 )
-from apps.api.services import appointment_service, doctor_service, review_queue_service
+from apps.api.schemas.review import ReviewDecision
+from apps.api.services import appointment_service, doctor_service, review_queue_service, review_service
 
 router = APIRouter(tags=["Care Connect & Appointments"])
 
@@ -130,6 +131,37 @@ async def get_review_item(
 
 
 @router.patch("/doctor/reviews/{assessment_id}")
-async def update_review_item(assessment_id: str, user: CurrentUser = Depends(require_role("doctor"))):
-    # TODO(P6): Agree / Override with a required reason code (writes clinician_overrides).
-    raise HTTPException(status_code=503, detail="Clinician review actions are not available yet (P6).")
+async def update_review_item(
+    assessment_id: str,
+    decision: ReviewDecision,
+    request: Request,
+    user: CurrentUser = Depends(require_role("doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+):
+    """Agree, or Override (new band per disease + required reason code). Writes
+    clinician_overrides + audit, updates the review status; the patient sees the note.
+    Overrides are never used for training (CLAUDE.md hard rule 9)."""
+    return await review_service.decide(user, db, assessment_id, decision, request)
+
+
+@router.get("/doctor/patients")
+async def list_consented_patients(
+    user: CurrentUser = Depends(require_role("doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+) -> List[Dict[str, Any]]:
+    """Only patients with an active share_with_clinician consent (RLS)."""
+    return await review_service.list_patients(db)
+
+
+@router.get("/doctor/cases/{assessment_id}")
+async def get_case(
+    assessment_id: str,
+    user: CurrentUser = Depends(require_role("doctor")),
+    db: AsyncPostgrestClient = Depends(get_user_db),
+) -> Dict[str, Any]:
+    """Full clinician view: inputs, calibrated probability, conformal set, abstain reason,
+    top SHAP factors, data-quality notes, history. Factors and uncertainty come before the band."""
+    case = await review_service.case_detail(db, assessment_id)
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found.")
+    return case

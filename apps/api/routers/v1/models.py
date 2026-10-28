@@ -2,9 +2,11 @@
 Model registry (from ml/artifacts/<disease>/model_meta.json) and governance endpoints.
 """
 
-from typing import Any, Dict, List
+from pathlib import Path
+from typing import Any, Dict, List, Literal
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import PlainTextResponse
 
 from apps.api.core.auth import CurrentUser, require_role
 from apps.api.schemas import GovernanceSummaryResponse
@@ -12,6 +14,8 @@ from apps.api.services import governance_service
 from apps.api.services.screening import models as loaded_models
 
 router = APIRouter(tags=["Model Registry & Governance"])
+
+ARTIFACTS = Path(__file__).resolve().parents[4] / "ml" / "artifacts"
 
 
 def _summary(meta: Dict[str, Any]) -> Dict[str, Any]:
@@ -45,6 +49,15 @@ async def get_model(model_id: str) -> Dict[str, Any]:
     if not m:
         raise HTTPException(status_code=404, detail="Model not found")
     return m.meta
+
+
+@router.get("/models/{model_id}/card", response_class=PlainTextResponse)
+async def get_model_card(model_id: Literal["diabetes", "heart", "stroke"]) -> str:
+    """ml/artifacts/<disease>/model_card.md as Markdown (generated in P3, aggregate facts only)."""
+    path = ARTIFACTS / model_id / "model_card.md"
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Model card not found")
+    return path.read_text(encoding="utf-8")
 
 
 @router.get("/governance/summary", response_model=GovernanceSummaryResponse)

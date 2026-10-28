@@ -203,6 +203,23 @@ END $$;
 
 RESET ROLE;
 
+-- ---- Share owner may only revoke (migration 20261028000001) --------------------
+SELECT set_config('request.jwt.claims',
+    '{"sub": "00000000-0000-4000-a000-00000000000b", "role": "authenticated"}', TRUE);
+SET LOCAL ROLE authenticated;
+
+DO $$
+BEGIN
+    BEGIN
+        UPDATE share_tokens SET expires_at = NOW() + INTERVAL '1 year'
+            WHERE user_id = '00000000-0000-4000-a000-00000000000b';
+        RAISE EXCEPTION 'RLS FAIL: share owner could extend a share link';
+    EXCEPTION WHEN insufficient_privilege THEN NULL;
+    END;
+END $$;
+
+RESET ROLE;
+
 -- ---- Server-side share resolution ---------------------------------------------
 DO $$
 BEGIN

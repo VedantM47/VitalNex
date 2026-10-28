@@ -34,6 +34,14 @@ class Settings(BaseSettings):
     # Shared password for the dummy demo accounts (seed script and live tests only).
     DEMO_PASSWORD: str = ""
 
+    # Public web app URL, used to build QR share links (<url>/share/<token>).
+    PUBLIC_WEB_URL: str = Field(
+        "http://localhost:3000", validation_alias=AliasChoices("PUBLIC_WEB_URL", "NEXT_PUBLIC_SITE_URL")
+    )
+    # Where people report a problem with VITALNEX (shown in the Trust Passport). Empty means
+    # "not available" — no invented address is shown.
+    PROBLEM_REPORT_CONTACT: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

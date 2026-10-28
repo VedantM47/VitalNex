@@ -1,0 +1,107 @@
+{
+  "version": "1",
+  "source": "docs/SPEC.md §7.1 — NITI Aayog, Responsible AI for All (Part 1 Principles, 2021)",
+  "_note": "Each evidence item is resolved live by apps/api/services/trust_service.py (resolver name). If a value cannot be computed it is returned as \"not available\", never as a placeholder number.",
+  "principles": [
+    {
+      "id": "safety_reliability",
+      "principle": "Safety and Reliability",
+      "implemented_by": [
+        {"id": "data_quality_gate", "label": "Data-quality gate", "page": "/risk-assessment"},
+        {"id": "conformal_abstention", "label": "Conformal abstention", "page": "/risk-assessment"},
+        {"id": "ood_check", "label": "OOD check", "page": "/ai-trust"},
+        {"id": "emergency_override", "label": "Emergency override", "page": "/ai-assistant"},
+        {"id": "recall_first_bands", "label": "Recall-first bands", "page": "/ai-trust"}
+      ],
+      "evidence": [
+        {"id": "coverage_per_class", "label": "Coverage per class", "source": "model_meta.json: conformal_test.coverage", "resolver": "coverage_per_class"},
+        {"id": "abstention_rate", "label": "Abstention rate", "source": "model_meta.json: conformal_test.abstention_rate_total; database: stored assessments", "resolver": "abstention_rate"},
+        {"id": "emergency_triggers_count", "label": "Emergency triggers count", "source": "database: risk_assessments.emergency_flag, assistant_logs.emergency_flag", "resolver": "emergency_triggers_count"}
+      ]
+    },
+    {
+      "id": "equality",
+      "principle": "Equality",
+      "implemented_by": [
+        {"id": "fairness_audit", "label": "Fairness audit across sex/age/income/education/access", "page": "/ai-trust"}
+      ],
+      "evidence": [
+        {"id": "recall_fpr_gap_tables", "label": "Recall & FPR gap tables", "source": "model_meta.json: fairness.groups.*.gaps", "resolver": "recall_fpr_gap_tables"}
+      ]
+    },
+    {
+      "id": "inclusivity_non_discrimination",
+      "principle": "Inclusivity and Non-discrimination",
+      "implemented_by": [
+        {"id": "multilingual_ui", "label": "EN/HI/MR UI", "page": "/settings"},
+        {"id": "plain_language_explanations", "label": "Plain-language explanations", "page": "/risk-assessment"},
+        {"id": "sensitive_attributes_excluded", "label": "Sensitive attributes excluded from inputs", "page": "/ai-trust"},
+        {"id": "per_language_nlp_accuracy", "label": "Per-language NLP accuracy", "page": "/ai-assistant"}
+      ],
+      "evidence": [
+        {"id": "language_parity_table", "label": "Language parity table", "source": "assistant nlp_meta.json (per-language accuracy and macro-F1)", "resolver": "language_parity_table"},
+        {"id": "excluded_features_list", "label": "Excluded-features list", "source": "model_meta.json: fairness_only_columns", "resolver": "excluded_features_list"}
+      ]
+    },
+    {
+      "id": "privacy_security",
+      "principle": "Privacy and Security",
+      "implemented_by": [
+        {"id": "purpose_specific_consent", "label": "Purpose-specific consent", "page": "/settings"},
+        {"id": "data_minimisation", "label": "Data minimisation", "page": "/ai-trust"},
+        {"id": "rls", "label": "RLS", "page": "/ai-trust"},
+        {"id": "no_third_party_apis", "label": "No third-party APIs", "page": "/ai-trust"},
+        {"id": "revocable_qr_shares", "label": "Revocable QR shares", "page": "/reports"},
+        {"id": "no_chat_text_stored", "label": "No chat text stored", "page": "/ai-assistant"}
+      ],
+      "evidence": [
+        {"id": "consent_rates", "label": "Consent rates", "source": "database: consents", "resolver": "consent_rates"},
+        {"id": "share_revocations", "label": "Share revocations", "source": "database: share_tokens.revoked_at", "resolver": "share_revocations"},
+        {"id": "data_request_log", "label": "Data-request log", "source": "database: data_requests", "resolver": "data_request_log"}
+      ]
+    },
+    {
+      "id": "transparency",
+      "principle": "Transparency",
+      "implemented_by": [
+        {"id": "trust_passport", "label": "Trust Passport", "page": "/ai-trust"},
+        {"id": "model_cards", "label": "Model cards", "page": "/ai-trust"},
+        {"id": "why_and_how_sure", "label": "Per-result \"why\" and \"how sure\"", "page": "/risk-assessment"},
+        {"id": "honest_limitations", "label": "Honest limitations", "page": "/ai-trust"}
+      ],
+      "evidence": [
+        {"id": "model_card_version", "label": "Model card version", "source": "model_meta.json: version", "resolver": "model_card_version"},
+        {"id": "data_hash", "label": "Data hash", "source": "model_meta.json: data_hash", "resolver": "data_hash"}
+      ]
+    },
+    {
+      "id": "accountability",
+      "principle": "Accountability",
+      "implemented_by": [
+        {"id": "clinician_review_queue", "label": "Clinician review queue", "page": "/doctor/patients"},
+        {"id": "override_log", "label": "Override log", "page": "/admin/governance"},
+        {"id": "audit_log", "label": "Audit log", "page": "/admin/governance"},
+        {"id": "versioned_models", "label": "Versioned models", "page": "/ai-trust"},
+        {"id": "human_sign_off_gates", "label": "Human sign-off gates", "page": "/ai-trust"}
+      ],
+      "evidence": [
+        {"id": "override_rate_by_disease", "label": "Override rate by disease", "source": "database: clinician_overrides, review_queue", "resolver": "override_rate_by_disease"},
+        {"id": "audit_entries", "label": "Audit entries", "source": "database: audit_logs", "resolver": "audit_entries"}
+      ]
+    },
+    {
+      "id": "positive_human_values",
+      "principle": "Protection and Reinforcement of Positive Human Values",
+      "implemented_by": [
+        {"id": "non_diagnostic_wording", "label": "Non-diagnostic wording", "page": "/risk-assessment"},
+        {"id": "no_medicine_advice", "label": "No medicine advice", "page": "/ai-assistant"},
+        {"id": "recourse_changeable_only", "label": "Recourse only on changeable factors", "page": "/risk-assessment"},
+        {"id": "patient_held_record", "label": "Patient-held record", "page": "/reports"}
+      ],
+      "evidence": [
+        {"id": "medication_refusal_count", "label": "Medication-refusal count", "source": "database: assistant_logs (intent MEDICATION_REQUEST)", "resolver": "medication_refusal_count"},
+        {"id": "recourse_usage", "label": "Recourse usage", "source": "not recorded: what-if and recourse requests store nothing", "resolver": "recourse_usage"}
+      ]
+    }
+  ]
+}

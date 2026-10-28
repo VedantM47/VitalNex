@@ -24,9 +24,10 @@ def test_health_endpoint():
     assert response.json()["status"] == "healthy"
 
 
-def test_trust_passport_not_available():
-    response = client.get("/api/v1/trust-passport/asm-12345")
-    assert response.status_code == 503
+def test_per_assessment_trust_passport_stub_removed():
+    """P7: the Trust Passport is one public page built from model_meta.json (GET /trust-passport),
+    not a per-assessment stub. Its behaviour is tested in test_trust_consent_share.py."""
+    assert client.get("/api/v1/trust-passport/asm-12345").status_code == 404
 
 
 def test_video_token_not_in_mvp():
