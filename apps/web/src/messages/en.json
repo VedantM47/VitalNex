@@ -54,7 +54,7 @@
   "assistant": {
     "title": "VITALNEX assistant",
     "subtitle": "Ask about your latest screening, diabetes, heart disease and stroke, finding a doctor, or your data.",
-    "notice": "Answers come from a fixed, reviewed library — VITALNEX does not generate medical advice.",
+    "notice": "Answers come from a fixed, pre-written library — VITALNEX does not generate medical advice.",
     "noticeDetail": "It does not diagnose and does not recommend medicines. Your chat messages are not stored.",
     "languageLabel": "Answer language",
     "conversationLabel": "Conversation with the VITALNEX assistant",
@@ -1140,7 +1140,7 @@
     "featuresTitle": "Screening, explanations and next steps",
     "featuresIntro": "Every number shown comes from the models or the database. Anything that is not available says so.",
     "f1Title": "Screening for three conditions",
-    "f1Body": "14 questions you can answer yourself. Each condition gets a level (Low, Moderate or High) or “not confident — see a doctor”, with the main factors and a next step.",
+    "f1Body": "15 questions you can answer yourself. Each condition gets a level (Low, Moderate or High) or “not confident — see a doctor”, with the main factors and a next step.",
     "f2Title": "AI Trust Passport",
     "f2Body": "A public page that shows how the models were built, how well they work, where they fail and how often they are not confident.",
     "f3Title": "Care Connect",

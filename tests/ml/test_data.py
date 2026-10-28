@@ -25,6 +25,23 @@ def test_feature_contract_matches_spec():
     assert len(FEATURES) == 14
 
 
+def test_feature_contract_matches_form():
+    """SPEC §8.1: the web form, the API schema and the model features describe the same questions."""
+    from apps.api.schemas.assessment import CHANGEABLE_FIELDS, AssessmentInputs
+    from apps.api.services.screening import feature_row
+
+    ts = (ROOT / "apps" / "web" / "src" / "lib" / "assessment.ts").read_text(encoding="utf-8")
+    web_answers = re.findall(r"^\s+(\w+): ", ts.split("interface AssessmentAnswers {")[1].split("}")[0], flags=re.M)
+    assert set(web_answers) == set(AssessmentInputs.model_fields)
+    web_changeable = re.findall(r'"(\w+)"', ts.split("CHANGEABLE_KEYS = [")[1].split("]")[0])
+    assert tuple(web_changeable) == CHANGEABLE_FIELDS
+
+    answers = AssessmentInputs(age=50, sex="female", height_cm=160, weight_kg=60, high_bp=False, high_chol=False,
+                               smoker=False, phys_activity=True, fruits=True, veggies=True, heavy_alcohol=False,
+                               gen_health=3, ment_health_days=0, phys_health_days=0, diff_walk=False)
+    assert tuple(feature_row(answers, 0)) == FEATURES
+
+
 def test_no_target_or_fairness_column_in_features():
     assert not set(TARGETS.values()) & set(FEATURES)
     assert not set(FAIRNESS_ONLY) & set(FEATURES)

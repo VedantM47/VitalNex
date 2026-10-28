@@ -222,6 +222,17 @@ def test_out_of_scope_rate_on_test_set():
 
 
 @needs_model
+@pytest.mark.parametrize("lang", ["en", "hi", "mr"])
+def test_per_language_accuracy_above_floor(lang):
+    """SPEC §8.1 floor, set after the first run. Full pipeline (rules + classifier + abstention) on the
+    held-out test set measured 0.909 / 0.927 / 0.882 (en / hi / mr) in P10; nlp_meta.json reports the
+    classifier-only figures. Floor 0.85 for every language (language parity)."""
+    test = [r for r in rows("intents_test.jsonl") if r["lang"] == lang]
+    ok = sum(svc.classify(r["text"]).intent == r["intent"] for r in test)
+    assert ok / len(test) >= 0.85
+
+
+@needs_model
 def test_faq_answer_has_source_and_is_from_library(db):
     data = ask("what is prediabetes?")
     assert data["intent"] == "DISEASE_INFO"

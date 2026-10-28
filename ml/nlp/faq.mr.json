@@ -439,7 +439,7 @@
       "id": "vx_assistant",
       "topic": "vitalnex",
       "question": "हा सहाय्यक कसा काम करतो?",
-      "answer": "हा सहाय्यक नवीन वैद्यकीय मजकूर लिहीत नाही. VITALNEX सर्व्हरवर चालणारे एक भाषा मॉडेल (L3Cube IndicSBERT, CC-BY-4.0) तुम्ही काय विचारत आहात ते ओळखते, आणि उत्तर स्रोतांसह असलेल्या ठरावीक, तपासलेल्या संग्रहातून येते.",
+      "answer": "हा सहाय्यक नवीन वैद्यकीय मजकूर लिहीत नाही. VITALNEX सर्व्हरवर चालणारे एक भाषा मॉडेल (L3Cube IndicSBERT, CC-BY-4.0) तुम्ही काय विचारत आहात ते ओळखते, आणि उत्तर स्रोतांसह असलेल्या ठरावीक, आधीच लिहिलेल्या संग्रहातून येते.",
       "source_title": "Hugging Face: l3cube-pune/indic-sentence-bert-nli (CC-BY-4.0)",
       "source_url": "https://huggingface.co/l3cube-pune/indic-sentence-bert-nli"
     },

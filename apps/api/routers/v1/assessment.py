@@ -15,7 +15,7 @@ from apps.api.schemas import AssessmentRequest, AssessmentResponse, RecourseRequ
 from apps.api.services import prediction_service, review_service, screening
 from apps.api.services.prediction_service import ConsentRequiredError, shape_record
 
-router = APIRouter(tags=["Clinical Intelligence & AI Trust"])
+router = APIRouter(tags=["Screening"])
 
 
 @router.post("/assessment", response_model=AssessmentResponse)

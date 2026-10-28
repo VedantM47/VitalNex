@@ -9,7 +9,7 @@ import { api, apiFailure } from "../../lib/api-client";
 import { SUPPORTED_LANGUAGES, useTranslation, type SupportedLanguage } from "../../lib/i18n";
 
 /**
- * SPEC §5 assistant. Every reply comes from the server's fixed, reviewed library (templates, sourced
+ * SPEC §5 assistant. Every reply comes from the server's fixed, pre-written library (templates, sourced
  * FAQ, navigation). Nothing is generated here and no message is stored in the browser beyond this page.
  * D-26: when the server sets `emergency_card`, the 108 / 112 card is shown above the reply.
  */

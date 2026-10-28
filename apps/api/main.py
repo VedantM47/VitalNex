@@ -30,10 +30,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan,
-    title="VITALNEX Clinical Intelligence & Connected Care API",
+    title="VITALNEX Screening & Care-Navigation API",
     description=(
-        "Production-grade backend services for VITALNEX: clinical risk prediction, "
-        "AI Trust Passport, doctor care discovery, conversational assistance, and AI governance."
+        "MVP backend for VITALNEX (demo accounts only, not a diagnostic tool): screening levels for "
+        "diabetes, heart disease and stroke, AI Trust Passport, demo doctor booking, assistant, and AI governance."
     ),
     version=settings.VERSION,
     docs_url="/docs",

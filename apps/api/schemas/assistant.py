@@ -43,7 +43,7 @@ class AssistantMessageResponse(BaseModel):
     # normal answer, shown below the card).
     emergency_card: bool = False
     disclaimer: str = (
-        "Answers come from a fixed, reviewed library — VITALNEX does not generate medical advice. "
+        "Answers come from a fixed, pre-written library — VITALNEX does not generate medical advice. "
         "In an emergency call 108 / 112."
     )
     details: Dict[str, Any] = {}  # e.g. faq_id, faq_similarity
