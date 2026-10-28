@@ -135,16 +135,10 @@
   "status": {
     "notInMvpTitle": "Not in MVP",
     "notInMvpBody": "This feature is under development and is not part of the current version of VITALNEX.",
-    "assessmentUnavailableTitle": "Screening is being rebuilt",
-    "assessmentUnavailableBody": "VITALNEX is being rebuilt on real survey data. The risk screening will return once the new models are trained and reviewed. Until then no scores are shown. If you have symptoms such as chest pain, call 108 / 112.",
-    "noAssessmentTitle": "No assessment yet",
-    "noAssessmentBody": "Your screening results will appear here once the screening is available and you have completed it.",
     "trustUnavailableTitle": "Trust Passport not available yet",
     "trustUnavailableBody": "The Trust Passport will be generated from the real model cards once the new models are trained. No metrics are shown until then.",
     "noDataTitle": "No data yet",
-    "noDataBody": "Nothing has been recorded yet. Real figures will appear here once they exist.",
-    "profileRebuildTitle": "Health profile is being rebuilt",
-    "profileRebuildBody": "The old profile asked for lab and test values that most people do not know, and filled in default values when you left them blank. It is being replaced by a short set of questions you can answer yourself."
+    "noDataBody": "Nothing has been recorded yet. Real figures will appear here once they exist."
   },
   "auth": {
     "signInTitle": "Sign in to VITALNEX",
@@ -215,5 +209,311 @@
     "clinicianNote": "Clinician note",
     "actionsUnavailable": "Agree / override actions are not available yet.",
     "refresh": "Refresh"
+  },
+  "assess": {
+    "notDiagnosis": "This is not a diagnosis.",
+    "stepsLabel": "Screening steps",
+    "stepOf": "Step {n} of {total}",
+    "steps": {
+      "about": "About you",
+      "history": "Health history",
+      "lifestyle": "Lifestyle",
+      "feel": "How you feel",
+      "symptoms": "Symptoms check",
+      "review": "Review"
+    },
+    "next": "Next",
+    "back": "Back",
+    "submit": "See my results",
+    "edit": "Edit",
+    "yes": "Yes",
+    "no": "No",
+    "notAnswered": "Not answered",
+    "fromProfile": "From your profile",
+    "prefilledNotice": "Some answers were filled in from your saved health profile and are marked \"From your profile\". Please check each one before you continue.",
+    "requiredError": "Please answer this question.",
+    "rangeError": "Enter a number from {min} to {max}.",
+    "bmiRangeError": "This height and weight give a BMI of {bmi}, which is outside 12–70. Please check them.",
+    "unitYears": "years",
+    "unitDays": "days",
+    "daysValue": "{n} days",
+    "q": {
+      "age": "Your age (years)",
+      "ageHelp": "You must be 18 or older to use the screening.",
+      "sex": "Sex assigned at birth",
+      "sexHelp": "Used only for the risk calculation.",
+      "height": "Height (cm)",
+      "weight": "Weight (kg)",
+      "highBp": "Has a doctor or nurse ever told you that you have high blood pressure?",
+      "highChol": "Has a doctor or nurse ever told you that your cholesterol is high?",
+      "smoker": "Have you smoked at least 100 cigarettes (5 packs) in your life?",
+      "smokerHelp": "Answer yes even if you have stopped smoking.",
+      "physActivity": "In the past 30 days, did you do any physical activity or exercise other than your regular job?",
+      "fruits": "Do you eat fruit at least once a day?",
+      "veggies": "Do you eat vegetables at least once a day?",
+      "heavyAlcohol": "Do you drink more than 14 drinks a week (men) / 7 a week (women)?",
+      "genHealth": "In general, how is your health?",
+      "mentHealth": "In the past 30 days, how many days was your mental health not good?",
+      "physHealth": "In the past 30 days, how many days was your physical health not good?",
+      "daysHelp": "Enter a number from 0 to 30.",
+      "diffWalk": "Do you have serious difficulty walking or climbing stairs?"
+    },
+    "sexOption": {
+      "female": "Female",
+      "male": "Male",
+      "prefer_not_to_say": "Prefer not to say"
+    },
+    "genHealthOption": {
+      "1": "Excellent",
+      "2": "Very good",
+      "3": "Good",
+      "4": "Fair",
+      "5": "Poor"
+    },
+    "bmi": {
+      "label": "Your BMI",
+      "under": "below the healthy range",
+      "normal": "in the healthy range for South Asian adults",
+      "overweight": "overweight for South Asian adults (23 or more)",
+      "obese": "obese range for South Asian adults (27.5 or more)",
+      "note": "BMI guidance uses Asian-Indian cut-offs: overweight from 23, obese from 27.5. BMI does not show everything about your health."
+    },
+    "under18": {
+      "title": "The screening is only for adults (18 or older)",
+      "body": "VITALNEX was built from data about adults, so it cannot give a result for people under 18. If you are worried about your health, please talk to a doctor or a trusted adult. In an emergency, call 108 / 112.",
+      "change": "I entered my age wrongly"
+    },
+    "symptoms": {
+      "intro": "Do you have any of these right now? Tick all that apply.",
+      "chest_pain": "Chest pain or pressure now",
+      "stroke_signs": "Sudden face drooping, arm weakness or difficulty speaking",
+      "severe_breathlessness": "Severe breathlessness",
+      "fainting": "Fainting",
+      "none": "None ticked",
+      "tickedWarning": "These can be signs of an emergency. Call 108 / 112 now. Do not wait for a screening result.",
+      "freeText": "Anything else you want to tell us?",
+      "freeTextHelp": "Only checked for emergency warning signs. It is not saved."
+    },
+    "review": {
+      "intro": "Please check your answers. You can go back and change any of them.",
+      "consentNote": "Your answers are processed only if you allowed it in My data → Consent. They are saved to your history only if you turned on saving."
+    },
+    "errors": {
+      "signin": "Please sign in again to use the screening.",
+      "consent": "To run a screening, please turn on \"Process my answers to give me a screening result\" in your consent settings.",
+      "consentLink": "Open consent settings",
+      "validation": "Some answers were not accepted. Please check them and try again.",
+      "notFound": "This result could not be found.",
+      "unavailable": "The screening service is not available right now. Nothing was saved and no result was made. If you have symptoms such as chest pain, call 108 / 112."
+    }
+  },
+  "results": {
+    "title": "Your screening results",
+    "disclaimer": "VITALNEX is a screening and care-navigation prototype. It does not diagnose disease, does not recommend medicines, and does not replace a qualified healthcare professional. If you have chest pain, signs of stroke or severe breathlessness, call 108 / 112 now.",
+    "condition": {
+      "diabetes": "Diabetes or prediabetes",
+      "heart": "Heart disease or heart attack",
+      "stroke": "Stroke"
+    },
+    "conditionShort": {
+      "diabetes": "diabetes or prediabetes",
+      "heart": "heart disease or a heart attack",
+      "stroke": "a stroke"
+    },
+    "band": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "high": "High"
+    },
+    "similar": {
+      "low": "Your answers are less similar to people who have been told they have {condition}.",
+      "moderate": "Your answers are somewhat similar to people who have been told they have {condition}.",
+      "high": "Your answers are similar to people who have been told they have {condition}."
+    },
+    "notConfident": "Not confident — see a doctor",
+    "notConfidentBody": "VITALNEX is not confident about your answers for this condition, so no level is shown. Please see a doctor.",
+    "abstainReason": {
+      "conformal_uncertain": "Your answers fall where the model could go either way.",
+      "out_of_distribution": "Your answers are unlike most of the people the model learned from."
+    },
+    "nextStepLabel": "Next step",
+    "nextStep": {
+      "emergency": {
+        "title": "Emergency: call 108 / 112 now",
+        "body": "Emergency symptoms were reported."
+      },
+      "correct_inputs": {
+        "title": "Please correct your answers",
+        "body": "Some answers do not look possible."
+      },
+      "not_confident": {
+        "title": "VITALNEX is not confident for you. Please see a doctor.",
+        "body": "For at least one condition the screening could not give a confident level."
+      },
+      "see_doctor_soon": {
+        "title": "See a doctor soon (within 2 weeks)",
+        "body": "At least one condition is at the High level. A doctor can check this properly."
+      },
+      "discuss_next_checkup": {
+        "title": "Discuss this at your next check-up",
+        "body": "At least one condition is at the Moderate level."
+      },
+      "routine_checkup": {
+        "title": "Keep up regular check-ups",
+        "body": "All three conditions are at the Low level. Low does not mean no risk."
+      }
+    },
+    "queued": "A clinician will review this result.",
+    "notStored": "This result was not saved to your history, because saving is turned off in your consent settings.",
+    "notes": {
+      "age_under_40_less_reliable": "Results are less reliable for people under 40. In testing, VITALNEX missed more cases in younger people than in older people.",
+      "sex_not_stated_higher_band_used": "You chose not to say your sex, so VITALNEX checked both and shows the higher level for each condition.",
+      "no_clinician_review_without_consent": "This result would normally be sent for clinician review, but sharing with clinicians is turned off in your consent settings."
+    },
+    "warnings": {
+      "excellent_health_but_many_unwell_days": "You rated your health as excellent but reported many days of not feeling well. Please check these answers.",
+      "excellent_health_but_difficulty_walking": "You rated your health as excellent but reported serious difficulty walking. Please check these answers."
+    },
+    "why": {
+      "title": "Why this result?",
+      "intro": "The answers that mattered most for each condition.",
+      "none": "No factors are shown when VITALNEX is not confident."
+    },
+    "change": {
+      "title": "What you can change",
+      "intro": "The smallest realistic change in your answers that would lower a level.",
+      "unavailable": "Suggestions are not available right now.",
+      "suggestion": "If {changes}, the level for {condition} could move from {from} to {to}.",
+      "joiner": " and ",
+      "already_low": "Already at the Low level. Keep up healthy habits and regular check-ups.",
+      "abstained": "No suggestion, because VITALNEX is not confident for this condition. Please see a doctor.",
+      "no_small_change_found": "No small change in the answers you can change lowered this level. A doctor can help you plan next steps.",
+      "controlNote": "Blood pressure and cholesterol are not changed here. If you have been told you have them, keep them under control with your doctor."
+    },
+    "changeText": {
+      "weight_kg": "your weight were about {v} kg",
+      "phys_activity": "you did some physical activity",
+      "fruits": "you ate fruit every day",
+      "veggies": "you ate vegetables every day",
+      "heavy_alcohol": "you drank less alcohol",
+      "gen_health": "your general health felt {v}",
+      "ment_health_days": "your mental health was not good on {v} days a month",
+      "phys_health_days": "your physical health was not good on {v} days a month"
+    },
+    "sure": {
+      "title": "How sure is VITALNEX?",
+      "intro": "When VITALNEX is not confident, it shows no level and asks you to see a doctor.",
+      "confident": "Confident",
+      "notConfident": "Not confident",
+      "missRate": "In testing, for every 100 people who had been told they have {condition}, about {n} were shown as Low.",
+      "trustLink": "See the Trust Passport"
+    },
+    "shared": {
+      "title": "Shared factors",
+      "intro": "Answers that mattered for more than one condition.",
+      "none": "No answer mattered for more than one condition in this result.",
+      "raises": "more similar",
+      "lowers": "less similar"
+    },
+    "features": {
+      "Age": "Age",
+      "Sex": "Sex",
+      "BMI": "Body-mass index (BMI)",
+      "Height": "Height",
+      "Weight": "Weight",
+      "HighBP": "Told you have high blood pressure",
+      "HighChol": "Told your cholesterol is high",
+      "Smoker": "Smoking history",
+      "PhysActivity": "Physical activity",
+      "Fruits": "Fruit",
+      "Veggies": "Vegetables",
+      "HvyAlcoholConsump": "Alcohol use",
+      "GenHlth": "General health",
+      "MentHlth": "Days mental health not good",
+      "PhysHlth": "Days physical health not good",
+      "DiffWalk": "Difficulty walking or climbing stairs"
+    },
+    "guidance": {
+      "title": "General guidance",
+      "intro": "From public WHO and ICMR material. Not personal medical advice.",
+      "source": "Source:"
+    },
+    "correct": {
+      "title": "Please check your answers",
+      "body": "Some answers do not look possible, so no result was made.",
+      "bmi": "Your height and weight give a BMI outside 12–70.",
+      "back": "Go back to my answers"
+    },
+    "newAssessment": "Start a new screening",
+    "toHistory": "See my history",
+    "bookDoctor": "Find a doctor"
+  },
+  "whatIf": {
+    "title": "What if…?",
+    "intro": "Change the answers you can change and see how the levels would move. Nothing is saved.",
+    "weight": "Weight",
+    "run": "Show the new levels",
+    "reset": "Reset",
+    "before": "Before",
+    "after": "After",
+    "noChanges": "Change at least one answer first.",
+    "fixedNote": "Age, sex, blood pressure, cholesterol and difficulty walking are not changed here.",
+    "smokerNote": "The question asks whether you have ever smoked 100 cigarettes, so the answer cannot change back. Quitting still lowers your real-world risk of heart disease and stroke.",
+    "estimateNote": "These are estimates from the model, not a promise. This is not a diagnosis."
+  },
+  "emergency": {
+    "title": "Call for emergency help now",
+    "body": "The symptoms you reported can be signs of a heart attack or stroke. Call an ambulance now. Do not drive yourself.",
+    "call108": "Call 108",
+    "call112": "Call 112",
+    "noScores": "No screening levels are shown, because these symptoms need urgent care.",
+    "back": "Back to my answers"
+  },
+  "historyPage": {
+    "subtitle": "Your saved screenings. Levels only — this is not a diagnosis.",
+    "trendTitle": "Levels over time",
+    "trendIntro": "Each line is one condition. A gap means VITALNEX was not confident that time.",
+    "trendAria": "Chart of screening levels over time for diabetes, heart disease and stroke",
+    "trendEmpty": "No levels to show over time yet.",
+    "listTitle": "All screenings",
+    "emptyTitle": "No screenings yet",
+    "emptyBody": "Your screening results will appear here after you complete a screening with saving turned on.",
+    "unavailableTitle": "History is not available",
+    "demo": "Demo",
+    "reviewed": "Reviewed by a clinician",
+    "reviewPending": "Waiting for clinician review",
+    "clinicianNote": "Clinician note",
+    "emergencyRow": "Emergency symptoms reported — no levels shown",
+    "clinicianLevel": "Clinician's level",
+    "hiddenTitle": "History is hidden",
+    "hiddenBody": "You withdrew consent to keep your screening history, so it is not shown. You can turn it on again in My data → Consent."
+  },
+  "healthProfilePage": {
+    "subtitle": "The same questions as the screening. Every answer is optional here.",
+    "intro": "Saved answers are filled in for you on the screening form and marked \"From your profile\". Questions you leave empty stay empty.",
+    "language": "Language",
+    "languageHelp": "The language for VITALNEX and your results.",
+    "languageFailed": "The language was changed on this device but could not be saved to your account.",
+    "clear": "Clear",
+    "saved": "Your health profile was saved.",
+    "saveFailed": "Your health profile could not be saved. Please try again later.",
+    "loadFailed": "Your health profile is not available right now. Please sign in, or try again later."
+  },
+  "home": {
+    "welcome": "Welcome",
+    "demoAccount": "Demo account",
+    "subtitle": "Your screening overview and care.",
+    "latestTitle": "Latest screening",
+    "viewHistory": "Full history",
+    "upcoming": "Upcoming appointment",
+    "careBody": "Browse demo clinicians and book a demo appointment. All doctors in the MVP are synthetic.",
+    "careButton": "Find a demo clinician",
+    "trustBody": "How VITALNEX works, how well it was tested, and where it can be wrong.",
+    "quick": {
+      "start": "Start screening",
+      "history": "History",
+      "profile": "Health profile",
+      "care": "Find a clinician"
+    }
   }
 }

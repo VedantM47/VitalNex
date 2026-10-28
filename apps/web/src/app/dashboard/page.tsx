@@ -1,272 +1,167 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+// P5: overview from real data only — latest assessment (bands per condition, no
+// probabilities, D-10), band trend, and appointments. Empty states when nothing exists.
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Activity,
-  ShieldCheck,
-  Stethoscope,
-  Calendar,
-  Sparkles,
-  ArrowRight,
-  TrendingDown,
-  TrendingUp,
-  Download,
-  FileText,
-  Clock,
-  ChevronRight,
-  CheckCircle2,
-} from "lucide-react";
+import { Activity, Calendar, ChevronRight, Clock, FileText, ShieldCheck, Stethoscope, User } from "lucide-react";
 import { AppShell } from "../../components/layout/AppShell";
 import { Card, CardHeader } from "../../components/ui/Card";
-import { StatCard } from "../../components/ui/StatCard";
-import { RiskBadge, StatusBadge, DemoBadge } from "../../components/ui/StatusBadge";
+import { DemoBadge, StatusBadge } from "../../components/ui/StatusBadge";
 import { Button } from "../../components/ui/Button";
+import { AssessmentRow } from "../../components/assessment/AssessmentRow";
+import { BandTrendChart } from "../../components/assessment/BandTrendChart";
 import { useAuth } from "../../lib/auth-context";
 import { useTranslation } from "../../lib/i18n";
-import { api } from "../../lib/api-client";
+import { api, apiFailure, type ApiFailure } from "../../lib/api-client";
+import type { AssessmentRecord } from "../../lib/assessment";
+
+interface Appointment {
+  id: string;
+  status: string;
+  doctor_name?: string;
+  consultation_type?: string;
+  appointment_time?: string;
+  location?: string;
+}
+
+interface DashboardData {
+  assessments: AssessmentRecord[];
+  historyFailure: ApiFailure | null;
+  appointments: Appointment[];
+}
+
+async function fetchDashboard(): Promise<DashboardData> {
+  const [history, appointments] = await Promise.allSettled([api.getAssessmentHistory(), api.getAppointments()]);
+  return {
+    assessments: history.status === "fulfilled" ? history.value?.assessments ?? [] : [],
+    historyFailure: history.status === "rejected" ? apiFailure(history.reason) : null,
+    appointments: appointments.status === "fulfilled" && Array.isArray(appointments.value) ? appointments.value : [],
+  };
+}
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const userId = user?.id ?? null;
-
-  const [loading, setLoading] = useState(true);
-  const [latestAssessment, setLatestAssessment] = useState<any>(null);
-  const [appointments, setAppointments] = useState<any[]>([]);
-  const [profileCompleteness, setProfileCompleteness] = useState<number | null>(null);
+  const [data, setData] = useState<DashboardData | null>(null);
 
   useEffect(() => {
     let active = true;
-    const fetchDashboardData = async () => {
-      setLoading(true);
-      try {
-        // Fetch Assessment History
-        const historyData = await api.getAssessmentHistory();
-        if (active && historyData?.assessments && historyData.assessments.length > 0) {
-          setLatestAssessment(historyData.assessments[0]);
-        }
-
-        // Fetch Scheduled Appointments
-        const aptsData = await api.getAppointments();
-        if (active && Array.isArray(aptsData)) {
-          setAppointments(aptsData);
-        }
-
-        // Fetch Health Profile for completeness calculation
-        const hp = await api.getHealthProfile();
-        if (active && hp) {
-          setProfileCompleteness(typeof hp.completeness_score === "number" ? hp.completeness_score : null);
-        }
-      } catch (err) {
-        console.warn("Dashboard data fetch warning:", err);
-      } finally {
-        if (active) setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
+    fetchDashboard().then((d) => active && setData(d));
     return () => {
       active = false;
     };
   }, [userId]);
 
-  const nextAppointment = appointments.find((a) => a.status === "confirmed" || a.status === "scheduled") || appointments[0];
+  const latest = data?.assessments[0];
+  const nextAppointment =
+    data?.appointments.find((a) => a.status === "confirmed" || a.status === "scheduled") ?? data?.appointments[0];
+
+  const quick = [
+    { href: "/risk-assessment", icon: Activity, key: "start" },
+    { href: "/history", icon: Clock, key: "history" },
+    { href: "/health-profile", icon: User, key: "profile" },
+    { href: "/care-connect", icon: Stethoscope, key: "care" },
+  ];
 
   return (
     <AppShell>
       <div className="space-y-8">
-        {/* Header Banner */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8E2EA] pb-6">
+        <div className="flex flex-col justify-between gap-4 border-b border-[#D8E2EA] pb-6 sm:flex-row sm:items-center">
           <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B1F33]">
-                {t("dashboard.welcome")}, {user?.fullName || "Patient"}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h1 className="text-2xl font-extrabold text-[#0B1F33] sm:text-3xl">
+                {t("home.welcome")}
+                {user?.fullName ? `, ${user.fullName}` : ""}
               </h1>
-              {user?.isDemo && <DemoBadge label="Demo Environment" />}
+              {user?.isDemo && <DemoBadge label={t("home.demoAccount")} />}
             </div>
-            <p className="text-xs sm:text-sm text-[#475569]">
-              Your screening overview and care.
-            </p>
+            <p className="text-xs text-[#475569] sm:text-sm">{t("home.subtitle")}</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href="/risk-assessment">
-              <Button size="md" variant="primary" rightIcon={<Activity className="w-4 h-4" />}>
-                {t("dashboard.btnStartAssessment")}
-              </Button>
-            </Link>
-          </div>
+          <Link href="/risk-assessment">
+            <Button size="md" variant="primary" rightIcon={<Activity className="h-4 w-4" />}>
+              {t("dashboard.btnStartAssessment")}
+            </Button>
+          </Link>
         </div>
 
-        {/* Compact Overview Grid (3 Cards) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Latest Risk Screening */}
-          <StatCard
-            label="Latest Risk Screening"
-            value={latestAssessment ? `${latestAssessment.risk_score}%` : "No Screening Yet"}
-            subtext={latestAssessment ? `${latestAssessment.risk_band} Risk Stratum` : "Complete a screening to compute baseline"}
-            icon={<Activity className="w-5 h-5 text-[#0E7490]" />}
-          />
-
-          {/* Card 2: Profile Completeness */}
-          <StatCard
-            label="Health Profile Completeness"
-            value={profileCompleteness !== null ? `${profileCompleteness}%` : "No profile yet"}
-            subtext="From your saved health profile"
-            icon={<ShieldCheck className="w-5 h-5 text-[#0F766E]" />}
-          />
-
-          {/* Card 3: Upcoming Appointment */}
-          <StatCard
-            label="Next Scheduled Care"
-            value={nextAppointment ? nextAppointment.doctor_name : "No Appointments"}
-            subtext={nextAppointment ? `${nextAppointment.consultation_type} • ${nextAppointment.appointment_time}` : "Schedule a specialist consultation"}
-            icon={<Calendar className="w-5 h-5 text-[#0B1F33]" />}
-          />
-        </div>
-
-        {/* Main Section: Latest Risk Assessment Summary */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-8 space-y-6">
-            <Card className="p-6 sm:p-8 space-y-6">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+          <div className="space-y-6 lg:col-span-8">
+            <Card className="space-y-4">
               <CardHeader
-                title="Latest Risk Assessment Summary"
-                subtitle="Your most recent screening."
-                badge={
-                  latestAssessment ? (
-                    <RiskBadge band={latestAssessment.risk_band} />
-                  ) : (
-                    <StatusBadge label="Screening Required" variant="neutral" size="sm" />
-                  )
-                }
+                title={t("home.latestTitle")}
+                subtitle={t("assess.notDiagnosis")}
                 action={
-                  <Link href="/risk-assessment">
-                    <Button variant="outline" size="sm" rightIcon={<ChevronRight className="w-3.5 h-3.5" />}>
-                      Full Risk Analysis
-                    </Button>
-                  </Link>
+                  latest ? (
+                    <Link href="/history">
+                      <Button variant="outline" size="sm" rightIcon={<ChevronRight className="h-3.5 w-3.5" />}>
+                        {t("home.viewHistory")}
+                      </Button>
+                    </Link>
+                  ) : undefined
                 }
               />
-
-              {latestAssessment ? (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-[#F8FAFC] rounded-2xl border border-[#D8E2EA]">
-                    <div>
-                      <p className="text-xs text-[#64748B]">Calculated Risk Index</p>
-                      <p className="text-3xl font-extrabold text-[#0B1F33] mt-1">{latestAssessment.risk_score}%</p>
-                      <p className="text-[11px] text-[#0F766E] font-semibold mt-0.5">{latestAssessment.risk_band} Risk Stratum</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-[#64748B]">Clinical Review Gate</p>
-                      <p className="text-sm font-bold text-[#0F766E] mt-2">
-                        {latestAssessment.human_review_status === "Pending" ? "Physician Review Advised" : "Automated Gate"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs">
-                    <span className="text-[#64748B]">Model Engine: {latestAssessment.model_version}</span>
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={api.getReportPdfUrl(latestAssessment.id)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[#0E7490] hover:underline font-semibold flex items-center gap-1"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>Download PDF Report</span>
-                      </a>
-                      <Link
-                        href={`/ai-trust?id=${latestAssessment.id}`}
-                        className="text-[#0B1F33] hover:underline font-semibold flex items-center gap-1"
-                      >
-                        <span>AI Trust Passport</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+              {data === null ? (
+                <p className="text-sm text-[#475569]" aria-live="polite">
+                  {t("common.loading")}
+                </p>
+              ) : data.historyFailure ? (
+                <p className="rounded-2xl border border-[#D8E2EA] bg-[#F8FAFC] p-4 text-sm text-[#334155]">
+                  {t(`assess.errors.${data.historyFailure}`)}
+                </p>
+              ) : latest ? (
+                <ul>
+                  <AssessmentRow record={latest} />
+                </ul>
               ) : (
-                <div className="p-8 text-center space-y-4 bg-[#F8FAFC] rounded-2xl border border-[#D8E2EA]">
-                  <Activity className="w-10 h-10 text-[#94A3B8] mx-auto" />
-                  <div>
-                    <h3 className="font-bold text-base text-[#0B1F33]">{t("status.noAssessmentTitle")}</h3>
-                    <p className="text-xs text-[#64748B] max-w-md mx-auto mt-1">
-                      {t("status.noAssessmentBody")}
-                    </p>
-                  </div>
-                  <Link href="/risk-assessment">
-                    <Button variant="primary" size="md">
-                      Start Risk Screening
-                    </Button>
-                  </Link>
+                <div className="space-y-3 rounded-2xl border border-[#D8E2EA] bg-[#F8FAFC] p-8 text-center">
+                  <Activity className="mx-auto h-10 w-10 text-[#64748B]" aria-hidden="true" />
+                  <h3 className="text-base font-bold text-[#0B1F33]">{t("historyPage.emptyTitle")}</h3>
+                  <p className="mx-auto max-w-md text-xs text-[#475569]">{t("historyPage.emptyBody")}</p>
                 </div>
               )}
             </Card>
 
-            {/* Quick Actions Grid (4 Actions) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <Link href="/risk-assessment" className="block">
-                <Card className="p-4 space-y-2 hover:border-[#0E7490] hover:shadow-xs transition-all cursor-pointer h-full">
-                  <div className="p-2 bg-[#0E7490]/10 rounded-xl text-[#0E7490] w-fit">
-                    <Activity className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-bold text-xs text-[#0B1F33]">Start Assessment</h4>
-                  <p className="text-[11px] text-[#64748B]">Screening</p>
-                </Card>
-              </Link>
+            {data && data.assessments.length > 1 && (
+              <Card className="space-y-4">
+                <CardHeader title={t("historyPage.trendTitle")} subtitle={t("historyPage.trendIntro")} />
+                <BandTrendChart records={data.assessments} />
+              </Card>
+            )}
 
-              <Link href="/history" className="block">
-                <Card className="p-4 space-y-2 hover:border-[#0E7490] hover:shadow-xs transition-all cursor-pointer h-full">
-                  <div className="p-2 bg-[#0F766E]/10 rounded-xl text-[#0F766E] w-fit">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-bold text-xs text-[#0B1F33]">View History</h4>
-                  <p className="text-[11px] text-[#64748B]">Risk trajectory timeline</p>
-                </Card>
-              </Link>
-
-              <Link href="/care-connect" className="block">
-                <Card className="p-4 space-y-2 hover:border-[#0E7490] hover:shadow-xs transition-all cursor-pointer h-full">
-                  <div className="p-2 bg-[#0B1F33]/10 rounded-xl text-[#0B1F33] w-fit">
-                    <Stethoscope className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-bold text-xs text-[#0B1F33]">Find Clinician</h4>
-                  <p className="text-[11px] text-[#64748B]">Demo clinicians</p>
-                </Card>
-              </Link>
-
-              <Link href="/reports" className="block">
-                <Card className="p-4 space-y-2 hover:border-[#0E7490] hover:shadow-xs transition-all cursor-pointer h-full">
-                  <div className="p-2 bg-[#0E7490]/10 rounded-xl text-[#0E7490] w-fit">
-                    <FileText className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-bold text-xs text-[#0B1F33]">Clinical Reports</h4>
-                  <p className="text-[11px] text-[#64748B]">Download PDF summaries</p>
-                </Card>
-              </Link>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {quick.map(({ href, icon: Icon, key }) => (
+                <Link key={key} href={href} className="block rounded-2xl focus-visible:outline-2 focus-visible:outline-[#0E7490]">
+                  <Card className="h-full space-y-2 p-4 hover:border-[#0E7490]">
+                    <div className="w-fit rounded-xl bg-[#0E7490]/10 p-2 text-[#0E7490]">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <h2 className="text-xs font-bold text-[#0B1F33]">{t(`home.quick.${key}`)}</h2>
+                  </Card>
+                </Link>
+              ))}
             </div>
           </div>
 
-          {/* Side Column: Care Connect & Appointments */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Next Appointment / Care Connect Card */}
+          <div className="space-y-6 lg:col-span-4">
             {nextAppointment ? (
-              <Card className="p-6 space-y-4 border-[#0E7490]/40">
-                <div className="flex items-center justify-between">
+              <Card className="space-y-4">
+                <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-[#0E7490]" />
-                    <h3 className="font-bold text-sm text-[#0B1F33]">Upcoming Consultation</h3>
+                    <Calendar className="h-5 w-5 text-[#0E7490]" aria-hidden="true" />
+                    <h2 className="text-sm font-bold text-[#0B1F33]">{t("home.upcoming")}</h2>
                   </div>
-                  <StatusBadge label={nextAppointment.status.toUpperCase()} variant="info" size="sm" />
+                  <StatusBadge label={nextAppointment.status} variant="info" size="sm" />
                 </div>
-
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA] space-y-2 text-xs">
-                  <p className="font-bold text-[#0B1F33] text-sm">{nextAppointment.doctor_name}</p>
-                  <p className="text-[#64748B]">{nextAppointment.consultation_type} • {nextAppointment.appointment_time}</p>
-                  <p className="text-[#0F766E] font-semibold">{nextAppointment.location}</p>
+                <div className="space-y-1 rounded-xl border border-[#D8E2EA] bg-[#F8FAFC] p-4 text-xs">
+                  {nextAppointment.doctor_name && <p className="text-sm font-bold text-[#0B1F33]">{nextAppointment.doctor_name}</p>}
+                  <p className="text-[#475569]">
+                    {[nextAppointment.consultation_type, nextAppointment.appointment_time].filter(Boolean).join(" • ")}
+                  </p>
+                  {nextAppointment.location && <p className="font-semibold text-[#0F766E]">{nextAppointment.location}</p>}
                 </div>
-
                 <Link href="/appointments" className="block">
                   <Button variant="primary" size="md" className="w-full">
                     {t("nav.appointments")}
@@ -274,34 +169,29 @@ export default function DashboardPage() {
                 </Link>
               </Card>
             ) : (
-              <Card className="p-6 space-y-4 bg-gradient-to-br from-[#0B1F33] to-[#132E4A] text-white">
+              <Card className="space-y-4 bg-linear-to-br from-[#0B1F33] to-[#132E4A] text-white">
                 <div className="flex items-center gap-2">
-                  <Stethoscope className="w-5 h-5 text-[#22C1DC]" />
-                  <h3 className="font-bold text-sm">Care Connect</h3>
+                  <Stethoscope className="h-5 w-5 text-[#22C1DC]" aria-hidden="true" />
+                  <h2 className="text-sm font-bold">{t("nav.careConnect")}</h2>
                 </div>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
-                  Browse demo clinicians and book a demo appointment. All doctors in the MVP are synthetic.
-                </p>
-                <Link href="/care-connect" className="block pt-2">
+                <p className="text-xs leading-relaxed text-[#E2E8F0]">{t("home.careBody")}</p>
+                <Link href="/care-connect" className="block">
                   <Button variant="teal" size="sm" className="w-full">
-                    Find a demo clinician
+                    {t("home.careButton")}
                   </Button>
                 </Link>
               </Card>
             )}
 
-            {/* AI Trust Passport Link Card */}
-            <Card className="p-6 space-y-4">
+            <Card className="space-y-4">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-[#0F766E]" />
-                <h3 className="font-bold text-sm text-[#0B1F33]">AI Trust &amp; Governance</h3>
+                <ShieldCheck className="h-5 w-5 text-[#0F766E]" aria-hidden="true" />
+                <h2 className="text-sm font-bold text-[#0B1F33]">{t("nav.aiTrust")}</h2>
               </div>
-              <p className="text-xs text-[#475569] leading-relaxed">
-                How VITALNEX works and where it can be wrong. Metrics will appear once the new models are trained.
-              </p>
+              <p className="text-xs leading-relaxed text-[#475569]">{t("home.trustBody")}</p>
               <Link href="/ai-trust" className="block">
-                <Button variant="outline" size="sm" className="w-full">
-                  Inspect Trust Passport
+                <Button variant="outline" size="sm" className="w-full" leftIcon={<FileText className="h-3.5 w-3.5" />}>
+                  {t("results.sure.trustLink")}
                 </Button>
               </Link>
             </Card>

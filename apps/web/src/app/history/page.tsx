@@ -1,125 +1,108 @@
 "use client";
 
-// P0: hardcoded fallback assessments and default vitals were removed. This page now
-// lists only what the API returns; the trend chart per disease comes in P5.
+// P5: real assessments only (GET /api/v1/assessment/history), a band-over-time chart per
+// condition, and clinician review badges/notes. No probabilities (D-10); empty and error
+// states are shown honestly.
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Activity, Clock, Download, RefreshCw } from "lucide-react";
+import { Activity, Clock, RefreshCw } from "lucide-react";
 import { AppShell } from "../../components/layout/AppShell";
 import { Card, CardHeader } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { EmptyState } from "../../components/ui/EmptyState";
-import { RiskBadge } from "../../components/ui/StatusBadge";
-import { api } from "../../lib/api-client";
+import { BandTrendChart } from "../../components/assessment/BandTrendChart";
+import { AssessmentRow } from "../../components/assessment/AssessmentRow";
+import { api, apiFailure, type ApiFailure } from "../../lib/api-client";
 import { useTranslation } from "../../lib/i18n";
 import { useAuth } from "../../lib/auth-context";
+import type { AssessmentRecord } from "../../lib/assessment";
+
+interface Loaded {
+  assessments: AssessmentRecord[];
+  hidden: boolean;
+  failure: ApiFailure | null;
+}
+
+async function fetchAll(): Promise<Loaded> {
+  try {
+    const data = await api.getAssessmentHistory();
+    return { assessments: data?.assessments ?? [], hidden: !!data?.hidden, failure: null };
+  } catch (err) {
+    return { assessments: [], hidden: false, failure: apiFailure(err) };
+  }
+}
 
 export default function HistoryPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const userId = user?.id ?? null;
-
-  const [assessments, setAssessments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState(false);
-
-  const fetchHistory = async () => {
-    try {
-      const data = await api.getAssessmentHistory();
-      return { assessments: data?.assessments || [], error: false };
-    } catch (err) {
-      console.error("Failed to load history:", err);
-      return { assessments: [], error: true };
-    }
-  };
-
-  const applyResult = (result: { assessments: any[]; error: boolean }) => {
-    setAssessments(result.assessments);
-    setLoadError(result.error);
-    setLoading(false);
-  };
-
-  const reload = async () => {
-    setLoading(true);
-    applyResult(await fetchHistory());
-  };
+  const [state, setState] = useState<Loaded | null>(null);
+  const [reloading, setReloading] = useState(false);
 
   useEffect(() => {
     let active = true;
-    fetchHistory().then((result) => {
-      if (active) applyResult(result);
-    });
+    fetchAll().then((r) => active && setState(r));
     return () => {
       active = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  const reload = async () => {
+    setReloading(true);
+    setState(await fetchAll());
+    setReloading(false);
+  };
 
   return (
     <AppShell>
       <div className="space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8E2EA] pb-6">
+        <div className="flex flex-col justify-between gap-4 border-b border-[#D8E2EA] pb-6 sm:flex-row sm:items-center">
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B1F33]">{t("nav.history")}</h1>
+            <h1 className="text-2xl font-extrabold text-[#0B1F33] sm:text-3xl">{t("nav.history")}</h1>
+            <p className="text-xs text-[#475569] sm:text-sm">{t("historyPage.subtitle")}</p>
           </div>
-          <Button variant="outline" size="sm" onClick={reload} isLoading={loading}>
-            <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+          <Button variant="outline" size="sm" onClick={reload} isLoading={reloading} leftIcon={<RefreshCw className="h-3.5 w-3.5" />}>
             {t("common.retry")}
           </Button>
         </div>
 
-        {loading ? (
-          <p className="text-sm text-[#64748B]">{t("common.loading")}</p>
-        ) : loadError ? (
-          <EmptyState title={t("common.error")} description={t("status.noDataBody")} />
-        ) : assessments.length === 0 ? (
+        {state === null ? (
+          <p className="text-sm text-[#475569]" aria-live="polite">
+            {t("common.loading")}
+          </p>
+        ) : state.failure ? (
+          <EmptyState title={t("historyPage.unavailableTitle")} description={t(`assess.errors.${state.failure}`)} />
+        ) : state.hidden ? (
+          <EmptyState title={t("historyPage.hiddenTitle")} description={t("historyPage.hiddenBody")} />
+        ) : state.assessments.length === 0 ? (
           <EmptyState
-            icon={<Clock className="w-8 h-8" aria-hidden="true" />}
-            title={t("status.noAssessmentTitle")}
-            description={t("status.noAssessmentBody")}
+            icon={<Clock className="h-8 w-8" aria-hidden="true" />}
+            title={t("historyPage.emptyTitle")}
+            description={t("historyPage.emptyBody")}
             action={
               <Link href="/risk-assessment">
-                <Button variant="primary" size="sm">
-                  <Activity className="w-3.5 h-3.5 mr-1.5" />
-                  {t("nav.riskAssessment")}
+                <Button variant="primary" size="sm" leftIcon={<Activity className="h-3.5 w-3.5" />}>
+                  {t("dashboard.btnStartAssessment")}
                 </Button>
               </Link>
             }
           />
         ) : (
-          <Card className="p-6 sm:p-8 space-y-6">
-            <CardHeader title={t("nav.history")} />
-            <ul className="space-y-3">
-              {assessments.map((item: any) => (
-                <li
-                  key={item.id}
-                  className="p-4 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] flex flex-wrap items-center justify-between gap-3 text-xs"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-[#0B1F33]">
-                      {new Date(item.evaluated_at).toLocaleDateString("en-IN", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
-                    <RiskBadge band={item.risk_band} />
-                    <span className="text-[#64748B]">{item.model_version}</span>
-                  </div>
-                  <a
-                    href={api.getReportPdfUrl(item.id)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 font-semibold text-[#0E7490] hover:underline"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    PDF
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          <>
+            <Card className="space-y-4">
+              <CardHeader title={t("historyPage.trendTitle")} subtitle={t("historyPage.trendIntro")} />
+              <BandTrendChart records={state.assessments} />
+            </Card>
+            <Card className="space-y-4">
+              <CardHeader title={t("historyPage.listTitle")} subtitle={t("assess.notDiagnosis")} />
+              <ul className="space-y-3">
+                {state.assessments.map((a) => (
+                  <AssessmentRow key={a.id} record={a} />
+                ))}
+              </ul>
+            </Card>
+          </>
         )}
       </div>
     </AppShell>

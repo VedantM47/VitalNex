@@ -5,6 +5,17 @@
  */
 
 import { createClient } from "./supabase/client";
+import type {
+  AssessmentAnswers,
+  AssessmentRecord,
+  AssessmentRequest,
+  AssessmentResponse,
+  Changes,
+  HistoryResponse,
+  Lang,
+  RecourseResponse,
+  WhatIfResponse,
+} from "./assessment";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -12,6 +23,20 @@ export class ApiError extends Error {
   constructor(public status: number, public detail: string) {
     super(`API ${status}: ${detail}`);
   }
+}
+
+/** What kind of failure an API call had, so pages can show an honest message. */
+export type ApiFailure = "signin" | "consent" | "validation" | "notFound" | "unavailable";
+
+export function apiFailure(err: unknown): ApiFailure {
+  if (err instanceof ApiError) {
+    if (err.status === 401) return "signin";
+    if (err.status === 403) return "consent";
+    if (err.status === 404) return "notFound";
+    if (err.status === 422) return "validation";
+  }
+  // Network errors (API not running) and 5xx / 503 (e.g. Supabase not configured).
+  return "unavailable";
 }
 
 async function authHeader(): Promise<Record<string, string>> {
@@ -68,13 +93,16 @@ export const api = {
 
   // Health Profile
   getHealthProfile: () => fetchApi<any>("/api/v1/health-profile"),
-  updateHealthProfile: (data: any) =>
-    fetchApi<any>("/api/v1/health-profile", { method: "PUT", body: JSON.stringify(data) }),
 
-  // Clinical Risk Assessment
-  runAssessment: (payload: any) =>
-    fetchApi<any>("/api/v1/assessment", { method: "POST", body: JSON.stringify(payload) }),
-  getAssessment: (id: string) => fetchApi<any>(`/api/v1/assessment/${id}`),
+  // Screening (P4 API). Patients receive bands and text only (D-10).
+  runAssessment: (payload: AssessmentRequest) =>
+    fetchApi<AssessmentResponse>("/api/v1/assessment", { method: "POST", body: JSON.stringify(payload) }),
+  getAssessment: (id: string) => fetchApi<AssessmentRecord>(`/api/v1/assessment/${id}`),
+  getAssessmentHistory: () => fetchApi<HistoryResponse>("/api/v1/assessment/history"),
+  runWhatIf: (payload: { base: AssessmentAnswers; changes: Changes; language: Lang }) =>
+    fetchApi<WhatIfResponse>("/api/v1/what-if", { method: "POST", body: JSON.stringify(payload) }),
+  getRecourse: (payload: { base: AssessmentAnswers; language: Lang }) =>
+    fetchApi<RecourseResponse>("/api/v1/recourse", { method: "POST", body: JSON.stringify(payload) }),
 
   // AI Trust Passport
   getTrustPassport: (assessmentId: string) => fetchApi<any>(`/api/v1/trust-passport/${assessmentId}`),
@@ -111,15 +139,9 @@ export const api = {
       body: JSON.stringify({ audio_base64: audioBase64, language }),
     }),
 
-  // What-If Model Simulator
-  runWhatIf: (payload: any) => fetchApi<any>("/api/v1/what-if", { method: "POST", body: JSON.stringify(payload) }),
-
   // Reports (PDF rebuilt in P9)
   getReports: () => fetchApi<any[]>("/api/v1/reports"),
   getReportPdfUrl: (assessmentId: string) => `${API_BASE}/api/v1/reports/${assessmentId}/pdf`,
-
-  // Assessment history (signed-in patient)
-  getAssessmentHistory: () => fetchApi<any>("/api/v1/assessment/history"),
 
   // Model registry & governance
   getModels: () => fetchApi<any[]>("/api/v1/models"),
