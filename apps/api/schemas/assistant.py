@@ -32,11 +32,15 @@ class AssistantMessageResponse(BaseModel):
     id: str
     response: str
     language: str
+    intent: Optional[str] = None  # one of the SPEC §5 intents, or UNAVAILABLE
+    confidence: Optional[float] = None  # classifier probability; None when a deterministic rule decided
+    decided_by: Optional[str] = None  # rule | classifier | abstain | unavailable
     suggestions: List[ActionSuggestion] = []
-    citations: List[Dict[str, str]] = []
+    citations: List[Dict[str, str]] = []  # {"title", "url"} for FAQ / guidance answers
     escalation_recommended: bool = False
     disclaimer: str = (
-        "VITALNEX AI Health Assistant is for educational health guidance. "
-        "For acute or emergency symptoms, seek immediate professional emergency medical care."
+        "Answers come from a fixed, reviewed library — VITALNEX does not generate medical advice. "
+        "In an emergency call 108 / 112."
     )
+    details: Dict[str, Any] = {}  # e.g. faq_id, faq_similarity
     timestamp: datetime

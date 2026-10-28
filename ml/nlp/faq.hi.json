@@ -1,0 +1,479 @@
+{
+  "_review": "pending",
+  "_note": "Curated FAQ for the VITALNEX assistant (SPEC §5, D-13). Short, general, non-diagnostic answers; no medicine is named or dosed. Every source URL was checked to return HTTP 200 when written. Same ids in en/hi/mr. Wording is machine-authored and not yet reviewed by a clinician; Hindi/Marathi also listed in docs/i18n_review_p8.md.",
+  "language": "hi",
+  "entries": [
+    {
+      "id": "dia_what",
+      "topic": "diabetes",
+      "question": "डायबिटीज़ (मधुमेह) क्या है?",
+      "answer": "मधुमेह एक लंबी चलने वाली स्थिति है जिसमें खून में शुगर (ग्लूकोज़) ज़्यादा रहती है, क्योंकि शरीर शुगर को नियंत्रित करने वाला हार्मोन पर्याप्त नहीं बनाता या उसका ठीक से उपयोग नहीं कर पाता।",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    },
+    {
+      "id": "dia_prediabetes",
+      "topic": "diabetes",
+      "question": "प्रीडायबिटीज़ क्या है?",
+      "answer": "प्रीडायबिटीज़ का मतलब है कि खून में शुगर सामान्य से ज़्यादा है, लेकिन इतनी नहीं कि उसे डायबिटीज़ कहा जाए। जीवनशैली में बदलाव से शुगर और टाइप 2 डायबिटीज़ की संभावना कम करने में मदद मिल सकती है।",
+      "source_title": "NHS: Type 2 diabetes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/"
+    },
+    {
+      "id": "dia_symptoms",
+      "topic": "diabetes",
+      "question": "टाइप 2 डायबिटीज़ के लक्षण क्या हैं?",
+      "answer": "आम संकेत हैं: बहुत प्यास लगना, बार-बार पेशाब आना (खासकर रात में), थकान, बिना कोशिश वज़न घटना, धुंधला दिखना और घाव देर से भरना। कई लोगों में शुरू में कोई लक्षण नहीं होते।",
+      "source_title": "NHS: Symptoms of type 2 diabetes and how it's diagnosed",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/symptoms/"
+    },
+    {
+      "id": "dia_causes",
+      "topic": "diabetes",
+      "question": "टाइप 2 डायबिटीज़ किस कारण से होती है?",
+      "answer": "टाइप 2 डायबिटीज़ का संबंध ज़्यादा वज़न, शारीरिक रूप से सक्रिय न रहने, पारिवारिक इतिहास और उम्र से है। दक्षिण एशियाई मूल के लोगों में यह खतरा कम उम्र (25 से ऊपर) से ही ज़्यादा होता है।",
+      "source_title": "NHS: Type 2 diabetes – causes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/causes/"
+    },
+    {
+      "id": "dia_family",
+      "topic": "diabetes",
+      "question": "क्या डायबिटीज़ खानदानी होती है?",
+      "answer": "पारिवारिक इतिहास से टाइप 2 डायबिटीज़ की संभावना बढ़ती है: माता-पिता, भाई या बहन को होना एक जाना-माना जोखिम कारक है। इसका मतलब यह नहीं कि आपको यह ज़रूर होगी।",
+      "source_title": "NHS: Type 2 diabetes – causes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/causes/"
+    },
+    {
+      "id": "dia_lifestyle",
+      "topic": "diabetes",
+      "question": "क्या जीवनशैली से टाइप 2 डायबिटीज़ या प्रीडायबिटीज़ में सुधार हो सकता है?",
+      "answer": "हाँ, सेहतमंद खाना, ज़्यादा सक्रिय रहना और ज़्यादा वज़न हो तो उसे घटाना — ऐसे बदलावों से खून की शुगर कम हो सकती है। आपके लिए क्या सही है, यह डॉक्टर से पूछें।",
+      "source_title": "NHS: Type 2 diabetes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/"
+    },
+    {
+      "id": "dia_diagnosis",
+      "topic": "diabetes",
+      "question": "डायबिटीज़ का पता कैसे चलता है?",
+      "answer": "डायबिटीज़ का निदान डॉक्टर या स्वास्थ्य कर्मी द्वारा करवाई गई खून की जांच से होता है। VITALNEX जैसी प्रश्नावली इसका निदान नहीं कर सकती।",
+      "source_title": "NHS: Symptoms of type 2 diabetes and how it's diagnosed",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/getting-diagnosed/"
+    },
+    {
+      "id": "dia_types",
+      "topic": "diabetes",
+      "question": "टाइप 1 और टाइप 2 डायबिटीज़ में क्या फर्क है?",
+      "answer": "टाइप 1 में शरीर शुगर नियंत्रित करने वाला हार्मोन बहुत कम या बिल्कुल नहीं बनाता; अभी इसे रोका नहीं जा सकता। टाइप 2 सबसे आम प्रकार है और इसका संबंध शरीर के वज़न और शारीरिक निष्क्रियता से है।",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    },
+    {
+      "id": "dia_type1",
+      "topic": "diabetes",
+      "question": "टाइप 1 डायबिटीज़ क्या है?",
+      "answer": "टाइप 1 डायबिटीज़ में शरीर की रोग-प्रतिरोधक प्रणाली शुगर नियंत्रित करने वाला हार्मोन बनाने वाली कोशिकाओं पर हमला करती है, जिससे शुगर बहुत बढ़ जाती है। इसमें जीवनभर मेडिकल टीम की देखरेख चाहिए।",
+      "source_title": "NHS: Type 1 diabetes",
+      "source_url": "https://www.nhs.uk/conditions/type-1-diabetes/"
+    },
+    {
+      "id": "dia_complications",
+      "topic": "diabetes",
+      "question": "डायबिटीज़ से क्या जटिलताएँ हो सकती हैं?",
+      "answer": "समय के साथ ज़्यादा शुगर दिल, खून की नलियों, आँखों, गुर्दों, नसों और पैरों को नुकसान पहुँचा सकती है और हार्ट अटैक व स्ट्रोक की संभावना बढ़ाती है। नियमित जांच से समस्याएँ जल्दी पकड़ में आती हैं।",
+      "source_title": "NHS: Complications of type 2 diabetes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/complications/"
+    },
+    {
+      "id": "dia_cure",
+      "topic": "diabetes",
+      "question": "क्या डायबिटीज़ ठीक हो सकती है?",
+      "answer": "आमतौर पर डायबिटीज़ पूरी तरह ठीक नहीं होती, पर इसे संभाला जा सकता है। सेहतमंद खाना, सक्रियता, तंबाकू से दूरी, नियमित जांच और डॉक्टर की बताई देखभाल से जटिलताएँ रोकने में मदद मिलती है।",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    },
+    {
+      "id": "dia_food",
+      "topic": "diabetes",
+      "question": "डायबिटीज़ वाले लोगों के लिए कौन सा खाना अच्छा है?",
+      "answer": "सेहतमंद आहार में भरपूर सब्ज़ियाँ, फल, दालें और साबुत अनाज होते हैं, और चीनी, नमक व चिकनाई कम होती है। आपके लिए सही सलाह डॉक्टर या आहार विशेषज्ञ दे सकते हैं।",
+      "source_title": "WHO fact sheet: Healthy diet",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    {
+      "id": "dia_common",
+      "topic": "diabetes",
+      "question": "भारत में डायबिटीज़ कितनी आम है?",
+      "answer": "डायबिटीज़ आम है और भारत जैसे निम्न व मध्यम आय वाले देशों में यह तेज़ी से बढ़ रही है। कई लोगों को पता ही नहीं होता कि उन्हें यह है, इसलिए जांच ज़रूरी है।",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    },
+    {
+      "id": "dia_high_sugar",
+      "topic": "diabetes",
+      "question": "हाई ब्लड शुगर (हाइपरग्लाइसीमिया) क्या है?",
+      "answer": "खून में ज़्यादा शुगर से प्यास, बार-बार पेशाब, थकान और सिरदर्द हो सकता है। अगर आपको डायबिटीज़ है और शुगर लगातार ज़्यादा रहती है, तो अपनी देखभाल टीम से संपर्क करें।",
+      "source_title": "NHS: High blood sugar (hyperglycaemia)",
+      "source_url": "https://www.nhs.uk/conditions/high-blood-sugar-hyperglycaemia/"
+    },
+    {
+      "id": "dia_weight",
+      "topic": "diabetes",
+      "question": "क्या मोटापे से डायबिटीज़ होती है?",
+      "answer": "ज़्यादा वज़न, खासकर कमर के आसपास, टाइप 2 डायबिटीज़ के मुख्य जोखिम कारकों में से है। थोड़ा वज़न घटाना और ज़्यादा सक्रिय रहना मदद कर सकता है।",
+      "source_title": "NHS: Type 2 diabetes – causes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/causes/"
+    },
+    {
+      "id": "dia_testing",
+      "topic": "diabetes",
+      "question": "डायबिटीज़ की जांच किसे करवानी चाहिए?",
+      "answer": "अगर आपको लक्षण हैं, या ज़्यादा वज़न, कम सक्रियता, या माता-पिता/भाई-बहन को डायबिटीज़ जैसे जोखिम कारक हैं, तो शुगर की जांच के बारे में डॉक्टर से पूछें।",
+      "source_title": "NHS: Type 2 diabetes – causes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/causes/"
+    },
+    {
+      "id": "hrt_chd",
+      "topic": "heart",
+      "question": "कोरोनरी हृदय रोग क्या है?",
+      "answer": "कोरोनरी हृदय रोग में धमनियों में चर्बी जैसे पदार्थ जमा होने से दिल तक खून की सप्लाई रुक जाती है या कम हो जाती है।",
+      "source_title": "NHS: Coronary heart disease",
+      "source_url": "https://www.nhs.uk/conditions/coronary-heart-disease/"
+    },
+    {
+      "id": "hrt_symptoms",
+      "topic": "heart",
+      "question": "कोरोनरी हृदय रोग के लक्षण क्या हैं?",
+      "answer": "मुख्य लक्षण हैं सीने में दर्द (एंजाइना), सांस फूलना, और बाँहों, गर्दन, जबड़े या पीठ में दर्द। कुछ लोगों में हार्ट अटैक से पहले कोई लक्षण नहीं होते।",
+      "source_title": "NHS: Coronary heart disease – symptoms",
+      "source_url": "https://www.nhs.uk/conditions/coronary-heart-disease/symptoms/"
+    },
+    {
+      "id": "hrt_attack_signs",
+      "topic": "heart",
+      "question": "हार्ट अटैक के चेतावनी संकेत क्या हैं?",
+      "answer": "संकेतों में सीने में दर्द या दबाव (जो बाँहों, जबड़े, गर्दन या पीठ तक फैल सकता है), सांस फूलना, पसीना आना और जी मिचलाना शामिल हैं। अगर यह अभी हो रहा है, तो 108 / 112 पर कॉल करें।",
+      "source_title": "NHS: Heart attack – symptoms",
+      "source_url": "https://www.nhs.uk/conditions/heart-attack/symptoms/"
+    },
+    {
+      "id": "hrt_vs_arrest",
+      "topic": "heart",
+      "question": "हार्ट अटैक और कार्डियक अरेस्ट में क्या फर्क है?",
+      "answer": "हार्ट अटैक में दिल के किसी हिस्से तक खून का बहाव रुक जाता है। कार्डियक अरेस्ट में दिल अचानक रुक जाता है और व्यक्ति बेहोश हो जाता है। दोनों आपात स्थिति हैं: 108 / 112 पर कॉल करें।",
+      "source_title": "NHS: Heart attack",
+      "source_url": "https://www.nhs.uk/conditions/heart-attack/"
+    },
+    {
+      "id": "hrt_angina",
+      "topic": "heart",
+      "question": "एंजाइना क्या है?",
+      "answer": "एंजाइना दिल तक खून का बहाव कम होने से सीने, गर्दन या जबड़े में होने वाला दर्द, जकड़न या भिंचाव है, जो अक्सर व्यायाम या तनाव से शुरू होता है। इसकी जांच डॉक्टर से करवानी चाहिए।",
+      "source_title": "NHS: Angina",
+      "source_url": "https://www.nhs.uk/conditions/angina/"
+    },
+    {
+      "id": "hrt_risk",
+      "topic": "heart",
+      "question": "दिल की बीमारी के जोखिम कारक क्या हैं?",
+      "answer": "मुख्य जोखिम कारक हैं: हाई ब्लड प्रेशर, हाई कोलेस्ट्रॉल, धूम्रपान, डायबिटीज़, ज़्यादा वज़न, व्यायाम की कमी, गलत खानपान और ज़्यादा शराब।",
+      "source_title": "NHS: Coronary heart disease – causes",
+      "source_url": "https://www.nhs.uk/conditions/coronary-heart-disease/causes/"
+    },
+    {
+      "id": "hrt_bp",
+      "topic": "heart",
+      "question": "हाई ब्लड प्रेशर दिल पर कैसे असर करता है?",
+      "answer": "हाई ब्लड प्रेशर दिल और खून की नलियों पर ज़ोर डालता है और हार्ट अटैक व स्ट्रोक का खतरा बढ़ाता है। इसके अक्सर कोई लक्षण नहीं होते, इसलिए नियमित जांच करवाएँ।",
+      "source_title": "WHO fact sheet: Hypertension",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+    },
+    {
+      "id": "hrt_cholesterol",
+      "topic": "heart",
+      "question": "क्या हाई कोलेस्ट्रॉल से दिल की बीमारी होती है?",
+      "answer": "खून में ज़्यादा कोलेस्ट्रॉल धमनियों में जमा होकर दिल की बीमारी और स्ट्रोक का खतरा बढ़ा सकता है। एक साधारण खून की जांच से इसका पता चलता है।",
+      "source_title": "NHS: High cholesterol",
+      "source_url": "https://www.nhs.uk/conditions/high-cholesterol/"
+    },
+    {
+      "id": "hrt_smoking",
+      "topic": "heart",
+      "question": "धूम्रपान दिल पर कैसे असर करता है?",
+      "answer": "तंबाकू का सेवन दिल की बीमारी और स्ट्रोक का एक बड़ा कारण है। किसी भी उम्र में छोड़ने से खतरा कम होता है, और छोड़ने के लिए मदद उपलब्ध है।",
+      "source_title": "WHO fact sheet: Tobacco",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/tobacco"
+    },
+    {
+      "id": "hrt_prevent",
+      "topic": "heart",
+      "question": "दिल की बीमारी की संभावना कैसे कम करें?",
+      "answer": "धूम्रपान न करना, सक्रिय रहना, सेहतमंद खाना, सही वज़न रखना, शराब कम करना, और ब्लड प्रेशर, कोलेस्ट्रॉल व शुगर को नियंत्रण में रखना — ये सब खतरा कम करते हैं।",
+      "source_title": "NHS: Coronary heart disease – prevention",
+      "source_url": "https://www.nhs.uk/conditions/coronary-heart-disease/prevention/"
+    },
+    {
+      "id": "hrt_af",
+      "topic": "heart",
+      "question": "एट्रियल फिब्रिलेशन क्या है?",
+      "answer": "एट्रियल फिब्रिलेशन में दिल की धड़कन अनियमित और अक्सर तेज़ होती है। इससे स्ट्रोक का खतरा बढ़ता है, इसलिए डॉक्टर से जांच करवानी चाहिए।",
+      "source_title": "NHS: Atrial fibrillation",
+      "source_url": "https://www.nhs.uk/conditions/atrial-fibrillation/"
+    },
+    {
+      "id": "hrt_india",
+      "topic": "heart",
+      "question": "भारत में दिल की बीमारी कितनी आम है?",
+      "answer": "हृदय और रक्त-वाहिनी रोग, मुख्यतः हार्ट अटैक और स्ट्रोक, मौत का एक प्रमुख कारण हैं, और ऐसी ज़्यादातर मौतें भारत जैसे निम्न व मध्यम आय वाले देशों में होती हैं।",
+      "source_title": "WHO India: Cardiovascular diseases",
+      "source_url": "https://www.who.int/india/health-topics/cardiovascular-diseases"
+    },
+    {
+      "id": "hrt_cvd",
+      "topic": "heart",
+      "question": "कार्डियोवैस्कुलर रोग क्या है?",
+      "answer": "कार्डियोवैस्कुलर रोग दिल या खून की नलियों को प्रभावित करने वाली स्थितियों का सामान्य नाम है, जैसे कोरोनरी हृदय रोग और स्ट्रोक।",
+      "source_title": "NHS: Cardiovascular disease",
+      "source_url": "https://www.nhs.uk/conditions/cardiovascular-disease/"
+    },
+    {
+      "id": "hrt_salt",
+      "topic": "heart",
+      "question": "मुझे कितना नमक खाना चाहिए?",
+      "answer": "WHO की सलाह है कि वयस्क रोज़ 5 ग्राम से कम नमक खाएँ, यानी लगभग एक चम्मच। ज़्यादा नमक से ब्लड प्रेशर बढ़ता है।",
+      "source_title": "WHO fact sheet: Sodium reduction",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/salt-reduction"
+    },
+    {
+      "id": "hrt_exercise",
+      "topic": "heart",
+      "question": "वयस्कों को कितना व्यायाम करना चाहिए?",
+      "answer": "WHO हर हफ्ते कम से कम 150 मिनट मध्यम गतिविधि, जैसे तेज़ चलना, की सलाह देता है। कुछ भी न करने से थोड़ी गतिविधि भी बेहतर है।",
+      "source_title": "WHO fact sheet: Physical activity",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"
+    },
+    {
+      "id": "hrt_alcohol",
+      "topic": "heart",
+      "question": "क्या शराब दिल पर असर करती है?",
+      "answer": "शराब के सेवन से हर साल हृदय रोगों और दूसरी बीमारियों से कई मौतें होती हैं। कम पीना सेहत के लिए बेहतर है।",
+      "source_title": "WHO fact sheet: Alcohol",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/alcohol"
+    },
+    {
+      "id": "stk_what",
+      "topic": "stroke",
+      "question": "स्ट्रोक क्या है?",
+      "answer": "स्ट्रोक तब होता है जब दिमाग के किसी हिस्से तक खून की सप्लाई रुक जाती है। यह एक मेडिकल आपात स्थिति है और इसका इलाज जितनी जल्दी हो सके होना चाहिए।",
+      "source_title": "NHS: Stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/"
+    },
+    {
+      "id": "stk_fast",
+      "topic": "stroke",
+      "question": "स्ट्रोक के लक्षण (FAST) क्या हैं?",
+      "answer": "FAST याद रखें: चेहरा (Face) एक तरफ लटकना, बाँह (Arm) में कमज़ोरी, बोली (Speech) लड़खड़ाना या उलझना, समय (Time) — तुरंत मदद बुलाएँ। भारत में तुरंत 108 या 112 पर कॉल करें।",
+      "source_title": "NHS: Symptoms of a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/symptoms/"
+    },
+    {
+      "id": "stk_other_signs",
+      "topic": "stroke",
+      "question": "स्ट्रोक के और कौन से लक्षण हो सकते हैं?",
+      "answer": "दूसरे संकेतों में अचानक दिखना बंद होना या धुंधला दिखना, चक्कर, उलझन, संतुलन बिगड़ना, अचानक बहुत तेज़ सिरदर्द, या शरीर के एक तरफ कमज़ोरी शामिल हैं।",
+      "source_title": "NHS: Symptoms of a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/symptoms/"
+    },
+    {
+      "id": "stk_tia",
+      "topic": "stroke",
+      "question": "मिनी स्ट्रोक (TIA) क्या है?",
+      "answer": "ट्रांज़िएंट इस्कीमिक अटैक (TIA) या 'मिनी स्ट्रोक' में दिमाग तक खून की सप्लाई थोड़ी देर के लिए रुकती है। लक्षण चले जाते हैं, पर यह गंभीर चेतावनी है: तुरंत डॉक्टरी मदद लें।",
+      "source_title": "NHS: Transient ischaemic attack (TIA)",
+      "source_url": "https://www.nhs.uk/conditions/transient-ischaemic-attack-tia/"
+    },
+    {
+      "id": "stk_types",
+      "topic": "stroke",
+      "question": "स्ट्रोक कितने प्रकार के होते हैं?",
+      "answer": "ज़्यादातर स्ट्रोक इस्कीमिक होते हैं, जो खून की नली बंद होने से होते हैं। बाकी हेमरेजिक होते हैं, जो दिमाग में या उसके आसपास खून बहने से होते हैं।",
+      "source_title": "NHS: Stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/"
+    },
+    {
+      "id": "stk_risk",
+      "topic": "stroke",
+      "question": "स्ट्रोक का खतरा किसे ज़्यादा है?",
+      "answer": "उम्र (खासकर 50 से ऊपर), हाई ब्लड प्रेशर, डायबिटीज़, हाई कोलेस्ट्रॉल, अनियमित धड़कन (एट्रियल फिब्रिलेशन), धूम्रपान और पहले हुए मिनी स्ट्रोक से खतरा बढ़ता है।",
+      "source_title": "NHS: Stroke – causes",
+      "source_url": "https://www.nhs.uk/conditions/stroke/causes/"
+    },
+    {
+      "id": "stk_bp",
+      "topic": "stroke",
+      "question": "ब्लड प्रेशर और स्ट्रोक का क्या संबंध है?",
+      "answer": "हाई ब्लड प्रेशर स्ट्रोक का खतरा बढ़ाने वाली मुख्य चीज़ों में से है। इसकी जांच करवाना और इसे नियंत्रण में रखना खतरा कम करता है।",
+      "source_title": "NHS: Stroke – causes",
+      "source_url": "https://www.nhs.uk/conditions/stroke/causes/"
+    },
+    {
+      "id": "stk_diabetes",
+      "topic": "stroke",
+      "question": "क्या डायबिटीज़ से स्ट्रोक का खतरा बढ़ता है?",
+      "answer": "हाँ। डायबिटीज़ होने से स्ट्रोक का खतरा बढ़ता है, इसलिए शुगर, ब्लड प्रेशर और कोलेस्ट्रॉल को नियंत्रण में रखना ज़रूरी है।",
+      "source_title": "NHS: Stroke – causes",
+      "source_url": "https://www.nhs.uk/conditions/stroke/causes/"
+    },
+    {
+      "id": "stk_prevent",
+      "topic": "stroke",
+      "question": "स्ट्रोक से बचाव कैसे करें?",
+      "answer": "सेहतमंद खाना, सक्रिय रहना, धूम्रपान न करना, शराब कम करना, और ब्लड प्रेशर, कोलेस्ट्रॉल व शुगर को नियंत्रण में रखना — इनसे स्ट्रोक की संभावना कम होती है।",
+      "source_title": "NHS: Stroke – prevention",
+      "source_url": "https://www.nhs.uk/conditions/stroke/prevention/"
+    },
+    {
+      "id": "stk_time",
+      "topic": "stroke",
+      "question": "स्ट्रोक में जल्दी करना क्यों ज़रूरी है?",
+      "answer": "स्ट्रोक आपात स्थिति है। इलाज जितनी जल्दी शुरू हो, नुकसान उतना कम होने की संभावना है। लक्षण जाने का इंतज़ार न करें: 108 / 112 पर कॉल करें।",
+      "source_title": "NHS: Stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/"
+    },
+    {
+      "id": "stk_diagnosis",
+      "topic": "stroke",
+      "question": "स्ट्रोक का पता कैसे लगाया जाता है?",
+      "answer": "स्ट्रोक का निदान अस्पताल में खून की जांच, दिमाग के स्कैन और दूसरी जांचों से होता है, जिनसे इसका कारण भी पता चल सकता है।",
+      "source_title": "NHS: Diagnosing a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/diagnosis/"
+    },
+    {
+      "id": "stk_treatment",
+      "topic": "stroke",
+      "question": "स्ट्रोक का इलाज कैसे होता है?",
+      "answer": "इलाज स्ट्रोक के प्रकार पर निर्भर करता है और अस्पताल की टीम तय करती है। यह जल्दी शुरू होने पर सबसे अच्छा काम करता है, इसलिए जितनी जल्दी हो सके अस्पताल पहुँचें।",
+      "source_title": "NHS: Treatment for a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/treatment/"
+    },
+    {
+      "id": "stk_recovery",
+      "topic": "stroke",
+      "question": "स्ट्रोक से ठीक होने में कितना समय लगता है?",
+      "answer": "ठीक होने में दिन, हफ्ते, महीने या साल लग सकते हैं और यह हर व्यक्ति में अलग होता है। व्यायाम, गतिविधियाँ और थेरेपी सत्र जल्दी सुधार में मदद कर सकते हैं।",
+      "source_title": "NHS: Recovering from a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/recovery/"
+    },
+    {
+      "id": "stk_common",
+      "topic": "stroke",
+      "question": "स्ट्रोक कितना आम है?",
+      "answer": "स्ट्रोक दुनिया भर में मौत और विकलांगता का एक प्रमुख कारण है। WHO के अनुसार लगभग हर 4 में से 1 वयस्क को जीवन में कभी स्ट्रोक होने का अनुमान है।",
+      "source_title": "WHO fact sheet: Stroke",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/stroke"
+    },
+    {
+      "id": "stk_af",
+      "topic": "stroke",
+      "question": "क्या अनियमित धड़कन का स्ट्रोक से संबंध है?",
+      "answer": "हाँ। एट्रियल फिब्रिलेशन, यानी अनियमित और अक्सर तेज़ धड़कन, स्ट्रोक का खतरा बढ़ाती है। अगर धड़कन अनियमित लगे तो डॉक्टर को दिखाएँ।",
+      "source_title": "NHS: Atrial fibrillation",
+      "source_url": "https://www.nhs.uk/conditions/atrial-fibrillation/"
+    },
+    {
+      "id": "stk_lifestyle",
+      "topic": "stroke",
+      "question": "क्या जीवनशैली से स्ट्रोक का खतरा कम हो सकता है?",
+      "answer": "हाँ। कई स्ट्रोक ऐसे जोखिम कारकों से जुड़े हैं जिन्हें बदला जा सकता है, जैसे हाई ब्लड प्रेशर, तंबाकू, गलत खानपान, शारीरिक निष्क्रियता और शराब का हानिकारक सेवन।",
+      "source_title": "WHO fact sheet: Stroke",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/stroke"
+    },
+    {
+      "id": "vx_what",
+      "topic": "vitalnex",
+      "question": "VITALNEX क्या है?",
+      "answer": "VITALNEX एक स्क्रीनिंग और देखभाल-मार्गदर्शन प्रोटोटाइप है। यह आपके जवाबों की तुलना एक बड़े स्वास्थ्य सर्वे से करता है और बताता है कि किस तरह की देखभाल कितनी जल्दी लें। यह बीमारी का निदान नहीं करता।",
+      "source_title": "WHO: Ethics and governance of artificial intelligence for health",
+      "source_url": "https://www.who.int/publications/i/item/9789240029200"
+    },
+    {
+      "id": "vx_data",
+      "topic": "vitalnex",
+      "question": "मॉडल किस डेटा पर ट्रेन हुए हैं?",
+      "answer": "मॉडल अमेरिका के CDC के BRFSS 2015 सर्वे पर ट्रेन हुए हैं, जो 'CDC Diabetes Health Indicators' नाम से प्रकाशित है। यह अमेरिकी वयस्कों के खुद बताए गए सर्वे जवाब हैं, भारतीय मरीज़ों के रिकॉर्ड नहीं।",
+      "source_title": "UCI Machine Learning Repository: CDC Diabetes Health Indicators",
+      "source_url": "https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators"
+    },
+    {
+      "id": "vx_diagnosis",
+      "topic": "vitalnex",
+      "question": "क्या VITALNEX का नतीजा निदान है?",
+      "answer": "नहीं। VITALNEX सिर्फ यह बताता है कि आपके जवाब उन लोगों से कितने मिलते हैं जिन्हें कोई स्थिति बताई गई है। निदान सिर्फ डॉक्टर सही जांचों के साथ कर सकते हैं।",
+      "source_title": "ICMR: Ethical guidelines for application of AI in biomedical research and healthcare",
+      "source_url": "https://www.icmr.gov.in/ethical-guidelines-for-application-of-artificial-intelligence-in-biomedical-research-and-healthcare"
+    },
+    {
+      "id": "vx_accuracy",
+      "topic": "vitalnex",
+      "question": "मॉडल कितना सटीक है?",
+      "answer": "हर मॉडल के मापे गए टेस्ट नतीजे AI ट्रस्ट पासपोर्ट और मॉडल कार्ड में दिखाए गए हैं। कोई स्क्रीनिंग पूरी तरह सही नहीं होती: कुछ लोग छूट जाते हैं और कुछ बिना स्थिति के भी चिह्नित हो जाते हैं।",
+      "source_title": "WHO: Ethics and governance of artificial intelligence for health",
+      "source_url": "https://www.who.int/publications/i/item/9789240029200"
+    },
+    {
+      "id": "vx_not_confident",
+      "topic": "vitalnex",
+      "question": "VITALNEX कभी-कभी 'निश्चित नहीं' क्यों कहता है?",
+      "answer": "जब मॉडल आपके जैसे जवाबों के लिए नतीजों में भरोसे से फर्क नहीं कर पाता, या आपके जवाब सर्वे के ज़्यादातर लोगों से अलग होते हैं, तो वह अंदाज़ा लगाने के बजाय 'निश्चित नहीं' कहता है, और कोई क्लिनिशियन इसकी समीक्षा कर सकता है।",
+      "source_title": "WHO: Ethics and governance of artificial intelligence for health",
+      "source_url": "https://www.who.int/publications/i/item/9789240029200"
+    },
+    {
+      "id": "vx_fairness",
+      "topic": "vitalnex",
+      "question": "क्या मॉडल सबके साथ निष्पक्ष है?",
+      "answer": "हम लिंग और उम्र जैसे समूहों में नतीजों की जांच करते हैं। 40 से कम उम्र के वयस्कों के लिए मॉडल कम अच्छा काम करते हैं, और यह बात हम नतीजों और AI ट्रस्ट पासपोर्ट में साफ़ बताते हैं।",
+      "source_title": "NITI Aayog: Responsible AI for All (Part 1, Principles)",
+      "source_url": "https://www.niti.gov.in/sites/default/files/2021-02/Responsible-AI-22022021.pdf"
+    },
+    {
+      "id": "vx_assistant",
+      "topic": "vitalnex",
+      "question": "यह सहायक कैसे काम करता है?",
+      "answer": "यह सहायक नया मेडिकल टेक्स्ट नहीं लिखता। VITALNEX सर्वर पर चलने वाला एक भाषा मॉडल (L3Cube IndicSBERT, CC-BY-4.0) समझता है कि आप क्या पूछ रहे हैं, और जवाब स्रोतों वाली एक तय, समीक्षित लाइब्रेरी से आता है।",
+      "source_title": "Hugging Face: l3cube-pune/indic-sentence-bert-nli (CC-BY-4.0)",
+      "source_url": "https://huggingface.co/l3cube-pune/indic-sentence-bert-nli"
+    },
+    {
+      "id": "vx_privacy",
+      "topic": "vitalnex",
+      "question": "क्या मेरा स्वास्थ्य डेटा कहीं भेजा जाता है?",
+      "answer": "नहीं। आपका स्वास्थ्य डेटा बाहर की AI सेवाओं को नहीं भेजा जाता, चैट संदेश सेव नहीं होते, और क्लिनिशियन आपके नतीजे सिर्फ आपकी सहमति से देखते हैं।",
+      "source_title": "ICMR: Ethical guidelines for application of AI in biomedical research and healthcare",
+      "source_url": "https://www.icmr.gov.in/ethical-guidelines-for-application-of-artificial-intelligence-in-biomedical-research-and-healthcare"
+    },
+    {
+      "id": "vx_human",
+      "topic": "vitalnex",
+      "question": "क्या कोई इंसान नतीजे जांचता है?",
+      "answer": "हाँ। आपकी सहमति हो तो हाई और अनिश्चित नतीजे क्लिनिशियन की समीक्षा सूची में जा सकते हैं, और आपकी देखभाल का अंतिम फैसला कभी अकेला मॉडल नहीं लेता।",
+      "source_title": "ICMR: Ethical guidelines for application of AI in biomedical research and healthcare",
+      "source_url": "https://www.icmr.gov.in/ethical-guidelines-for-application-of-artificial-intelligence-in-biomedical-research-and-healthcare"
+    },
+    {
+      "id": "vx_india",
+      "topic": "vitalnex",
+      "question": "क्या VITALNEX भारत के लोगों के लिए काम करता है?",
+      "answer": "सर्वे डेटा अमेरिका का है, इसलिए भारत के लोगों के लिए नतीजे कम सटीक हो सकते हैं। नतीजे को अंतिम जवाब नहीं, बल्कि डॉक्टर से बात करने का संकेत मानें।",
+      "source_title": "UCI Machine Learning Repository: CDC Diabetes Health Indicators",
+      "source_url": "https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators"
+    },
+    {
+      "id": "vx_bands",
+      "topic": "vitalnex",
+      "question": "लो, मध्यम और हाई बैंड का क्या मतलब है?",
+      "answer": "बैंड यह बताते हैं कि आपके जवाब उन लोगों से कितने मिलते हैं जिन्हें वह स्थिति बताई गई है। ऊँचे बैंड का मतलब है कि डॉक्टर से जल्दी बात करें। ये निदान नहीं हैं।",
+      "source_title": "WHO: Ethics and governance of artificial intelligence for health",
+      "source_url": "https://www.who.int/publications/i/item/9789240029200"
+    }
+  ]
+}

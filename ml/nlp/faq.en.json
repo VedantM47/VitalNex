@@ -1,0 +1,479 @@
+{
+  "_review": "pending",
+  "_note": "Curated FAQ for the VITALNEX assistant (SPEC §5, D-13). Short, general, non-diagnostic answers; no medicine is named or dosed. Every source URL was checked to return HTTP 200 when written. Same ids in en/hi/mr. Wording is machine-authored and not yet reviewed by a clinician; Hindi/Marathi also listed in docs/i18n_review_p8.md.",
+  "language": "en",
+  "entries": [
+    {
+      "id": "dia_what",
+      "topic": "diabetes",
+      "question": "What is diabetes?",
+      "answer": "Diabetes is a long-term condition in which blood sugar (glucose) stays too high, because the body does not make enough of the hormone that controls blood sugar, or cannot use it well.",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    },
+    {
+      "id": "dia_prediabetes",
+      "topic": "diabetes",
+      "question": "What is prediabetes?",
+      "answer": "Prediabetes means your blood sugar is higher than normal but not high enough to be called diabetes. Lifestyle changes can help lower blood sugar and the chance of getting type 2 diabetes.",
+      "source_title": "NHS: Type 2 diabetes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/"
+    },
+    {
+      "id": "dia_symptoms",
+      "topic": "diabetes",
+      "question": "What are the symptoms of type 2 diabetes?",
+      "answer": "Common signs are feeling very thirsty, passing urine more often (especially at night), tiredness, losing weight without trying, blurred vision and cuts that heal slowly. Many people have no symptoms at first.",
+      "source_title": "NHS: Symptoms of type 2 diabetes and how it's diagnosed",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/symptoms/"
+    },
+    {
+      "id": "dia_causes",
+      "topic": "diabetes",
+      "question": "What causes type 2 diabetes?",
+      "answer": "Type 2 diabetes is linked to being overweight, not being physically active, family history and age. People of South Asian background are at higher risk from a younger age (over 25).",
+      "source_title": "NHS: Type 2 diabetes – causes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/causes/"
+    },
+    {
+      "id": "dia_family",
+      "topic": "diabetes",
+      "question": "Is diabetes hereditary?",
+      "answer": "Family history raises the chance of type 2 diabetes: having a parent, brother or sister with it is a known risk factor. It does not mean you will definitely get it.",
+      "source_title": "NHS: Type 2 diabetes – causes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/causes/"
+    },
+    {
+      "id": "dia_lifestyle",
+      "topic": "diabetes",
+      "question": "Can type 2 diabetes or prediabetes be improved with lifestyle?",
+      "answer": "Yes, lifestyle changes such as healthy eating, being more active and losing weight if you are overweight can lower blood sugar. Talk to a doctor about what is right for you.",
+      "source_title": "NHS: Type 2 diabetes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/"
+    },
+    {
+      "id": "dia_diagnosis",
+      "topic": "diabetes",
+      "question": "How is diabetes diagnosed?",
+      "answer": "Diabetes is diagnosed with blood tests arranged by a doctor or health worker. A questionnaire like VITALNEX cannot diagnose it.",
+      "source_title": "NHS: Symptoms of type 2 diabetes and how it's diagnosed",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/getting-diagnosed/"
+    },
+    {
+      "id": "dia_types",
+      "topic": "diabetes",
+      "question": "What is the difference between type 1 and type 2 diabetes?",
+      "answer": "In type 1 diabetes the body makes very little or none of the hormone that controls blood sugar; it cannot currently be prevented. Type 2 is the most common type and is linked to body weight and physical inactivity.",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    },
+    {
+      "id": "dia_type1",
+      "topic": "diabetes",
+      "question": "What is type 1 diabetes?",
+      "answer": "Type 1 diabetes is a condition where the body's immune system attacks the cells that make the hormone controlling blood sugar, so blood sugar becomes too high. It needs lifelong care from a medical team.",
+      "source_title": "NHS: Type 1 diabetes",
+      "source_url": "https://www.nhs.uk/conditions/type-1-diabetes/"
+    },
+    {
+      "id": "dia_complications",
+      "topic": "diabetes",
+      "question": "What are the complications of diabetes?",
+      "answer": "Over time, high blood sugar can damage the heart, blood vessels, eyes, kidneys, nerves and feet, and raises the chance of heart attack and stroke. Regular check-ups help catch problems early.",
+      "source_title": "NHS: Complications of type 2 diabetes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/complications/"
+    },
+    {
+      "id": "dia_cure",
+      "topic": "diabetes",
+      "question": "Is diabetes curable?",
+      "answer": "Diabetes usually cannot be cured, but it can be managed. Healthy eating, activity, not using tobacco, regular check-ups and the treatment your doctor advises help prevent complications.",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    },
+    {
+      "id": "dia_food",
+      "topic": "diabetes",
+      "question": "What foods are good for people with diabetes?",
+      "answer": "A healthy diet has plenty of vegetables, fruit, pulses and whole grains, and less sugar, salt and fat. A doctor or dietitian can give advice that suits you.",
+      "source_title": "WHO fact sheet: Healthy diet",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    {
+      "id": "dia_common",
+      "topic": "diabetes",
+      "question": "How common is diabetes in India?",
+      "answer": "Diabetes is common and has been rising faster in low- and middle-income countries such as India. Many people do not know they have it, so testing matters.",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    },
+    {
+      "id": "dia_high_sugar",
+      "topic": "diabetes",
+      "question": "What is high blood sugar (hyperglycaemia)?",
+      "answer": "High blood sugar can cause thirst, passing urine often, tiredness and headaches. If you have diabetes and your sugar stays high, contact your care team.",
+      "source_title": "NHS: High blood sugar (hyperglycaemia)",
+      "source_url": "https://www.nhs.uk/conditions/high-blood-sugar-hyperglycaemia/"
+    },
+    {
+      "id": "dia_weight",
+      "topic": "diabetes",
+      "question": "Does being overweight cause diabetes?",
+      "answer": "Being overweight, especially around the waist, is one of the main risk factors for type 2 diabetes. Losing some weight and being more active can help.",
+      "source_title": "NHS: Type 2 diabetes – causes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/causes/"
+    },
+    {
+      "id": "dia_testing",
+      "topic": "diabetes",
+      "question": "Who should get tested for diabetes?",
+      "answer": "Ask a doctor about a blood sugar test if you have symptoms, or risk factors such as being overweight, being inactive, or a parent, brother or sister with diabetes.",
+      "source_title": "NHS: Type 2 diabetes – causes",
+      "source_url": "https://www.nhs.uk/conditions/type-2-diabetes/causes/"
+    },
+    {
+      "id": "hrt_chd",
+      "topic": "heart",
+      "question": "What is coronary heart disease?",
+      "answer": "Coronary heart disease is when the blood supply to the heart is blocked or reduced by a build-up of fatty substances in the arteries.",
+      "source_title": "NHS: Coronary heart disease",
+      "source_url": "https://www.nhs.uk/conditions/coronary-heart-disease/"
+    },
+    {
+      "id": "hrt_symptoms",
+      "topic": "heart",
+      "question": "What are the symptoms of coronary heart disease?",
+      "answer": "The main symptoms are chest pain (angina), shortness of breath, and pain in the arms, neck, jaw or back. Some people have no symptoms before a heart attack.",
+      "source_title": "NHS: Coronary heart disease – symptoms",
+      "source_url": "https://www.nhs.uk/conditions/coronary-heart-disease/symptoms/"
+    },
+    {
+      "id": "hrt_attack_signs",
+      "topic": "heart",
+      "question": "What are the warning signs of a heart attack?",
+      "answer": "Signs include chest pain or pressure that may spread to the arms, jaw, neck or back, shortness of breath, sweating and feeling sick. If this is happening now, call 108 / 112.",
+      "source_title": "NHS: Heart attack – symptoms",
+      "source_url": "https://www.nhs.uk/conditions/heart-attack/symptoms/"
+    },
+    {
+      "id": "hrt_vs_arrest",
+      "topic": "heart",
+      "question": "What is the difference between a heart attack and cardiac arrest?",
+      "answer": "A heart attack is when blood flow to part of the heart is blocked. Cardiac arrest is when the heart stops suddenly and the person loses consciousness. Both are emergencies: call 108 / 112.",
+      "source_title": "NHS: Heart attack",
+      "source_url": "https://www.nhs.uk/conditions/heart-attack/"
+    },
+    {
+      "id": "hrt_angina",
+      "topic": "heart",
+      "question": "What is angina?",
+      "answer": "Angina is pain, tightness or squeezing in the chest, neck or jaw caused by reduced blood flow to the heart, often brought on by exercise or stress. It should be checked by a doctor.",
+      "source_title": "NHS: Angina",
+      "source_url": "https://www.nhs.uk/conditions/angina/"
+    },
+    {
+      "id": "hrt_risk",
+      "topic": "heart",
+      "question": "What are the risk factors for heart disease?",
+      "answer": "The main risk factors are high blood pressure, high cholesterol, smoking, diabetes, being overweight, lack of exercise, unhealthy diet and drinking too much alcohol.",
+      "source_title": "NHS: Coronary heart disease – causes",
+      "source_url": "https://www.nhs.uk/conditions/coronary-heart-disease/causes/"
+    },
+    {
+      "id": "hrt_bp",
+      "topic": "heart",
+      "question": "How does high blood pressure affect the heart?",
+      "answer": "High blood pressure puts strain on the heart and blood vessels and raises the risk of heart attack and stroke. It often has no symptoms, so have it checked regularly.",
+      "source_title": "WHO fact sheet: Hypertension",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+    },
+    {
+      "id": "hrt_cholesterol",
+      "topic": "heart",
+      "question": "Does high cholesterol cause heart disease?",
+      "answer": "Too much cholesterol in the blood can build up in the arteries and raise the risk of heart disease and stroke. A simple blood test can check it.",
+      "source_title": "NHS: High cholesterol",
+      "source_url": "https://www.nhs.uk/conditions/high-cholesterol/"
+    },
+    {
+      "id": "hrt_smoking",
+      "topic": "heart",
+      "question": "How does smoking affect the heart?",
+      "answer": "Tobacco use is a major cause of heart disease and stroke. Stopping at any age lowers the risk, and free help to quit is available.",
+      "source_title": "WHO fact sheet: Tobacco",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/tobacco"
+    },
+    {
+      "id": "hrt_prevent",
+      "topic": "heart",
+      "question": "How can I lower my chance of heart disease?",
+      "answer": "Not smoking, being active, eating a healthy diet, keeping a healthy weight, limiting alcohol, and keeping blood pressure, cholesterol and blood sugar under control all lower the risk.",
+      "source_title": "NHS: Coronary heart disease – prevention",
+      "source_url": "https://www.nhs.uk/conditions/coronary-heart-disease/prevention/"
+    },
+    {
+      "id": "hrt_af",
+      "topic": "heart",
+      "question": "What is atrial fibrillation?",
+      "answer": "Atrial fibrillation is a condition that causes an irregular and often fast heartbeat. It raises the risk of stroke, so it should be checked by a doctor.",
+      "source_title": "NHS: Atrial fibrillation",
+      "source_url": "https://www.nhs.uk/conditions/atrial-fibrillation/"
+    },
+    {
+      "id": "hrt_india",
+      "topic": "heart",
+      "question": "How common is heart disease in India?",
+      "answer": "Cardiovascular diseases, mainly heart attack and stroke, are a leading cause of death, and most of these deaths happen in low- and middle-income countries such as India.",
+      "source_title": "WHO India: Cardiovascular diseases",
+      "source_url": "https://www.who.int/india/health-topics/cardiovascular-diseases"
+    },
+    {
+      "id": "hrt_cvd",
+      "topic": "heart",
+      "question": "What is cardiovascular disease?",
+      "answer": "Cardiovascular disease is a general term for conditions affecting the heart or blood vessels, such as coronary heart disease and stroke.",
+      "source_title": "NHS: Cardiovascular disease",
+      "source_url": "https://www.nhs.uk/conditions/cardiovascular-disease/"
+    },
+    {
+      "id": "hrt_salt",
+      "topic": "heart",
+      "question": "How much salt should I eat?",
+      "answer": "WHO advises adults to eat less than 5 g of salt a day, about one teaspoon. Too much salt raises blood pressure.",
+      "source_title": "WHO fact sheet: Sodium reduction",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/salt-reduction"
+    },
+    {
+      "id": "hrt_exercise",
+      "topic": "heart",
+      "question": "How much exercise is recommended for adults?",
+      "answer": "WHO recommends at least 150 minutes of moderate activity, such as brisk walking, every week. Any activity is better than none.",
+      "source_title": "WHO fact sheet: Physical activity",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"
+    },
+    {
+      "id": "hrt_alcohol",
+      "topic": "heart",
+      "question": "Does alcohol affect the heart?",
+      "answer": "Alcohol use causes many deaths from cardiovascular disease every year, as well as other diseases. Drinking less is better for health.",
+      "source_title": "WHO fact sheet: Alcohol",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/alcohol"
+    },
+    {
+      "id": "stk_what",
+      "topic": "stroke",
+      "question": "What is a stroke?",
+      "answer": "A stroke happens when the blood supply to part of the brain is cut off. It is a medical emergency and needs treatment as fast as possible.",
+      "source_title": "NHS: Stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/"
+    },
+    {
+      "id": "stk_fast",
+      "topic": "stroke",
+      "question": "What are the signs of a stroke (FAST)?",
+      "answer": "Remember FAST: Face drooping on one side, Arm weakness, Speech slurred or confused, Time to call for help. In India call 108 or 112 straight away.",
+      "source_title": "NHS: Symptoms of a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/symptoms/"
+    },
+    {
+      "id": "stk_other_signs",
+      "topic": "stroke",
+      "question": "What other symptoms can a stroke cause?",
+      "answer": "Other signs include sudden loss or blurring of vision, dizziness, confusion, problems with balance, a sudden very bad headache, or weakness on one side of the body.",
+      "source_title": "NHS: Symptoms of a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/symptoms/"
+    },
+    {
+      "id": "stk_tia",
+      "topic": "stroke",
+      "question": "What is a mini stroke (TIA)?",
+      "answer": "A transient ischaemic attack (TIA), or 'mini stroke', is when the blood supply to the brain is briefly disrupted. Symptoms pass, but it is a serious warning sign: get medical help urgently.",
+      "source_title": "NHS: Transient ischaemic attack (TIA)",
+      "source_url": "https://www.nhs.uk/conditions/transient-ischaemic-attack-tia/"
+    },
+    {
+      "id": "stk_types",
+      "topic": "stroke",
+      "question": "What are the types of stroke?",
+      "answer": "Most strokes are ischaemic, caused by a blocked blood vessel. Others are haemorrhagic, caused by bleeding in or around the brain.",
+      "source_title": "NHS: Stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/"
+    },
+    {
+      "id": "stk_risk",
+      "topic": "stroke",
+      "question": "Who is at risk of stroke?",
+      "answer": "The risk is higher with age (especially over 50), high blood pressure, diabetes, high cholesterol, an irregular heartbeat (atrial fibrillation), smoking and a previous mini stroke.",
+      "source_title": "NHS: Stroke – causes",
+      "source_url": "https://www.nhs.uk/conditions/stroke/causes/"
+    },
+    {
+      "id": "stk_bp",
+      "topic": "stroke",
+      "question": "How is blood pressure linked to stroke?",
+      "answer": "High blood pressure is one of the main things that increases the risk of stroke. Getting it checked and kept under control lowers the risk.",
+      "source_title": "NHS: Stroke – causes",
+      "source_url": "https://www.nhs.uk/conditions/stroke/causes/"
+    },
+    {
+      "id": "stk_diabetes",
+      "topic": "stroke",
+      "question": "Does diabetes increase the risk of stroke?",
+      "answer": "Yes. Having diabetes increases the risk of stroke, so keeping blood sugar, blood pressure and cholesterol under control is important.",
+      "source_title": "NHS: Stroke – causes",
+      "source_url": "https://www.nhs.uk/conditions/stroke/causes/"
+    },
+    {
+      "id": "stk_prevent",
+      "topic": "stroke",
+      "question": "How can stroke be prevented?",
+      "answer": "Eating a healthy diet, being active, not smoking, limiting alcohol and keeping blood pressure, cholesterol and blood sugar under control all lower the chance of a stroke.",
+      "source_title": "NHS: Stroke – prevention",
+      "source_url": "https://www.nhs.uk/conditions/stroke/prevention/"
+    },
+    {
+      "id": "stk_time",
+      "topic": "stroke",
+      "question": "Why is it important to act fast in a stroke?",
+      "answer": "A stroke is an emergency. The sooner treatment starts, the less damage is likely. Do not wait to see if symptoms pass: call 108 / 112.",
+      "source_title": "NHS: Stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/"
+    },
+    {
+      "id": "stk_diagnosis",
+      "topic": "stroke",
+      "question": "How is a stroke diagnosed?",
+      "answer": "A stroke is diagnosed in hospital with blood tests, brain scans and other tests, which can also show what caused it.",
+      "source_title": "NHS: Diagnosing a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/diagnosis/"
+    },
+    {
+      "id": "stk_treatment",
+      "topic": "stroke",
+      "question": "How is a stroke treated?",
+      "answer": "Treatment depends on the type of stroke and is decided by the hospital team. It works best when started quickly, so get to hospital as soon as possible.",
+      "source_title": "NHS: Treatment for a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/treatment/"
+    },
+    {
+      "id": "stk_recovery",
+      "topic": "stroke",
+      "question": "How long does it take to recover from a stroke?",
+      "answer": "Recovery can take days, weeks, months or years and is different for everyone. Exercises, activities and therapy sessions can help people progress more quickly.",
+      "source_title": "NHS: Recovering from a stroke",
+      "source_url": "https://www.nhs.uk/conditions/stroke/recovery/"
+    },
+    {
+      "id": "stk_common",
+      "topic": "stroke",
+      "question": "How common is stroke?",
+      "answer": "Stroke is a leading cause of death and disability worldwide. WHO reports that about 1 in 4 adults is expected to have a stroke in their lifetime.",
+      "source_title": "WHO fact sheet: Stroke",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/stroke"
+    },
+    {
+      "id": "stk_af",
+      "topic": "stroke",
+      "question": "Is an irregular heartbeat linked to stroke?",
+      "answer": "Yes. Atrial fibrillation, an irregular and often fast heartbeat, increases the risk of stroke. If you notice an irregular heartbeat, see a doctor.",
+      "source_title": "NHS: Atrial fibrillation",
+      "source_url": "https://www.nhs.uk/conditions/atrial-fibrillation/"
+    },
+    {
+      "id": "stk_lifestyle",
+      "topic": "stroke",
+      "question": "Can lifestyle lower the risk of stroke?",
+      "answer": "Yes. Many strokes are linked to risk factors that can be changed, such as high blood pressure, tobacco use, unhealthy diet, physical inactivity and harmful use of alcohol.",
+      "source_title": "WHO fact sheet: Stroke",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/stroke"
+    },
+    {
+      "id": "vx_what",
+      "topic": "vitalnex",
+      "question": "What is VITALNEX?",
+      "answer": "VITALNEX is a screening and care-navigation prototype. It compares your answers with a large health survey and suggests what kind of care to seek and how soon. It does not diagnose disease.",
+      "source_title": "WHO: Ethics and governance of artificial intelligence for health",
+      "source_url": "https://www.who.int/publications/i/item/9789240029200"
+    },
+    {
+      "id": "vx_data",
+      "topic": "vitalnex",
+      "question": "What data were the models trained on?",
+      "answer": "The models were trained on the US CDC Behavioral Risk Factor Surveillance System (BRFSS) 2015 survey, published as 'CDC Diabetes Health Indicators'. It is self-reported survey data from US adults, not Indian patient records.",
+      "source_title": "UCI Machine Learning Repository: CDC Diabetes Health Indicators",
+      "source_url": "https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators"
+    },
+    {
+      "id": "vx_diagnosis",
+      "topic": "vitalnex",
+      "question": "Is the VITALNEX result a diagnosis?",
+      "answer": "No. VITALNEX only says how similar your answers are to people who have been told they have a condition. Only a doctor, with proper tests, can diagnose.",
+      "source_title": "ICMR: Ethical guidelines for application of AI in biomedical research and healthcare",
+      "source_url": "https://www.icmr.gov.in/ethical-guidelines-for-application-of-artificial-intelligence-in-biomedical-research-and-healthcare"
+    },
+    {
+      "id": "vx_accuracy",
+      "topic": "vitalnex",
+      "question": "How accurate is the model?",
+      "answer": "Each model's measured test results are shown in the AI Trust Passport and model cards. No screening is perfect: some people with a condition are missed and some without it are flagged.",
+      "source_title": "WHO: Ethics and governance of artificial intelligence for health",
+      "source_url": "https://www.who.int/publications/i/item/9789240029200"
+    },
+    {
+      "id": "vx_not_confident",
+      "topic": "vitalnex",
+      "question": "Why does VITALNEX sometimes say 'not confident'?",
+      "answer": "When the model cannot reliably tell the outcomes apart for answers like yours, or your answers are unlike most people in the survey, it says 'not confident' instead of guessing, and a clinician can review it.",
+      "source_title": "WHO: Ethics and governance of artificial intelligence for health",
+      "source_url": "https://www.who.int/publications/i/item/9789240029200"
+    },
+    {
+      "id": "vx_fairness",
+      "topic": "vitalnex",
+      "question": "Is the model fair to everyone?",
+      "answer": "We check results across groups such as sex and age. The models work less well for adults under 40, and we say this openly on results and in the AI Trust Passport.",
+      "source_title": "NITI Aayog: Responsible AI for All (Part 1, Principles)",
+      "source_url": "https://www.niti.gov.in/sites/default/files/2021-02/Responsible-AI-22022021.pdf"
+    },
+    {
+      "id": "vx_assistant",
+      "topic": "vitalnex",
+      "question": "How does this assistant work?",
+      "answer": "This assistant does not write new medical text. A language model running on the VITALNEX server (L3Cube IndicSBERT, CC-BY-4.0) works out what you are asking, and the reply comes from a fixed, reviewed library with sources.",
+      "source_title": "Hugging Face: l3cube-pune/indic-sentence-bert-nli (CC-BY-4.0)",
+      "source_url": "https://huggingface.co/l3cube-pune/indic-sentence-bert-nli"
+    },
+    {
+      "id": "vx_privacy",
+      "topic": "vitalnex",
+      "question": "Is my health data sent anywhere?",
+      "answer": "No. Your health data is not sent to outside AI services, chat messages are not stored, and clinicians see your results only if you give consent.",
+      "source_title": "ICMR: Ethical guidelines for application of AI in biomedical research and healthcare",
+      "source_url": "https://www.icmr.gov.in/ethical-guidelines-for-application-of-artificial-intelligence-in-biomedical-research-and-healthcare"
+    },
+    {
+      "id": "vx_human",
+      "topic": "vitalnex",
+      "question": "Does a human check the results?",
+      "answer": "Yes. High and uncertain results can go to a clinician review queue if you consent, and the model alone never makes a final decision about your care.",
+      "source_title": "ICMR: Ethical guidelines for application of AI in biomedical research and healthcare",
+      "source_url": "https://www.icmr.gov.in/ethical-guidelines-for-application-of-artificial-intelligence-in-biomedical-research-and-healthcare"
+    },
+    {
+      "id": "vx_india",
+      "topic": "vitalnex",
+      "question": "Does VITALNEX work for people in India?",
+      "answer": "The survey data come from the USA, so results may be less accurate for people in India. Treat the result as a prompt to talk to a doctor, not as a final answer.",
+      "source_title": "UCI Machine Learning Repository: CDC Diabetes Health Indicators",
+      "source_url": "https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators"
+    },
+    {
+      "id": "vx_bands",
+      "topic": "vitalnex",
+      "question": "What do the low, moderate and high bands mean?",
+      "answer": "Bands group how similar your answers are to people who have been told they have the condition. Higher bands mean you should talk to a doctor sooner. They are not a diagnosis.",
+      "source_title": "WHO: Ethics and governance of artificial intelligence for health",
+      "source_url": "https://www.who.int/publications/i/item/9789240029200"
+    }
+  ]
+}

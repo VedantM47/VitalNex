@@ -23,7 +23,7 @@ DATA_CARD = ROOT / "docs" / "data_card.md"
 DECISIONS = ROOT / "docs" / "DECISIONS.md"
 DATA_STATS = ROOT / "ml" / "data" / "stats.json"
 # Written by the assistant NLP phase (P8); absent until then.
-NLP_META_CANDIDATES = (ROOT / "ml" / "artifacts" / "assistant" / "nlp_meta.json", ROOT / "ml" / "nlp" / "nlp_meta.json")
+NLP_META_CANDIDATES = (ROOT / "ml" / "nlp" / "artifacts" / "nlp_meta.json",)
 PASSPORT_DECISIONS = ("D-22", "D-23", "D-24")
 IMAGES = ("reliability.png", "shap_global.png")
 

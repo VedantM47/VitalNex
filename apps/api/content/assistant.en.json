@@ -1,0 +1,54 @@
+{
+  "_review": "pending",
+  "_note": "Fixed assistant replies (SPEC §5). No generated text. HI/MR listed in docs/i18n_review_p8.md.",
+  "disclaimer": "Answers come from a fixed, reviewed library — VITALNEX does not generate medical advice. It does not diagnose and does not recommend medicines. In an emergency call 108 / 112.",
+  "emergency": "This may be a medical emergency. Call 108 (ambulance) or 112 now, or go to the nearest emergency department. Do not wait to see if it passes.",
+  "medication_refusal": "I can't advise on medicines or doses. Please ask your doctor or pharmacist — they know your health history. If you feel very unwell, call 108 / 112.",
+  "greeting": "Hello! I am the VITALNEX assistant. I can explain your latest screening result, suggest what you could change, answer common questions about diabetes, heart disease and stroke, and help you find a doctor or book an appointment.",
+  "out_of_scope": "Sorry, I can only help with VITALNEX screening, diabetes, heart disease, stroke, doctors and appointments, and your data. Try one of the suggestions below.",
+  "no_faq_answer": "I don't have a reliable answer to that in my reviewed library. Please ask a doctor, or try one of the suggestions below.",
+  "unavailable": "The assistant's language model is not available right now, so I can only help with emergencies and navigation. If you feel unwell, call 108 / 112.",
+  "no_assessment": "I could not find a saved screening for you. Run a screening first (and allow 'store history' if you want me to explain it later).",
+  "explain_intro": "Your latest screening ({date}):",
+  "explain_band": "{disease}: {band} band.",
+  "explain_abstained": "{disease}: not confident — VITALNEX could not give a reliable band for your answers.",
+  "explain_factors": "Main factors: {factors}",
+  "explain_footer": "These bands say how similar your answers are to people who have been told they have the condition. They are not a diagnosis.",
+  "change_intro": "Based on your latest screening answers, these general steps may help:",
+  "change_none": "I could not find a saved screening to base suggestions on. Run a screening first.",
+  "change_footer": "Open the what-if tool on your results to see how a change might move your bands. Age, sex and past diagnoses cannot be changed.",
+  "book": "You can book, move or cancel a demo appointment on the Appointments page.",
+  "find_doctor": "You can browse demo clinicians by speciality, language and area in Care Connect.",
+  "my_data": "You can see, download or delete your data and change your consent choices in Settings → My data. Chat messages are never stored.",
+  "next_step": {
+    "emergency": "Your last screening found warning signs: call 108 / 112 now. No scores were calculated.",
+    "correct_inputs": "Some answers looked impossible, so no result was calculated. Please check your answers.",
+    "not_confident": "VITALNEX is not confident for you. Please see a doctor.",
+    "see_doctor_soon": "See a doctor soon (within 2 weeks).",
+    "discuss_next_checkup": "Discuss these results at your next check-up.",
+    "routine_checkup": "Keep up regular check-ups."
+  },
+  "bands": {
+    "low": "low",
+    "moderate": "moderate",
+    "high": "high"
+  },
+  "diseases": {
+    "diabetes": "Diabetes / prediabetes",
+    "heart": "Heart disease",
+    "stroke": "Stroke"
+  },
+  "labels": {
+    "call": "Call 108 / 112",
+    "care_connect": "Find a doctor",
+    "appointments": "Appointments",
+    "my_data": "My data & consent",
+    "risk_assessment": "Start a screening",
+    "history": "My results",
+    "ai_trust": "AI Trust Passport",
+    "ask_explain": "Explain my result",
+    "ask_change": "What can I change?",
+    "ask_disease": "What is prediabetes?",
+    "ask_ai": "How does VITALNEX work?"
+  }
+}

@@ -20,6 +20,11 @@ from apps.api.routers.v1.health import router as health_root_router
 async def lifespan(app: FastAPI):
     # Load the three disease models once at startup (docs/PROMPTS.md P4).
     screening.models()
+    # Assistant (SPEC §5): load the local encoder, intent head and FAQ embeddings once. If the
+    # encoder cache is missing, the assistant still answers emergencies / medicine rules and says so.
+    from apps.api.services.assistant_service import warm_up
+    from fastapi.concurrency import run_in_threadpool
+    await run_in_threadpool(warm_up)
     yield
 
 

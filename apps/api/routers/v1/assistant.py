@@ -20,7 +20,8 @@ router = APIRouter(tags=["AI Assistant & Voice"])
 async def chat_message(
     request: AssistantMessageRequest, user: CurrentUser = Depends(require_role("patient", "doctor", "admin"))
 ):
-    return await agent_service.handle_message(request)
+    """SPEC §5 pipeline. The message text is never stored; only intent / confidence / emergency flag."""
+    return await agent_service.handle_message(request, user)
 
 
 # Voice is frozen for the MVP (docs/SPEC.md §1.2).

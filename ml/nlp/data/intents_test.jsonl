@@ -1,0 +1,330 @@
+{"text": "could you interpret the screening outcome i got", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "why am i flagged moderate for stroke", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "the report puts me in the high group for diabetes, why", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "what am i supposed to understand from my heart score", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "which of my answers made the result go up", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "i got my report but it makes no sense to me", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "please clarify what my latest check shows", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "why does my result page list smoking as a factor", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "my screening came back uncertain, what does that tell me", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "meaning of the colour band on my results", "intent": "EXPLAIN_RESULT", "lang": "en", "script": "latin"}
+{"text": "मेरी जांच का नतीजा मुझे ठीक से बताइए", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "devanagari"}
+{"text": "स्ट्रोक में मुझे मध्यम क्यों दिखाया गया", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "devanagari"}
+{"text": "रिपोर्ट मुझे डायबिटीज़ के ऊँचे समूह में क्यों रखती है", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "devanagari"}
+{"text": "हृदय वाले परिणाम से मुझे क्या समझना चाहिए", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "devanagari"}
+{"text": "मेरे किस उत्तर से नतीजा ऊपर गया", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "devanagari"}
+{"text": "रिपोर्ट मिल गई पर कुछ समझ नहीं आया", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "devanagari"}
+{"text": "नतीजे वाले पेज पर धूम्रपान कारण क्यों लिखा है", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "devanagari"}
+{"text": "mera report samajh nahi aaya, batao kya likha hai", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "latin"}
+{"text": "stroke me moderate kyu dikha raha hai", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "latin"}
+{"text": "result me smoking factor kyu likha hai", "intent": "EXPLAIN_RESULT", "lang": "hi", "script": "latin"}
+{"text": "माझ्या तपासणीचा निकाल नीट सांगाल का", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "devanagari"}
+{"text": "स्ट्रोकसाठी मला मध्यम का दाखवले", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "devanagari"}
+{"text": "रिपोर्ट मला मधुमेहाच्या उच्च गटात का ठेवतो", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "devanagari"}
+{"text": "हृदयाच्या निकालातून मी काय समजावे", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "devanagari"}
+{"text": "माझ्या कोणत्या उत्तरामुळे निकाल वर गेला", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "devanagari"}
+{"text": "रिपोर्ट मिळाला पण काहीच कळले नाही", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "devanagari"}
+{"text": "निकालाच्या पानावर धूम्रपान कारण म्हणून का आहे", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "devanagari"}
+{"text": "maza report kalala nahi, kay lihilay te sanga", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "latin"}
+{"text": "stroke madhye madhyam ka dakhavtay", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "latin"}
+{"text": "result madhye smoking karan ka lihilay", "intent": "EXPLAIN_RESULT", "lang": "mr", "script": "latin"}
+{"text": "what steps would move me to a lower band", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "is there something practical i can start this week to improve", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "how do i get my numbers into a better range", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "which of my habits is worth changing first", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "would cutting down on drinking help my band", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "what realistic changes could reduce my stroke band", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "if i start a morning walk will it matter", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "what improvements can i make to my lifestyle", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "which factor of mine is easiest to change", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "how could i lower my chances of heart trouble", "intent": "WHAT_CAN_I_CHANGE", "lang": "en", "script": "latin"}
+{"text": "निचले बैंड में जाने के लिए क्या कदम उठाऊँ", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "devanagari"}
+{"text": "इस हफ्ते से सुधार के लिए क्या शुरू करूँ", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "devanagari"}
+{"text": "मेरी कौन सी आदत पहले बदलनी चाहिए", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "devanagari"}
+{"text": "क्या शराब कम करने से मेरा बैंड घटेगा", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "devanagari"}
+{"text": "सुबह की सैर शुरू करूँ तो क्या फर्क पड़ेगा", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "devanagari"}
+{"text": "मेरा कौन सा कारण सबसे आसानी से बदल सकता है", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "devanagari"}
+{"text": "दिल की परेशानी की संभावना कैसे कम करूँ", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "devanagari"}
+{"text": "lower band me jaane ke liye kya karu", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "latin"}
+{"text": "sharab kam karu to band ghatega kya", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "latin"}
+{"text": "sabse aasaan badlav kaun sa hai mere liye", "intent": "WHAT_CAN_I_CHANGE", "lang": "hi", "script": "latin"}
+{"text": "कमी बँडमध्ये जाण्यासाठी कोणती पावले उचलू", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "devanagari"}
+{"text": "या आठवड्यापासून सुधारणेसाठी काय सुरू करू", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "devanagari"}
+{"text": "माझी कोणती सवय आधी बदलावी", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "devanagari"}
+{"text": "दारू कमी केल्यास माझा बँड कमी होईल का", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "devanagari"}
+{"text": "सकाळी फिरायला सुरुवात केली तर फरक पडेल का", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "devanagari"}
+{"text": "माझा कोणता घटक सर्वात सहज बदलता येईल", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "devanagari"}
+{"text": "हृदयाचा त्रास होण्याची शक्यता कशी कमी करू", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "devanagari"}
+{"text": "kami band madhye janyasathi kay karu", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "latin"}
+{"text": "daru kami keli tar band kami hoil ka", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "latin"}
+{"text": "sarvat sopa badal konta aahe majhyasathi", "intent": "WHAT_CAN_I_CHANGE", "lang": "mr", "script": "latin"}
+{"text": "explain what prediabetes means", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "how would i know if i had a stroke coming", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "is heart disease something you inherit", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "what are early signs that blood sugar is too high", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "what is the link between blood pressure and stroke", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "can type 2 diabetes go away", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "what makes arteries in the heart get blocked", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "which people are more likely to develop diabetes", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "what is a transient ischaemic attack", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "how does being overweight affect the heart", "intent": "DISEASE_INFO", "lang": "en", "script": "latin"}
+{"text": "प्रीडायबिटीज़ का मतलब समझाइए", "intent": "DISEASE_INFO", "lang": "hi", "script": "devanagari"}
+{"text": "स्ट्रोक आने के संकेत कैसे पता चलेंगे", "intent": "DISEASE_INFO", "lang": "hi", "script": "devanagari"}
+{"text": "क्या दिल की बीमारी विरासत में मिलती है", "intent": "DISEASE_INFO", "lang": "hi", "script": "devanagari"}
+{"text": "खून में शुगर ज़्यादा होने के शुरुआती संकेत क्या हैं", "intent": "DISEASE_INFO", "lang": "hi", "script": "devanagari"}
+{"text": "ब्लड प्रेशर और स्ट्रोक का क्या संबंध है", "intent": "DISEASE_INFO", "lang": "hi", "script": "devanagari"}
+{"text": "क्या टाइप 2 डायबिटीज़ चली जा सकती है", "intent": "DISEASE_INFO", "lang": "hi", "script": "devanagari"}
+{"text": "किन लोगों को डायबिटीज़ होने की संभावना ज़्यादा है", "intent": "DISEASE_INFO", "lang": "hi", "script": "devanagari"}
+{"text": "prediabetes ka matlab samjhao", "intent": "DISEASE_INFO", "lang": "hi", "script": "latin"}
+{"text": "stroke ke sanket kaise pata chalte hai", "intent": "DISEASE_INFO", "lang": "hi", "script": "latin"}
+{"text": "mota hone se dil pe kya asar padta hai", "intent": "DISEASE_INFO", "lang": "hi", "script": "latin"}
+{"text": "प्रीडायबेटीसचा अर्थ समजावून सांगा", "intent": "DISEASE_INFO", "lang": "mr", "script": "devanagari"}
+{"text": "स्ट्रोक येण्याची चिन्हे कशी ओळखायची", "intent": "DISEASE_INFO", "lang": "mr", "script": "devanagari"}
+{"text": "हृदयरोग वारशाने येतो का", "intent": "DISEASE_INFO", "lang": "mr", "script": "devanagari"}
+{"text": "रक्तातील साखर जास्त असल्याची सुरुवातीची चिन्हे कोणती", "intent": "DISEASE_INFO", "lang": "mr", "script": "devanagari"}
+{"text": "रक्तदाब आणि स्ट्रोकचा काय संबंध आहे", "intent": "DISEASE_INFO", "lang": "mr", "script": "devanagari"}
+{"text": "टाइप 2 मधुमेह जाऊ शकतो का", "intent": "DISEASE_INFO", "lang": "mr", "script": "devanagari"}
+{"text": "कोणत्या लोकांना मधुमेह होण्याची शक्यता जास्त असते", "intent": "DISEASE_INFO", "lang": "mr", "script": "devanagari"}
+{"text": "prediabetes cha arth sanga", "intent": "DISEASE_INFO", "lang": "mr", "script": "latin"}
+{"text": "stroke chi chinhe kashi olkhaychi", "intent": "DISEASE_INFO", "lang": "mr", "script": "latin"}
+{"text": "jada asalyane hrudayavar kay parinam hoto", "intent": "DISEASE_INFO", "lang": "mr", "script": "latin"}
+{"text": "on what basis does the system decide my band", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "is a person or a machine deciding my result", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "was this model built with indian patients", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "how do you make sure the predictions are not biased", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "why should a computer estimate be trusted", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "does the tool ever refuse to give an answer", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "what source does the screening rely on", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "are your replies written by a language model", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "what are the weak points of this screening", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "can this replace a doctor's diagnosis", "intent": "HOW_AI_WORKS", "lang": "en", "script": "latin"}
+{"text": "सिस्टम किस आधार पर मेरा बैंड तय करता है", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "devanagari"}
+{"text": "मेरा नतीजा इंसान तय करता है या मशीन", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "devanagari"}
+{"text": "क्या यह मॉडल भारतीय मरीज़ों से बना है", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "devanagari"}
+{"text": "आप कैसे पक्का करते हैं कि अनुमान पक्षपाती न हों", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "devanagari"}
+{"text": "क्या यह टूल कभी जवाब देने से मना करता है", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "devanagari"}
+{"text": "इस स्क्रीनिंग की कमज़ोरियाँ क्या हैं", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "devanagari"}
+{"text": "क्या यह डॉक्टर के निदान की जगह ले सकता है", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "devanagari"}
+{"text": "system band kaise decide karta hai", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "latin"}
+{"text": "ye model indian logon pe bana hai kya", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "latin"}
+{"text": "kya ye doctor ki jagah le sakta hai", "intent": "HOW_AI_WORKS", "lang": "hi", "script": "latin"}
+{"text": "सिस्टम कोणत्या आधारावर माझा बँड ठरवते", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "devanagari"}
+{"text": "माझा निकाल माणूस ठरवतो की यंत्र", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "devanagari"}
+{"text": "हे मॉडेल भारतीय रुग्णांवर बनवले आहे का", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "devanagari"}
+{"text": "अंदाज पक्षपाती नाहीत हे तुम्ही कसे पाहता", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "devanagari"}
+{"text": "हे साधन कधी उत्तर देण्यास नकार देते का", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "devanagari"}
+{"text": "या स्क्रीनिंगच्या कमकुवत बाजू कोणत्या", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "devanagari"}
+{"text": "हे डॉक्टरांच्या निदानाची जागा घेऊ शकते का", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "devanagari"}
+{"text": "system band kasa tharavta", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "latin"}
+{"text": "he model bhartiya lokanvar banavla aahe ka", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "latin"}
+{"text": "he doctoranchi jaga gheu shakta ka", "intent": "HOW_AI_WORKS", "lang": "mr", "script": "latin"}
+{"text": "remove all my information from your servers", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "who besides me can look at my screening history", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "i no longer agree to my data being processed", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "can i export everything you hold on me", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "please don't keep a record of my assessments", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "are my chats with you saved somewhere", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "cancel the link i shared with my clinic", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "where do i control what clinicians can view", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "is my personal data handed over to advertisers", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "how can i fix my date of birth in my profile", "intent": "MY_DATA", "lang": "en", "script": "latin"}
+{"text": "मेरी सारी जानकारी अपने सर्वर से हटा दीजिए", "intent": "MY_DATA", "lang": "hi", "script": "devanagari"}
+{"text": "मेरे अलावा मेरी जांच का इतिहास कौन देख सकता है", "intent": "MY_DATA", "lang": "hi", "script": "devanagari"}
+{"text": "अब मैं अपने डेटा के इस्तेमाल के लिए राज़ी नहीं हूँ", "intent": "MY_DATA", "lang": "hi", "script": "devanagari"}
+{"text": "क्या आपके पास मेरी हर चीज़ निर्यात कर सकता हूँ", "intent": "MY_DATA", "lang": "hi", "script": "devanagari"}
+{"text": "क्या आपसे की गई मेरी बातचीत कहीं सेव होती है", "intent": "MY_DATA", "lang": "hi", "script": "devanagari"}
+{"text": "क्लिनिक के साथ शेयर किया लिंक रद्द कर दो", "intent": "MY_DATA", "lang": "hi", "script": "devanagari"}
+{"text": "क्या मेरा निजी डेटा विज्ञापन वालों को दिया जाता है", "intent": "MY_DATA", "lang": "hi", "script": "devanagari"}
+{"text": "meri saari jankari hata do", "intent": "MY_DATA", "lang": "hi", "script": "latin"}
+{"text": "meri chat kahin save hoti hai kya", "intent": "MY_DATA", "lang": "hi", "script": "latin"}
+{"text": "clinic ke saath share kiya link band karo", "intent": "MY_DATA", "lang": "hi", "script": "latin"}
+{"text": "माझी सगळी माहिती तुमच्या सर्व्हरवरून काढा", "intent": "MY_DATA", "lang": "mr", "script": "devanagari"}
+{"text": "माझ्याशिवाय माझा तपासणी इतिहास कोण पाहू शकतो", "intent": "MY_DATA", "lang": "mr", "script": "devanagari"}
+{"text": "माझा डेटा वापरायला आता माझी संमती नाही", "intent": "MY_DATA", "lang": "mr", "script": "devanagari"}
+{"text": "तुमच्याकडील माझी सगळी माहिती निर्यात करता येईल का", "intent": "MY_DATA", "lang": "mr", "script": "devanagari"}
+{"text": "तुमच्याशी केलेल्या गप्पा कुठे जतन होतात का", "intent": "MY_DATA", "lang": "mr", "script": "devanagari"}
+{"text": "क्लिनिकसोबत शेअर केलेली लिंक रद्द करा", "intent": "MY_DATA", "lang": "mr", "script": "devanagari"}
+{"text": "माझा वैयक्तिक डेटा जाहिरातदारांना दिला जातो का", "intent": "MY_DATA", "lang": "mr", "script": "devanagari"}
+{"text": "mazi sagli mahiti kadhun taka", "intent": "MY_DATA", "lang": "mr", "script": "latin"}
+{"text": "maze chat kuthe save hotat ka", "intent": "MY_DATA", "lang": "mr", "script": "latin"}
+{"text": "clinic sobat share keleli link band kara", "intent": "MY_DATA", "lang": "mr", "script": "latin"}
+{"text": "i'd like to fix a consultation for next monday", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "put me down for a visit with a heart doctor", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "is there an opening on thursday afternoon", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "push my booking to next week please", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "drop my booking for tomorrow", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "what time is my consultation scheduled for", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "reserve the first free slot with dr khan", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "can i get a video call with a physician", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "i want to book follow-up care after my result", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "sign me up for a slot this evening", "intent": "BOOK_APPOINTMENT", "lang": "en", "script": "latin"}
+{"text": "अगले सोमवार के लिए परामर्श तय करना है", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "devanagari"}
+{"text": "दिल के डॉक्टर से मिलने का समय लगा दो", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "devanagari"}
+{"text": "क्या गुरुवार दोपहर को कोई जगह खाली है", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "devanagari"}
+{"text": "मेरी बुकिंग अगले हफ्ते पर कर दो", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "devanagari"}
+{"text": "कल वाली बुकिंग हटा दो", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "devanagari"}
+{"text": "मेरा परामर्श कितने बजे है", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "devanagari"}
+{"text": "डॉ. खान के साथ पहला खाली स्लॉट रख दो", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "devanagari"}
+{"text": "monday ka appointment chahiye", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "latin"}
+{"text": "kal wali booking hata do", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "latin"}
+{"text": "mera consultation kitne baje hai", "intent": "BOOK_APPOINTMENT", "lang": "hi", "script": "latin"}
+{"text": "पुढच्या सोमवारसाठी सल्लामसलत ठरवायची आहे", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "devanagari"}
+{"text": "हृदयाच्या डॉक्टरांना भेटण्याची वेळ लावा", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "devanagari"}
+{"text": "गुरुवारी दुपारी कोणती वेळ रिकामी आहे का", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "devanagari"}
+{"text": "माझी बुकिंग पुढच्या आठवड्यात ढकला", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "devanagari"}
+{"text": "उद्याची बुकिंग काढून टाका", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "devanagari"}
+{"text": "माझी सल्लामसलत किती वाजता आहे", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "devanagari"}
+{"text": "डॉ. खान यांच्याकडे पहिला रिकामा स्लॉट ठेवा", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "devanagari"}
+{"text": "somvarchi appointment pahije", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "latin"}
+{"text": "udyachi booking kadhun taka", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "latin"}
+{"text": "mazi consultation kiti vajta aahe", "intent": "BOOK_APPOINTMENT", "lang": "mr", "script": "latin"}
+{"text": "who are the cardiac specialists on this platform", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "point me to a brain and nerve doctor", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "i'm looking for a sugar specialist close to home", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "which clinicians are listed near baner", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "any lady doctor who handles diabetes", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "what type of specialist should check my heart band", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "can you list physicians who speak hindi", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "where is the closest medical centre", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "show me experts for blood pressure problems", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "i want to browse the clinician list", "intent": "FIND_DOCTOR", "lang": "en", "script": "latin"}
+{"text": "इस प्लेटफ़ॉर्म पर दिल के विशेषज्ञ कौन हैं", "intent": "FIND_DOCTOR", "lang": "hi", "script": "devanagari"}
+{"text": "दिमाग और नसों के डॉक्टर बताइए", "intent": "FIND_DOCTOR", "lang": "hi", "script": "devanagari"}
+{"text": "घर के पास शुगर का विशेषज्ञ चाहिए", "intent": "FIND_DOCTOR", "lang": "hi", "script": "devanagari"}
+{"text": "बानेर के पास कौन से डॉक्टर हैं", "intent": "FIND_DOCTOR", "lang": "hi", "script": "devanagari"}
+{"text": "डायबिटीज़ देखने वाली कोई महिला डॉक्टर है", "intent": "FIND_DOCTOR", "lang": "hi", "script": "devanagari"}
+{"text": "सबसे नज़दीकी स्वास्थ्य केंद्र कहाँ है", "intent": "FIND_DOCTOR", "lang": "hi", "script": "devanagari"}
+{"text": "बीपी की समस्या के विशेषज्ञ दिखाइए", "intent": "FIND_DOCTOR", "lang": "hi", "script": "devanagari"}
+{"text": "dil ke specialist kaun hai yahan", "intent": "FIND_DOCTOR", "lang": "hi", "script": "latin"}
+{"text": "ghar ke paas sugar ka doctor chahiye", "intent": "FIND_DOCTOR", "lang": "hi", "script": "latin"}
+{"text": "sabse nazdeek hospital kaunsa hai", "intent": "FIND_DOCTOR", "lang": "hi", "script": "latin"}
+{"text": "या प्लॅटफॉर्मवर हृदयाचे तज्ज्ञ कोण आहेत", "intent": "FIND_DOCTOR", "lang": "mr", "script": "devanagari"}
+{"text": "मेंदू आणि नसांचे डॉक्टर सांगा", "intent": "FIND_DOCTOR", "lang": "mr", "script": "devanagari"}
+{"text": "घराजवळ साखरेचा तज्ज्ञ हवा आहे", "intent": "FIND_DOCTOR", "lang": "mr", "script": "devanagari"}
+{"text": "बाणेरजवळ कोणते डॉक्टर आहेत", "intent": "FIND_DOCTOR", "lang": "mr", "script": "devanagari"}
+{"text": "मधुमेह पाहणारी एखादी महिला डॉक्टर आहे का", "intent": "FIND_DOCTOR", "lang": "mr", "script": "devanagari"}
+{"text": "सर्वात जवळचे आरोग्य केंद्र कुठे आहे", "intent": "FIND_DOCTOR", "lang": "mr", "script": "devanagari"}
+{"text": "रक्तदाबाच्या त्रासासाठी तज्ज्ञ दाखवा", "intent": "FIND_DOCTOR", "lang": "mr", "script": "devanagari"}
+{"text": "hrudayache specialist kon aahet ithe", "intent": "FIND_DOCTOR", "lang": "mr", "script": "latin"}
+{"text": "gharajaval sugar cha doctor pahije", "intent": "FIND_DOCTOR", "lang": "mr", "script": "latin"}
+{"text": "sarvat javalche hospital konte", "intent": "FIND_DOCTOR", "lang": "mr", "script": "latin"}
+{"text": "there is a crushing weight on my chest and i'm sweating", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "my uncle's speech suddenly became slurred", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "my mum can't lift her left arm and her face looks lopsided", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "i blacked out a few minutes ago and my chest hurts", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "my son is choking and turning blue", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "grandma suddenly collapsed and won't respond", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "i'm struggling to breathe and my lips feel numb", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "please send an ambulance, my father isn't breathing", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "i have chest pain spreading to my jaw", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "i don't want to live anymore and plan to end my life", "intent": "EMERGENCY", "lang": "en", "script": "latin"}
+{"text": "सीने पर भारी बोझ जैसा लग रहा है और पसीना आ रहा है", "intent": "EMERGENCY", "lang": "hi", "script": "devanagari"}
+{"text": "चाचाजी की आवाज़ अचानक लड़खड़ाने लगी", "intent": "EMERGENCY", "lang": "hi", "script": "devanagari"}
+{"text": "माँ अपना बायाँ हाथ नहीं उठा पा रहीं और चेहरा टेढ़ा है", "intent": "EMERGENCY", "lang": "hi", "script": "devanagari"}
+{"text": "मैं कुछ मिनट पहले बेहोश हो गया था", "intent": "EMERGENCY", "lang": "hi", "script": "devanagari"}
+{"text": "दादी अचानक गिर गईं और जवाब नहीं दे रहीं", "intent": "EMERGENCY", "lang": "hi", "script": "devanagari"}
+{"text": "सांस लेने में बहुत तकलीफ हो रही है", "intent": "EMERGENCY", "lang": "hi", "script": "devanagari"}
+{"text": "पापा सांस नहीं ले रहे, एम्बुलेंस भेजो", "intent": "EMERGENCY", "lang": "hi", "script": "devanagari"}
+{"text": "seene me bahut tez dard aur pasina", "intent": "EMERGENCY", "lang": "hi", "script": "latin"}
+{"text": "dadi behosh ho gayi hai", "intent": "EMERGENCY", "lang": "hi", "script": "latin"}
+{"text": "saans lene me bahut takleef ho rahi hai", "intent": "EMERGENCY", "lang": "hi", "script": "latin"}
+{"text": "छातीवर जड ओझे असल्यासारखे वाटते आणि घाम येतोय", "intent": "EMERGENCY", "lang": "mr", "script": "devanagari"}
+{"text": "काकांचे बोलणे अचानक अडखळू लागले", "intent": "EMERGENCY", "lang": "mr", "script": "devanagari"}
+{"text": "आईला डावा हात उचलता येत नाही आणि चेहरा वाकडा झाला", "intent": "EMERGENCY", "lang": "mr", "script": "devanagari"}
+{"text": "मी काही मिनिटांपूर्वी बेशुद्ध झालो होतो", "intent": "EMERGENCY", "lang": "mr", "script": "devanagari"}
+{"text": "आजी अचानक कोसळली आणि प्रतिसाद देत नाही", "intent": "EMERGENCY", "lang": "mr", "script": "devanagari"}
+{"text": "श्वास घ्यायला खूप त्रास होत आहे", "intent": "EMERGENCY", "lang": "mr", "script": "devanagari"}
+{"text": "बाबा श्वास घेत नाहीत, रुग्णवाहिका पाठवा", "intent": "EMERGENCY", "lang": "mr", "script": "devanagari"}
+{"text": "chhatit khup kal yetey ani gham", "intent": "EMERGENCY", "lang": "mr", "script": "latin"}
+{"text": "aaji beshuddh padli", "intent": "EMERGENCY", "lang": "mr", "script": "latin"}
+{"text": "shwas ghyayla khup tras hotoy", "intent": "EMERGENCY", "lang": "mr", "script": "latin"}
+{"text": "which tablets would bring my sugar down", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "how many mg should i be taking", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "is it okay to halve my bp pills", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "can you name a drug for my cholesterol", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "what should i take to thin my blood", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "recommend something over the counter for my heart", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "should i increase my insulin units", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "i ran out of medicine, what can i use instead", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "tell me the correct dose for my father", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "can i swap my diabetes tablets for a herbal remedy", "intent": "MEDICATION_REQUEST", "lang": "en", "script": "latin"}
+{"text": "शुगर कम करने के लिए कौन सी गोलियां लूँ", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "devanagari"}
+{"text": "मुझे कितने मिलीग्राम लेने चाहिए", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "devanagari"}
+{"text": "क्या बीपी की गोली आधी कर सकता हूँ", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "devanagari"}
+{"text": "कोलेस्ट्रॉल की कोई दवा का नाम बताइए", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "devanagari"}
+{"text": "खून पतला करने के लिए क्या लूँ", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "devanagari"}
+{"text": "क्या इंसुलिन की यूनिट बढ़ा दूँ", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "devanagari"}
+{"text": "पिताजी के लिए सही खुराक बताइए", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "devanagari"}
+{"text": "sugar kam karne ki goli batao", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "latin"}
+{"text": "bp ki goli aadhi kar du kya", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "latin"}
+{"text": "papa ke liye sahi dose batao", "intent": "MEDICATION_REQUEST", "lang": "hi", "script": "latin"}
+{"text": "साखर कमी करायला कोणत्या गोळ्या घेऊ", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "devanagari"}
+{"text": "मी किती मिलीग्रॅम घ्यायला हवे", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "devanagari"}
+{"text": "बीपीची गोळी अर्धी करू शकतो का", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "devanagari"}
+{"text": "कोलेस्टेरॉलच्या औषधाचे नाव सांगा", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "devanagari"}
+{"text": "रक्त पातळ करण्यासाठी काय घेऊ", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "devanagari"}
+{"text": "इन्सुलिनचे युनिट वाढवू का", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "devanagari"}
+{"text": "वडिलांसाठी योग्य डोस सांगा", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "devanagari"}
+{"text": "sugar kami karaychi goli sanga", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "latin"}
+{"text": "BP chi goli ardhi karu ka", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "latin"}
+{"text": "babansathi yogya dos sanga", "intent": "MEDICATION_REQUEST", "lang": "mr", "script": "latin"}
+{"text": "hello, good to see you", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "hey, what's up", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "thanks a lot, that helped", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "hi, can you tell me what you do", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "good day", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "okay bye for now", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "who am i talking to", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "hi there assistant", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "appreciate it", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "hey, are you online", "intent": "GREETING", "lang": "en", "script": "latin"}
+{"text": "नमस्ते जी, कैसे हैं", "intent": "GREETING", "lang": "hi", "script": "devanagari"}
+{"text": "अरे, क्या हाल है", "intent": "GREETING", "lang": "hi", "script": "devanagari"}
+{"text": "बहुत बहुत शुक्रिया, मदद मिली", "intent": "GREETING", "lang": "hi", "script": "devanagari"}
+{"text": "हाय, आप क्या करते हैं", "intent": "GREETING", "lang": "hi", "script": "devanagari"}
+{"text": "ठीक है, बाद में बात करते हैं", "intent": "GREETING", "lang": "hi", "script": "devanagari"}
+{"text": "मैं किससे बात कर रहा हूँ", "intent": "GREETING", "lang": "hi", "script": "devanagari"}
+{"text": "आपका आभार", "intent": "GREETING", "lang": "hi", "script": "devanagari"}
+{"text": "hello, kya haal hai", "intent": "GREETING", "lang": "hi", "script": "latin"}
+{"text": "thank you ji", "intent": "GREETING", "lang": "hi", "script": "latin"}
+{"text": "aap kya karte ho batao", "intent": "GREETING", "lang": "hi", "script": "latin"}
+{"text": "नमस्कार, कसे आहात", "intent": "GREETING", "lang": "mr", "script": "devanagari"}
+{"text": "अरे, काय चाललंय", "intent": "GREETING", "lang": "mr", "script": "devanagari"}
+{"text": "खूप खूप आभार, मदत झाली", "intent": "GREETING", "lang": "mr", "script": "devanagari"}
+{"text": "हाय, तुम्ही काय करता", "intent": "GREETING", "lang": "mr", "script": "devanagari"}
+{"text": "ठीक आहे, नंतर बोलू", "intent": "GREETING", "lang": "mr", "script": "devanagari"}
+{"text": "मी कोणाशी बोलतोय", "intent": "GREETING", "lang": "mr", "script": "devanagari"}
+{"text": "तुमचे आभार", "intent": "GREETING", "lang": "mr", "script": "devanagari"}
+{"text": "namaskar, kay mhanta", "intent": "GREETING", "lang": "mr", "script": "latin"}
+{"text": "khup aabhar", "intent": "GREETING", "lang": "mr", "script": "latin"}
+{"text": "tumhi kay karta sanga", "intent": "GREETING", "lang": "mr", "script": "latin"}
+{"text": "what's a good recipe for paneer tikka", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "who scored the most runs in the last world cup", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "can you solve this equation for me", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "how do i invest in mutual funds", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "recommend a web series to watch", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "what's the traffic like on the highway", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "how many kilometres from pune to nashik", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "write a birthday message for my sister", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "which laptop should i buy for gaming", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "tell me something funny", "intent": "OUT_OF_SCOPE", "lang": "en", "script": "latin"}
+{"text": "पनीर टिक्का की अच्छी रेसिपी बताइए", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "devanagari"}
+{"text": "पिछले विश्व कप में सबसे ज़्यादा रन किसने बनाए", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "devanagari"}
+{"text": "म्यूचुअल फंड में पैसा कैसे लगाएँ", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "devanagari"}
+{"text": "देखने के लिए कोई वेब सीरीज़ बताइए", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "devanagari"}
+{"text": "पुणे से नासिक कितने किलोमीटर है", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "devanagari"}
+{"text": "बहन के जन्मदिन के लिए संदेश लिखो", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "devanagari"}
+{"text": "कुछ मज़ेदार सुनाओ", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "devanagari"}
+{"text": "paneer tikka kaise banaye", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "latin"}
+{"text": "mutual fund me paisa kaise lagaye", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "latin"}
+{"text": "koi web series batao", "intent": "OUT_OF_SCOPE", "lang": "hi", "script": "latin"}
+{"text": "पनीर टिक्काची चांगली पाककृती सांगा", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "devanagari"}
+{"text": "मागच्या विश्वचषकात सर्वाधिक धावा कोणी केल्या", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "devanagari"}
+{"text": "म्युच्युअल फंडात पैसे कसे गुंतवायचे", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "devanagari"}
+{"text": "बघण्यासाठी एखादी वेब सिरीज सांगा", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "devanagari"}
+{"text": "पुण्याहून नाशिक किती किलोमीटर आहे", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "devanagari"}
+{"text": "बहिणीच्या वाढदिवसासाठी संदेश लिहा", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "devanagari"}
+{"text": "काहीतरी मजेदार सांगा", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "devanagari"}
+{"text": "paneer tikka kasa banvaycha", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "latin"}
+{"text": "mutual fund madhye paise kase guntvayche", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "latin"}
+{"text": "ekhadi web series sanga", "intent": "OUT_OF_SCOPE", "lang": "mr", "script": "latin"}

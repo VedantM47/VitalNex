@@ -1,0 +1,1307 @@
+{
+  "version": "assistant-v1.0.0",
+  "created_at": "2026-10-28T14:13:00+00:00",
+  "labels": [
+    "EXPLAIN_RESULT",
+    "WHAT_CAN_I_CHANGE",
+    "DISEASE_INFO",
+    "HOW_AI_WORKS",
+    "BOOK_APPOINTMENT",
+    "FIND_DOCTOR",
+    "MY_DATA",
+    "EMERGENCY",
+    "MEDICATION_REQUEST",
+    "GREETING",
+    "OUT_OF_SCOPE"
+  ],
+  "chosen_approach": "enc_mlp",
+  "chosen_hyperparameters": {
+    "epochs": 120,
+    "hidden": 256,
+    "dropout": 0.2,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size": 64
+  },
+  "selection_rule": "best validation macro-F1; within 0.005 prefer the simpler approach (order ['tfidf_lr', 'enc_lr', 'enc_mlp']). Fixed before test evaluation.",
+  "artifact_files": {
+    "model": "intent_model.pt"
+  },
+  "encoder": {
+    "model_id": "l3cube-pune/indic-sentence-bert-nli",
+    "revision": "aab1d6a0ace569c670f54173e1b0f0bb607f13c8",
+    "licence": "CC-BY-4.0",
+    "attribution": "L3Cube-IndicSBERT (l3cube-pune/indic-sentence-bert-nli), L3Cube Pune, licensed CC-BY-4.0. Paper: Deode et al., 'L3Cube-IndicSBERT: A simple approach for learning cross-lingual sentence representations using multilingual BERT', 2023. https://huggingface.co/l3cube-pune/indic-sentence-bert-nli",
+    "url": "https://huggingface.co/l3cube-pune/indic-sentence-bert-nli",
+    "dimension": 768,
+    "frozen": true,
+    "device": "cpu",
+    "encode_ms_per_message_cpu_median": 39.7,
+    "encode_seconds_train_set": 18.3
+  },
+  "data": {
+    "train_file": "ml/nlp/data/intents_train.jsonl",
+    "train_sha256": "90f35d296ec30ce7e632b4a1ab5d3e7057215552b1017eba0476766131badf4b",
+    "test_file": "ml/nlp/data/intents_test.jsonl",
+    "test_sha256": "d2e65144d75613ed6329c2443b5dcef6927122abc053a3a94e0b5aa382ff9846",
+    "emergency_holdout_file": "ml/nlp/data/emergency_holdout.jsonl",
+    "n_train": 1320,
+    "n_fit": 1056,
+    "n_val": 264,
+    "n_test": 330,
+    "per_language_train": {
+      "en": 440,
+      "hi": 440,
+      "mr": 440
+    },
+    "per_language_test": {
+      "en": 110,
+      "hi": 110,
+      "mr": 110
+    },
+    "romanised_train": 220,
+    "romanised_test": 66,
+    "origin": "All utterances written by Claude Code (synthetic, not from users). Test lines were written separately with different phrasing. HI/MR not yet reviewed by native speakers.",
+    "split": {
+      "val_size": 0.2,
+      "seed": 42,
+      "stratify": "intent x language"
+    }
+  },
+  "comparison": {
+    "validation": {
+      "tfidf_lr": {
+        "hyperparameters": {
+          "C": 100.0
+        },
+        "val": {
+          "all": {
+            "accuracy": 0.8485,
+            "macro_f1": 0.8477,
+            "n": 264
+          },
+          "en": {
+            "accuracy": 0.875,
+            "macro_f1": 0.8686,
+            "n": 88
+          },
+          "hi": {
+            "accuracy": 0.8523,
+            "macro_f1": 0.8526,
+            "n": 88
+          },
+          "mr": {
+            "accuracy": 0.8182,
+            "macro_f1": 0.8168,
+            "n": 88
+          }
+        }
+      },
+      "enc_lr": {
+        "hyperparameters": {
+          "C": 100.0
+        },
+        "val": {
+          "all": {
+            "accuracy": 0.9318,
+            "macro_f1": 0.9317,
+            "n": 264
+          },
+          "en": {
+            "accuracy": 0.9545,
+            "macro_f1": 0.9545,
+            "n": 88
+          },
+          "hi": {
+            "accuracy": 0.9545,
+            "macro_f1": 0.9552,
+            "n": 88
+          },
+          "mr": {
+            "accuracy": 0.8864,
+            "macro_f1": 0.8865,
+            "n": 88
+          }
+        }
+      },
+      "enc_mlp": {
+        "hyperparameters": {
+          "epochs": 120,
+          "hidden": 256,
+          "dropout": 0.2,
+          "lr": 0.001,
+          "weight_decay": 0.0001,
+          "batch_size": 64
+        },
+        "val": {
+          "all": {
+            "accuracy": 0.9394,
+            "macro_f1": 0.9392,
+            "n": 264
+          },
+          "en": {
+            "accuracy": 0.9432,
+            "macro_f1": 0.9431,
+            "n": 88
+          },
+          "hi": {
+            "accuracy": 0.9886,
+            "macro_f1": 0.9886,
+            "n": 88
+          },
+          "mr": {
+            "accuracy": 0.8864,
+            "macro_f1": 0.8848,
+            "n": 88
+          }
+        }
+      }
+    },
+    "test_argmax_no_abstention": {
+      "tfidf_lr": {
+        "all": {
+          "accuracy": 0.8303,
+          "macro_f1": 0.8275,
+          "n": 330
+        },
+        "en": {
+          "accuracy": 0.8182,
+          "macro_f1": 0.8169,
+          "n": 110
+        },
+        "hi": {
+          "accuracy": 0.8273,
+          "macro_f1": 0.8214,
+          "n": 110
+        },
+        "mr": {
+          "accuracy": 0.8455,
+          "macro_f1": 0.8436,
+          "n": 110
+        }
+      },
+      "enc_lr": {
+        "all": {
+          "accuracy": 0.9091,
+          "macro_f1": 0.9093,
+          "n": 330
+        },
+        "en": {
+          "accuracy": 0.8909,
+          "macro_f1": 0.8917,
+          "n": 110
+        },
+        "hi": {
+          "accuracy": 0.9364,
+          "macro_f1": 0.9351,
+          "n": 110
+        },
+        "mr": {
+          "accuracy": 0.9,
+          "macro_f1": 0.9006,
+          "n": 110
+        }
+      },
+      "enc_mlp": {
+        "all": {
+          "accuracy": 0.903,
+          "macro_f1": 0.903,
+          "n": 330
+        },
+        "en": {
+          "accuracy": 0.8818,
+          "macro_f1": 0.8822,
+          "n": 110
+        },
+        "hi": {
+          "accuracy": 0.9273,
+          "macro_f1": 0.9258,
+          "n": 110
+        },
+        "mr": {
+          "accuracy": 0.9,
+          "macro_f1": 0.9008,
+          "n": 110
+        }
+      }
+    }
+  },
+  "thresholds": {
+    "oos": 0.45,
+    "emergency": 0.05,
+    "medication": 0.45,
+    "faq_similarity": 0.591
+  },
+  "threshold_selection": {
+    "oos": "max validation macro-F1 when max-probability < t is mapped to OUT_OF_SCOPE (ties -> larger t)",
+    "oos_curve_validation": [
+      {
+        "t": 0.2,
+        "val_macro_f1": 0.9392
+      },
+      {
+        "t": 0.25,
+        "val_macro_f1": 0.9392
+      },
+      {
+        "t": 0.3,
+        "val_macro_f1": 0.9392
+      },
+      {
+        "t": 0.35,
+        "val_macro_f1": 0.9392
+      },
+      {
+        "t": 0.4,
+        "val_macro_f1": 0.9392
+      },
+      {
+        "t": 0.45,
+        "val_macro_f1": 0.9432
+      },
+      {
+        "t": 0.5,
+        "val_macro_f1": 0.9358
+      },
+      {
+        "t": 0.55,
+        "val_macro_f1": 0.9358
+      },
+      {
+        "t": 0.6,
+        "val_macro_f1": 0.9362
+      },
+      {
+        "t": 0.65,
+        "val_macro_f1": 0.9333
+      },
+      {
+        "t": 0.7,
+        "val_macro_f1": 0.9146
+      },
+      {
+        "t": 0.75,
+        "val_macro_f1": 0.9154
+      },
+      {
+        "t": 0.8,
+        "val_macro_f1": 0.9171
+      },
+      {
+        "t": 0.85,
+        "val_macro_f1": 0.9127
+      },
+      {
+        "t": 0.9,
+        "val_macro_f1": 0.9018
+      }
+    ],
+    "emergency": "largest t (grid 0.05-0.50) keeping 100% validation recall for EMERGENCY via P(EMERGENCY) >= t",
+    "emergency_val_false_alarm_rate": 0.0167,
+    "medication": "same rule for MEDICATION_REQUEST",
+    "medication_val_false_refusal_rate": 0.0,
+    "faq_similarity": "95th percentile of best FAQ similarity of OUT_OF_SCOPE training utterances",
+    "faq_oos_similarity_summary": {
+      "min": 0.125,
+      "median": 0.416,
+      "max": 0.646
+    }
+  },
+  "per_language": {
+    "en": {
+      "accuracy": 0.8818,
+      "macro_f1": 0.8822,
+      "n": 110
+    },
+    "hi": {
+      "accuracy": 0.9273,
+      "macro_f1": 0.9263,
+      "n": 110
+    },
+    "mr": {
+      "accuracy": 0.8909,
+      "macro_f1": 0.8913,
+      "n": 110
+    }
+  },
+  "test_metrics": {
+    "chosen_with_abstention": {
+      "all": {
+        "accuracy": 0.9,
+        "macro_f1": 0.9002,
+        "n": 330
+      },
+      "en": {
+        "accuracy": 0.8818,
+        "macro_f1": 0.8822,
+        "n": 110
+      },
+      "hi": {
+        "accuracy": 0.9273,
+        "macro_f1": 0.9263,
+        "n": 110
+      },
+      "mr": {
+        "accuracy": 0.8909,
+        "macro_f1": 0.8913,
+        "n": 110
+      }
+    },
+    "per_intent_f1": {
+      "en": {
+        "EXPLAIN_RESULT": 0.9524,
+        "WHAT_CAN_I_CHANGE": 0.7826,
+        "DISEASE_INFO": 0.8421,
+        "HOW_AI_WORKS": 0.8571,
+        "BOOK_APPOINTMENT": 0.8889,
+        "FIND_DOCTOR": 0.9091,
+        "MY_DATA": 0.9474,
+        "EMERGENCY": 1.0,
+        "MEDICATION_REQUEST": 0.7778,
+        "GREETING": 0.9474,
+        "OUT_OF_SCOPE": 0.8
+      },
+      "hi": {
+        "EXPLAIN_RESULT": 0.8571,
+        "WHAT_CAN_I_CHANGE": 1.0,
+        "DISEASE_INFO": 0.9091,
+        "HOW_AI_WORKS": 0.8235,
+        "BOOK_APPOINTMENT": 0.9474,
+        "FIND_DOCTOR": 0.9524,
+        "MY_DATA": 0.9,
+        "EMERGENCY": 1.0,
+        "MEDICATION_REQUEST": 1.0,
+        "GREETING": 1.0,
+        "OUT_OF_SCOPE": 0.8
+      },
+      "mr": {
+        "EXPLAIN_RESULT": 0.7619,
+        "WHAT_CAN_I_CHANGE": 0.8,
+        "DISEASE_INFO": 0.9,
+        "HOW_AI_WORKS": 0.8421,
+        "BOOK_APPOINTMENT": 0.9474,
+        "FIND_DOCTOR": 0.9,
+        "MY_DATA": 0.9,
+        "EMERGENCY": 0.9524,
+        "MEDICATION_REQUEST": 0.9,
+        "GREETING": 1.0,
+        "OUT_OF_SCOPE": 0.9
+      }
+    },
+    "weakest_intent": {
+      "en": {
+        "intent": "MEDICATION_REQUEST",
+        "f1": 0.7778
+      },
+      "hi": {
+        "intent": "OUT_OF_SCOPE",
+        "f1": 0.8
+      },
+      "mr": {
+        "intent": "EXPLAIN_RESULT",
+        "f1": 0.7619
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "EXPLAIN_RESULT",
+        "WHAT_CAN_I_CHANGE",
+        "DISEASE_INFO",
+        "HOW_AI_WORKS",
+        "BOOK_APPOINTMENT",
+        "FIND_DOCTOR",
+        "MY_DATA",
+        "EMERGENCY",
+        "MEDICATION_REQUEST",
+        "GREETING",
+        "OUT_OF_SCOPE"
+      ],
+      "rows_true_cols_pred": [
+        [
+          27,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          27,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          27,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0,
+          24,
+          0,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          26,
+          1,
+          0,
+          0,
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          29,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          27,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          30,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          26,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          29,
+          0
+        ],
+        [
+          1,
+          1,
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          25
+        ]
+      ]
+    },
+    "errors": [
+      {
+        "text": "result me smoking factor kyu likha hai",
+        "lang": "hi",
+        "true": "EXPLAIN_RESULT",
+        "pred": "DISEASE_INFO",
+        "confidence": 0.682
+      },
+      {
+        "text": "maza report kalala nahi, kay lihilay te sanga",
+        "lang": "mr",
+        "true": "EXPLAIN_RESULT",
+        "pred": "MY_DATA",
+        "confidence": 0.578
+      },
+      {
+        "text": "result madhye smoking karan ka lihilay",
+        "lang": "mr",
+        "true": "EXPLAIN_RESULT",
+        "pred": "WHAT_CAN_I_CHANGE",
+        "confidence": 0.782
+      },
+      {
+        "text": "if i start a morning walk will it matter",
+        "lang": "en",
+        "true": "WHAT_CAN_I_CHANGE",
+        "pred": "MEDICATION_REQUEST",
+        "confidence": 0.468
+      },
+      {
+        "text": "सकाळी फिरायला सुरुवात केली तर फरक पडेल का",
+        "lang": "mr",
+        "true": "WHAT_CAN_I_CHANGE",
+        "pred": "OUT_OF_SCOPE",
+        "confidence": 0.328
+      },
+      {
+        "text": "sarvat sopa badal konta aahe majhyasathi",
+        "lang": "mr",
+        "true": "WHAT_CAN_I_CHANGE",
+        "pred": "EXPLAIN_RESULT",
+        "confidence": 0.906
+      },
+      {
+        "text": "how would i know if i had a stroke coming",
+        "lang": "en",
+        "true": "DISEASE_INFO",
+        "pred": "WHAT_CAN_I_CHANGE",
+        "confidence": 0.734
+      },
+      {
+        "text": "what is a transient ischaemic attack",
+        "lang": "en",
+        "true": "DISEASE_INFO",
+        "pred": "HOW_AI_WORKS",
+        "confidence": 0.476
+      },
+      {
+        "text": "jada asalyane hrudayavar kay parinam hoto",
+        "lang": "mr",
+        "true": "DISEASE_INFO",
+        "pred": "EMERGENCY",
+        "confidence": 0.56
+      },
+      {
+        "text": "what are the weak points of this screening",
+        "lang": "en",
+        "true": "HOW_AI_WORKS",
+        "pred": "EXPLAIN_RESULT",
+        "confidence": 0.988
+      },
+      {
+        "text": "इस स्क्रीनिंग की कमज़ोरियाँ क्या हैं",
+        "lang": "hi",
+        "true": "HOW_AI_WORKS",
+        "pred": "EXPLAIN_RESULT",
+        "confidence": 0.983
+      },
+      {
+        "text": "क्या यह डॉक्टर के निदान की जगह ले सकता है",
+        "lang": "hi",
+        "true": "HOW_AI_WORKS",
+        "pred": "MY_DATA",
+        "confidence": 0.829
+      },
+      {
+        "text": "kya ye doctor ki jagah le sakta hai",
+        "lang": "hi",
+        "true": "HOW_AI_WORKS",
+        "pred": "FIND_DOCTOR",
+        "confidence": 0.944
+      },
+      {
+        "text": "या स्क्रीनिंगच्या कमकुवत बाजू कोणत्या",
+        "lang": "mr",
+        "true": "HOW_AI_WORKS",
+        "pred": "EXPLAIN_RESULT",
+        "confidence": 0.982
+      },
+      {
+        "text": "he doctoranchi jaga gheu shakta ka",
+        "lang": "mr",
+        "true": "HOW_AI_WORKS",
+        "pred": "FIND_DOCTOR",
+        "confidence": 0.898
+      },
+      {
+        "text": "where do i control what clinicians can view",
+        "lang": "en",
+        "true": "MY_DATA",
+        "pred": "FIND_DOCTOR",
+        "confidence": 0.998
+      },
+      {
+        "text": "क्या आपके पास मेरी हर चीज़ निर्यात कर सकता हूँ",
+        "lang": "hi",
+        "true": "MY_DATA",
+        "pred": "OUT_OF_SCOPE",
+        "confidence": 0.541
+      },
+      {
+        "text": "maze chat kuthe save hotat ka",
+        "lang": "mr",
+        "true": "MY_DATA",
+        "pred": "WHAT_CAN_I_CHANGE",
+        "confidence": 0.588
+      },
+      {
+        "text": "put me down for a visit with a heart doctor",
+        "lang": "en",
+        "true": "BOOK_APPOINTMENT",
+        "pred": "FIND_DOCTOR",
+        "confidence": 0.68
+      },
+      {
+        "text": "is there an opening on thursday afternoon",
+        "lang": "en",
+        "true": "BOOK_APPOINTMENT",
+        "pred": "OUT_OF_SCOPE",
+        "confidence": 0.982
+      },
+      {
+        "text": "क्या गुरुवार दोपहर को कोई जगह खाली है",
+        "lang": "hi",
+        "true": "BOOK_APPOINTMENT",
+        "pred": "OUT_OF_SCOPE",
+        "confidence": 0.366
+      },
+      {
+        "text": "mazi consultation kiti vajta aahe",
+        "lang": "mr",
+        "true": "BOOK_APPOINTMENT",
+        "pred": "EXPLAIN_RESULT",
+        "confidence": 0.515
+      },
+      {
+        "text": "gharajaval sugar cha doctor pahije",
+        "lang": "mr",
+        "true": "FIND_DOCTOR",
+        "pred": "MEDICATION_REQUEST",
+        "confidence": 0.959
+      },
+      {
+        "text": "what should i take to thin my blood",
+        "lang": "en",
+        "true": "MEDICATION_REQUEST",
+        "pred": "WHAT_CAN_I_CHANGE",
+        "confidence": 0.998
+      },
+      {
+        "text": "recommend something over the counter for my heart",
+        "lang": "en",
+        "true": "MEDICATION_REQUEST",
+        "pred": "OUT_OF_SCOPE",
+        "confidence": 0.993
+      },
+      {
+        "text": "i ran out of medicine, what can i use instead",
+        "lang": "en",
+        "true": "MEDICATION_REQUEST",
+        "pred": "WHAT_CAN_I_CHANGE",
+        "confidence": 0.862
+      },
+      {
+        "text": "babansathi yogya dos sanga",
+        "lang": "mr",
+        "true": "MEDICATION_REQUEST",
+        "pred": "HOW_AI_WORKS",
+        "confidence": 0.607
+      },
+      {
+        "text": "hey, are you online",
+        "lang": "en",
+        "true": "GREETING",
+        "pred": "HOW_AI_WORKS",
+        "confidence": 0.518
+      },
+      {
+        "text": "can you solve this equation for me",
+        "lang": "en",
+        "true": "OUT_OF_SCOPE",
+        "pred": "WHAT_CAN_I_CHANGE",
+        "confidence": 0.571
+      },
+      {
+        "text": "what's the traffic like on the highway",
+        "lang": "en",
+        "true": "OUT_OF_SCOPE",
+        "pred": "DISEASE_INFO",
+        "confidence": 0.707
+      },
+      {
+        "text": "पिछले विश्व कप में सबसे ज़्यादा रन किसने बनाए",
+        "lang": "hi",
+        "true": "OUT_OF_SCOPE",
+        "pred": "EXPLAIN_RESULT",
+        "confidence": 0.596
+      },
+      {
+        "text": "paneer tikka kaise banaye",
+        "lang": "hi",
+        "true": "OUT_OF_SCOPE",
+        "pred": "DISEASE_INFO",
+        "confidence": 0.575
+      },
+      {
+        "text": "म्युच्युअल फंडात पैसे कसे गुंतवायचे",
+        "lang": "mr",
+        "true": "OUT_OF_SCOPE",
+        "pred": "DISEASE_INFO",
+        "confidence": 0.871
+      }
+    ]
+  },
+  "pipeline_safety_test": {
+    "emergency_recall_rules_only": 1.0,
+    "emergency_recall_classifier_only": 1.0,
+    "emergency_recall_pipeline": 1.0,
+    "emergency_false_alarm_rate_non_emergency": 0.0167,
+    "medication_refused_or_escalated": 1.0,
+    "medication_false_refusal_rate_other": 0.0074,
+    "oos_abstain_rate_on_oos": 0.8,
+    "in_scope_abstain_rate": 0.01,
+    "pipeline_intent_metrics": {
+      "all": {
+        "accuracy": 0.903,
+        "macro_f1": 0.9027,
+        "n": 330
+      },
+      "en": {
+        "accuracy": 0.9,
+        "macro_f1": 0.8996,
+        "n": 110
+      },
+      "hi": {
+        "accuracy": 0.9273,
+        "macro_f1": 0.9258,
+        "n": 110
+      },
+      "mr": {
+        "accuracy": 0.8818,
+        "macro_f1": 0.8818,
+        "n": 110
+      }
+    }
+  },
+  "emergency_holdout": {
+    "n": 30,
+    "rules_only": 0.4,
+    "classifier_only": 0.9667,
+    "pipeline": 0.9667,
+    "missed": [
+      "chhativar konitari basla aahe asa vatat"
+    ]
+  },
+  "faq": {
+    "entries_per_language": 59,
+    "per_topic": {
+      "diabetes": 16,
+      "heart": 16,
+      "stroke": 16,
+      "vitalnex": 11
+    },
+    "test_coverage": {
+      "en": {
+        "answered": 12,
+        "n": 20,
+        "rate": 0.6
+      },
+      "hi": {
+        "answered": 12,
+        "n": 20,
+        "rate": 0.6
+      },
+      "mr": {
+        "answered": 11,
+        "n": 20,
+        "rate": 0.55
+      },
+      "all": {
+        "answered": 35,
+        "n": 60,
+        "rate": 0.5833
+      },
+      "examples": [
+        {
+          "query": "explain what prediabetes means",
+          "lang": "en",
+          "faq_id": "dia_prediabetes",
+          "similarity": 0.922,
+          "answered": true
+        },
+        {
+          "query": "how would i know if i had a stroke coming",
+          "lang": "en",
+          "faq_id": "stk_diagnosis",
+          "similarity": 0.733,
+          "answered": true
+        },
+        {
+          "query": "is heart disease something you inherit",
+          "lang": "en",
+          "faq_id": "hrt_risk",
+          "similarity": 0.795,
+          "answered": true
+        },
+        {
+          "query": "what are early signs that blood sugar is too high",
+          "lang": "en",
+          "faq_id": "dia_high_sugar",
+          "similarity": 0.853,
+          "answered": true
+        },
+        {
+          "query": "what is the link between blood pressure and stroke",
+          "lang": "en",
+          "faq_id": "stk_bp",
+          "similarity": 0.951,
+          "answered": true
+        },
+        {
+          "query": "can type 2 diabetes go away",
+          "lang": "en",
+          "faq_id": "dia_cure",
+          "similarity": 0.825,
+          "answered": true
+        },
+        {
+          "query": "what makes arteries in the heart get blocked",
+          "lang": "en",
+          "faq_id": "hrt_vs_arrest",
+          "similarity": 0.775,
+          "answered": true
+        },
+        {
+          "query": "which people are more likely to develop diabetes",
+          "lang": "en",
+          "faq_id": "dia_complications",
+          "similarity": 0.832,
+          "answered": true
+        },
+        {
+          "query": "what is a transient ischaemic attack",
+          "lang": "en",
+          "faq_id": "stk_what",
+          "similarity": 0.602,
+          "answered": true
+        },
+        {
+          "query": "how does being overweight affect the heart",
+          "lang": "en",
+          "faq_id": "hrt_bp",
+          "similarity": 0.855,
+          "answered": true
+        },
+        {
+          "query": "प्रीडायबिटीज़ का मतलब समझाइए",
+          "lang": "hi",
+          "faq_id": "dia_prediabetes",
+          "similarity": 0.899,
+          "answered": true
+        },
+        {
+          "query": "स्ट्रोक आने के संकेत कैसे पता चलेंगे",
+          "lang": "hi",
+          "faq_id": "stk_diagnosis",
+          "similarity": 0.881,
+          "answered": true
+        },
+        {
+          "query": "क्या दिल की बीमारी विरासत में मिलती है",
+          "lang": "hi",
+          "faq_id": "hrt_risk",
+          "similarity": 0.872,
+          "answered": true
+        },
+        {
+          "query": "खून में शुगर ज़्यादा होने के शुरुआती संकेत क्या हैं",
+          "lang": "hi",
+          "faq_id": "dia_high_sugar",
+          "similarity": 0.672,
+          "answered": true
+        },
+        {
+          "query": "ब्लड प्रेशर और स्ट्रोक का क्या संबंध है",
+          "lang": "hi",
+          "faq_id": "stk_bp",
+          "similarity": 0.99,
+          "answered": true
+        },
+        {
+          "query": "क्या टाइप 2 डायबिटीज़ चली जा सकती है",
+          "lang": "hi",
+          "faq_id": "dia_symptoms",
+          "similarity": 0.832,
+          "answered": true
+        },
+        {
+          "query": "किन लोगों को डायबिटीज़ होने की संभावना ज़्यादा है",
+          "lang": "hi",
+          "faq_id": "dia_complications",
+          "similarity": 0.835,
+          "answered": true
+        },
+        {
+          "query": "prediabetes ka matlab samjhao",
+          "lang": "hi",
+          "faq_id": "dia_prediabetes",
+          "similarity": 0.789,
+          "answered": true
+        },
+        {
+          "query": "stroke ke sanket kaise pata chalte hai",
+          "lang": "hi",
+          "faq_id": "stk_diagnosis",
+          "similarity": 0.775,
+          "answered": true
+        },
+        {
+          "query": "mota hone se dil pe kya asar padta hai",
+          "lang": "hi",
+          "faq_id": "dia_weight",
+          "similarity": 0.553,
+          "answered": false
+        },
+        {
+          "query": "प्रीडायबेटीसचा अर्थ समजावून सांगा",
+          "lang": "mr",
+          "faq_id": "dia_prediabetes",
+          "similarity": 0.879,
+          "answered": true
+        },
+        {
+          "query": "स्ट्रोक येण्याची चिन्हे कशी ओळखायची",
+          "lang": "mr",
+          "faq_id": "stk_fast",
+          "similarity": 0.858,
+          "answered": true
+        },
+        {
+          "query": "हृदयरोग वारशाने येतो का",
+          "lang": "mr",
+          "faq_id": "hrt_cvd",
+          "similarity": 0.825,
+          "answered": true
+        },
+        {
+          "query": "रक्तातील साखर जास्त असल्याची सुरुवातीची चिन्हे कोणती",
+          "lang": "mr",
+          "faq_id": "dia_high_sugar",
+          "similarity": 0.826,
+          "answered": true
+        },
+        {
+          "query": "रक्तदाब आणि स्ट्रोकचा काय संबंध आहे",
+          "lang": "mr",
+          "faq_id": "stk_bp",
+          "similarity": 0.986,
+          "answered": true
+        },
+        {
+          "query": "टाइप 2 मधुमेह जाऊ शकतो का",
+          "lang": "mr",
+          "faq_id": "dia_symptoms",
+          "similarity": 0.835,
+          "answered": true
+        },
+        {
+          "query": "कोणत्या लोकांना मधुमेह होण्याची शक्यता जास्त असते",
+          "lang": "mr",
+          "faq_id": "dia_complications",
+          "similarity": 0.782,
+          "answered": true
+        },
+        {
+          "query": "prediabetes cha arth sanga",
+          "lang": "mr",
+          "faq_id": "dia_prediabetes",
+          "similarity": 0.6,
+          "answered": true
+        },
+        {
+          "query": "stroke chi chinhe kashi olkhaychi",
+          "lang": "mr",
+          "faq_id": "stk_types",
+          "similarity": 0.475,
+          "answered": false
+        },
+        {
+          "query": "jada asalyane hrudayavar kay parinam hoto",
+          "lang": "mr",
+          "faq_id": "hrt_af",
+          "similarity": 0.584,
+          "answered": false
+        },
+        {
+          "query": "on what basis does the system decide my band",
+          "lang": "en",
+          "faq_id": "vx_accuracy",
+          "similarity": 0.536,
+          "answered": false
+        },
+        {
+          "query": "is a person or a machine deciding my result",
+          "lang": "en",
+          "faq_id": "vx_human",
+          "similarity": 0.515,
+          "answered": false
+        },
+        {
+          "query": "was this model built with indian patients",
+          "lang": "en",
+          "faq_id": "vx_india",
+          "similarity": 0.624,
+          "answered": true
+        },
+        {
+          "query": "how do you make sure the predictions are not biased",
+          "lang": "en",
+          "faq_id": "vx_accuracy",
+          "similarity": 0.527,
+          "answered": false
+        },
+        {
+          "query": "why should a computer estimate be trusted",
+          "lang": "en",
+          "faq_id": "vx_accuracy",
+          "similarity": 0.588,
+          "answered": false
+        },
+        {
+          "query": "does the tool ever refuse to give an answer",
+          "lang": "en",
+          "faq_id": "vx_human",
+          "similarity": 0.358,
+          "answered": false
+        },
+        {
+          "query": "what source does the screening rely on",
+          "lang": "en",
+          "faq_id": "vx_data",
+          "similarity": 0.574,
+          "answered": false
+        },
+        {
+          "query": "are your replies written by a language model",
+          "lang": "en",
+          "faq_id": "vx_what",
+          "similarity": 0.499,
+          "answered": false
+        },
+        {
+          "query": "what are the weak points of this screening",
+          "lang": "en",
+          "faq_id": "vx_diagnosis",
+          "similarity": 0.536,
+          "answered": false
+        },
+        {
+          "query": "can this replace a doctor's diagnosis",
+          "lang": "en",
+          "faq_id": "vx_diagnosis",
+          "similarity": 0.799,
+          "answered": true
+        },
+        {
+          "query": "सिस्टम किस आधार पर मेरा बैंड तय करता है",
+          "lang": "hi",
+          "faq_id": "vx_data",
+          "similarity": 0.477,
+          "answered": false
+        },
+        {
+          "query": "मेरा नतीजा इंसान तय करता है या मशीन",
+          "lang": "hi",
+          "faq_id": "vx_human",
+          "similarity": 0.643,
+          "answered": true
+        },
+        {
+          "query": "क्या यह मॉडल भारतीय मरीज़ों से बना है",
+          "lang": "hi",
+          "faq_id": "vx_india",
+          "similarity": 0.688,
+          "answered": true
+        },
+        {
+          "query": "आप कैसे पक्का करते हैं कि अनुमान पक्षपाती न हों",
+          "lang": "hi",
+          "faq_id": "vx_accuracy",
+          "similarity": 0.533,
+          "answered": false
+        },
+        {
+          "query": "क्या यह टूल कभी जवाब देने से मना करता है",
+          "lang": "hi",
+          "faq_id": "vx_assistant",
+          "similarity": 0.343,
+          "answered": false
+        },
+        {
+          "query": "इस स्क्रीनिंग की कमज़ोरियाँ क्या हैं",
+          "lang": "hi",
+          "faq_id": "vx_diagnosis",
+          "similarity": 0.51,
+          "answered": false
+        },
+        {
+          "query": "क्या यह डॉक्टर के निदान की जगह ले सकता है",
+          "lang": "hi",
+          "faq_id": "vx_diagnosis",
+          "similarity": 0.726,
+          "answered": true
+        },
+        {
+          "query": "system band kaise decide karta hai",
+          "lang": "hi",
+          "faq_id": "vx_assistant",
+          "similarity": 0.206,
+          "answered": false
+        },
+        {
+          "query": "ye model indian logon pe bana hai kya",
+          "lang": "hi",
+          "faq_id": "vx_india",
+          "similarity": 0.547,
+          "answered": false
+        },
+        {
+          "query": "kya ye doctor ki jagah le sakta hai",
+          "lang": "hi",
+          "faq_id": "vx_diagnosis",
+          "similarity": 0.495,
+          "answered": false
+        },
+        {
+          "query": "सिस्टम कोणत्या आधारावर माझा बँड ठरवते",
+          "lang": "mr",
+          "faq_id": "vx_bands",
+          "similarity": 0.476,
+          "answered": false
+        },
+        {
+          "query": "माझा निकाल माणूस ठरवतो की यंत्र",
+          "lang": "mr",
+          "faq_id": "vx_assistant",
+          "similarity": 0.531,
+          "answered": false
+        },
+        {
+          "query": "हे मॉडेल भारतीय रुग्णांवर बनवले आहे का",
+          "lang": "mr",
+          "faq_id": "vx_india",
+          "similarity": 0.733,
+          "answered": true
+        },
+        {
+          "query": "अंदाज पक्षपाती नाहीत हे तुम्ही कसे पाहता",
+          "lang": "mr",
+          "faq_id": "vx_accuracy",
+          "similarity": 0.525,
+          "answered": false
+        },
+        {
+          "query": "हे साधन कधी उत्तर देण्यास नकार देते का",
+          "lang": "mr",
+          "faq_id": "vx_not_confident",
+          "similarity": 0.399,
+          "answered": false
+        },
+        {
+          "query": "या स्क्रीनिंगच्या कमकुवत बाजू कोणत्या",
+          "lang": "mr",
+          "faq_id": "vx_diagnosis",
+          "similarity": 0.551,
+          "answered": false
+        },
+        {
+          "query": "हे डॉक्टरांच्या निदानाची जागा घेऊ शकते का",
+          "lang": "mr",
+          "faq_id": "vx_diagnosis",
+          "similarity": 0.748,
+          "answered": true
+        },
+        {
+          "query": "system band kasa tharavta",
+          "lang": "mr",
+          "faq_id": "vx_assistant",
+          "similarity": 0.2,
+          "answered": false
+        },
+        {
+          "query": "he model bhartiya lokanvar banavla aahe ka",
+          "lang": "mr",
+          "faq_id": "vx_india",
+          "similarity": 0.686,
+          "answered": true
+        },
+        {
+          "query": "he doctoranchi jaga gheu shakta ka",
+          "lang": "mr",
+          "faq_id": "vx_privacy",
+          "similarity": 0.53,
+          "answered": false
+        }
+      ]
+    }
+  },
+  "rules": {
+    "emergency_file": "ml/nlp/data/emergency_phrases.json",
+    "medication_file": "ml/nlp/data/medication_phrases.json",
+    "note": "Rule lists were extended once after the first look at test-set misses (see model card); emergency_holdout.jsonl was written afterwards and was NOT used to tune anything."
+  },
+  "libraries": {
+    "python": "3.13.0",
+    "scikit-learn": "1.6.1",
+    "torch": "2.6.0+cpu",
+    "sentence-transformers": "5.4.1",
+    "transformers": "5.7.0",
+    "numpy": "2.2.0"
+  },
+  "train_seconds_total": 61.1
+}
