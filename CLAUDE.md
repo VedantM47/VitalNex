@@ -80,9 +80,20 @@ tests/               pytest (api + ml), plus web tests if added
 python -m venv .venv && source .venv/bin/activate
 pip install -r apps/api/requirements.txt -r ml/requirements.txt
 python -m ml.data.download          # fetch BRFSS data (Phase 2)
+python -m ml.data.prepare           # validate, split, hash (Phase 2)
+python -m ml.data.data_card         # render docs/data_card.md
 python -m ml.training.train_all     # train 3 diseases (Phase 3)
+python -m ml.training.model_card    # re-render model cards from model_meta.json
 python -m ml.nlp.train_intents      # train assistant intent model (Phase 8)
+python supabase/seed/seed_demo.py     # demo accounts, doctors, slots, consents (idempotent)
+python supabase/seed/seed_history.py  # demo assessment history from the real models
 uvicorn apps.api.main:app --reload --port 8000
 npm --prefix apps/web run dev
-python -m pytest tests -v
+python -m pytest tests -v             # add --deselect tests/test_live_supabase.py to skip live DB tests
 ```
+
+## Current status
+
+Read `docs/PROGRESS.md` before starting work: it records which phases are done, uncommitted
+work in progress, environment facts (Windows, global Python 3.13, live Supabase project, `.env`
+must never be read) and open items. Update it at the end of every phase.
