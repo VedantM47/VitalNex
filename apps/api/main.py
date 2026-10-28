@@ -43,6 +43,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    # The "My data" export reads its file name from this header in the browser.
+    expose_headers=["Content-Disposition"],
 )
 
 

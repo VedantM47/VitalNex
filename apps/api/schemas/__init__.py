@@ -4,15 +4,7 @@ Schemas package export.
 
 from .profile import ProfileBase, ProfileCreate, ProfileUpdate, ProfileResponse
 from .consent import ConsentStatus, ConsentUpdate
-from .health_profile import (
-    ClinicalModelFeatures,
-    LifestyleFeatures,
-    NutritionFeatures,
-    ContextFeatures,
-    HealthProfileCreate,
-    HealthProfileUpdate,
-    HealthProfileResponse,
-)
+from .health_profile import HealthProfileAnswers, HealthProfileUpdate, HealthProfileResponse
 from .assessment import (
     AssessmentInputs,
     AssessmentRequest,
@@ -33,11 +25,7 @@ __all__ = [
     "ProfileCreate",
     "ProfileUpdate",
     "ProfileResponse",
-    "ClinicalModelFeatures",
-    "LifestyleFeatures",
-    "NutritionFeatures",
-    "ContextFeatures",
-    "HealthProfileCreate",
+    "HealthProfileAnswers",
     "HealthProfileUpdate",
     "HealthProfileResponse",
     "AssessmentInputs",

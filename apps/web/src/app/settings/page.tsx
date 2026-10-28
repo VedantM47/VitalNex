@@ -1,169 +1,288 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  Settings,
-  Globe,
-  Shield,
-  Bell,
-  User,
-  CheckCircle2,
-  Lock,
-  Save,
-} from "lucide-react";
+// Settings = language + "My data" (docs/SPEC.md §1.2: settings beyond language + My data are
+// frozen). My data (P7, SPEC §2.2): view and toggle each consent purpose with its notice text and
+// version (withdraw is one click and applies immediately), export everything as JSON, and request
+// deletion with an in-page confirm dialog (never a browser alert).
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Download, QrCode, Trash2 } from "lucide-react";
 import { AppShell } from "../../components/layout/AppShell";
 import { Card, CardHeader } from "../../components/ui/Card";
-import { Button } from "../../components/ui/Button";
-import { Select } from "../../components/ui/Select";
-import { Input } from "../../components/ui/Input";
-import { DemoBadge, StatusBadge } from "../../components/ui/StatusBadge";
-import { useTranslation, SUPPORTED_LANGUAGES } from "../../lib/i18n";
+import { Button, ButtonLink } from "../../components/ui/Button";
+import { Alert } from "../../components/ui/Alert";
+import { Dialog } from "../../components/ui/Dialog";
+import { StatusBadge } from "../../components/ui/StatusBadge";
+import { api } from "../../lib/api-client";
+import { useTranslation, SUPPORTED_LANGUAGES, type SupportedLanguage } from "../../lib/i18n";
 import { useAuth } from "../../lib/auth-context";
+import { fmt } from "../../lib/assessment";
+import { dateTime } from "../../lib/format";
+
+interface Consent {
+  purpose: string;
+  granted: boolean;
+  granted_at: string | null;
+  withdrawn_at: string | null;
+  notice_version: string;
+  required: boolean;
+}
+
+function ConsentCentre() {
+  const { t, language } = useTranslation();
+  const [consents, setConsents] = useState<Consent[] | null | "error">(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    api
+      .getConsents()
+      .then((c) => active && setConsents(c))
+      .catch(() => active && setConsents("error"));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const toggle = async (c: Consent) => {
+    setBusy(c.purpose);
+    setMsg(null);
+    try {
+      setConsents(await api.setConsent(c.purpose, !c.granted));
+      setMsg({ ok: true, text: t("myData.changed") });
+    } catch {
+      setMsg({ ok: false, text: t("myData.changeFailed") });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  if (consents === "error") return <Alert kind="error">{t("myData.loadFailed")}</Alert>;
+  if (consents === null) return <p className="text-sm text-[#475569]">{t("common.loading")}</p>;
+  return (
+    <div className="space-y-4">
+      {msg && <Alert kind={msg.ok ? "success" : "error"}>{msg.text}</Alert>}
+      <ul className="space-y-4">
+        {consents.map((c) => {
+          const base = `myData.purposes.${c.purpose}`;
+          const titleId = `consent-${c.purpose}`;
+          return (
+            <li key={c.purpose} className="space-y-2 rounded-2xl border border-[#D8E2EA] p-4" aria-labelledby={titleId}>
+              <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                <div className="space-y-1">
+                  <h3 id={titleId} className="text-sm font-bold text-[#0B1F33]">
+                    {t(`${base}.title`)}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StatusBadge size="sm" variant={c.granted ? "success" : "neutral"} label={c.granted ? t("myData.on") : t("myData.off")} />
+                    {c.required && <StatusBadge size="sm" variant="info" label={t("myData.required")} />}
+                  </div>
+                </div>
+                <Button
+                  role="switch"
+                  aria-checked={c.granted}
+                  aria-describedby={`${titleId}-notice`}
+                  size="sm"
+                  variant={c.granted ? "outline" : "teal"}
+                  isLoading={busy === c.purpose}
+                  onClick={() => toggle(c)}
+                >
+                  {c.granted ? t("myData.withdraw") : t("myData.turnOn")}
+                </Button>
+              </div>
+              <p id={`${titleId}-notice`} className="text-sm text-[#334155]">
+                {t(`${base}.notice`)}
+              </p>
+              <p className="text-xs text-[#475569]">{fmt(t("myData.ifOff"), { text: t(`${base}.effect`) })}</p>
+              <p className="text-xs text-[#475569]">
+                {fmt(t("myData.version"), { v: c.notice_version })}
+                {c.granted && c.granted_at && ` · ${fmt(t("myData.since"), { date: dateTime(c.granted_at, language) ?? "—" })}`}
+                {!c.granted && c.withdrawn_at && ` · ${fmt(t("myData.withdrawnOn"), { date: dateTime(c.withdrawn_at, language) ?? "—" })}`}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function ExportAndDelete() {
+  const { t } = useTranslation();
+  const { logout } = useAuth();
+  const router = useRouter();
+  const [exporting, setExporting] = useState(false);
+  const [exportMsg, setExportMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [open, setOpen] = useState(false);
+  const [typed, setTyped] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const doExport = async () => {
+    setExporting(true);
+    setExportMsg(null);
+    try {
+      const { blob, filename } = await api.downloadMyData();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setExportMsg({ ok: true, text: t("myData.export.done") });
+    } catch {
+      setExportMsg({ ok: false, text: t("myData.export.failed") });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const doDelete = async () => {
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await api.deleteMyData();
+      setOpen(false);
+      try {
+        await logout();
+      } catch {
+        // the account no longer exists; the local session is cleared below by navigation
+      }
+      router.replace("/");
+    } catch {
+      setDeleteError(t("myData.delete.failed"));
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <>
+      <Card className="space-y-3">
+        <CardHeader title={t("myData.export.title")} subtitle={t("myData.export.body")} />
+        {exportMsg && <Alert kind={exportMsg.ok ? "success" : "error"}>{exportMsg.text}</Alert>}
+        <Button variant="outline" size="sm" onClick={doExport} isLoading={exporting} leftIcon={<Download className="h-4 w-4" />}>
+          {t("myData.export.button")}
+        </Button>
+      </Card>
+
+      <Card className="space-y-3 border-[#B42318]/30">
+        <CardHeader title={t("myData.delete.title")} subtitle={t("myData.delete.body")} />
+        <Button
+          variant="danger"
+          size="sm"
+          onClick={() => {
+            setTyped("");
+            setDeleteError(null);
+            setOpen(true);
+          }}
+          leftIcon={<Trash2 className="h-4 w-4" />}
+        >
+          {t("myData.delete.button")}
+        </Button>
+      </Card>
+
+      <Dialog open={open} onClose={() => !deleting && setOpen(false)} title={t("myData.delete.dialogTitle")} labelledBy="delete-title">
+        <p className="text-sm text-[#334155]">{t("myData.delete.body")}</p>
+        <p className="text-sm font-semibold text-[#0B1F33]">{t("myData.delete.dialogBody")}</p>
+        <div className="space-y-1">
+          <label htmlFor="delete-confirm" className="text-xs font-semibold text-[#0B1F33]">
+            {t("myData.delete.typeLabel")}
+          </label>
+          <input
+            id="delete-confirm"
+            autoComplete="off"
+            value={typed}
+            onChange={(e) => setTyped(e.target.value)}
+            className="h-10 w-full rounded-xl border border-[#CBD5E1] px-3 font-mono text-sm focus-visible:outline-2 focus-visible:outline-[#B42318]"
+          />
+        </div>
+        {deleteError && <Alert kind="error">{deleteError}</Alert>}
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" size="sm" onClick={() => setOpen(false)} disabled={deleting}>
+            {t("common.cancel")}
+          </Button>
+          <Button variant="danger" size="sm" onClick={doDelete} disabled={typed !== "DELETE"} isLoading={deleting}>
+            {t("myData.delete.confirm")}
+          </Button>
+        </div>
+      </Dialog>
+    </>
+  );
+}
 
 export default function SettingsPage() {
   const { t, language, setLanguage } = useTranslation();
-  const { user, role } = useAuth();
+  const { user, role, updateProfile } = useAuth();
+  const [langError, setLangError] = useState(false);
 
-  const [saved, setSaved] = useState(false);
-  const [formData, setFormData] = useState({
-    name: user?.fullName || "",
-    email: user?.email || "",
-    language: language,
-    notificationsEnabled: true,
-    researchConsent: false,
-    dataRetentionDays: "365",
-  });
-
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLanguage(formData.language as any);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+  const changeLanguage = async (lang: SupportedLanguage) => {
+    setLanguage(lang);
+    setLangError(false);
+    if (user) {
+      try {
+        await updateProfile({ preferredLanguage: lang });
+      } catch {
+        setLangError(true);
+      }
+    }
   };
 
   return (
     <AppShell>
-      <div className="space-y-8 max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8E2EA] pb-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B1F33]">
-                {t("nav.settings") || "Platform Preferences & Settings"}
-              </h1>
-              <DemoBadge label="Client Configuration" />
-            </div>
-            <p className="text-xs sm:text-sm text-[#475569]">
-              Manage your language and privacy settings.
-            </p>
-          </div>
+      <div className="mx-auto max-w-4xl space-y-8">
+        <div className="space-y-1 border-b border-[#D8E2EA] pb-6">
+          <h1 className="text-2xl font-extrabold text-[#0B1F33] sm:text-3xl">{t("nav.settings")}</h1>
+          <p className="text-xs text-[#475569] sm:text-sm">{t("settingsPage.subtitle")}</p>
         </div>
 
-        {saved && (
-          <div className="p-4 bg-[#0F766E]/10 border border-[#0F766E]/30 rounded-2xl flex items-center gap-3 text-xs text-[#0F766E] font-medium">
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-            Settings saved successfully and local preferences updated.
+        <Card className="space-y-3">
+          <CardHeader title={t("settingsPage.language")} subtitle={t("settingsPage.languageHelp")} />
+          <label htmlFor="ui-lang" className="sr-only">
+            {t("settingsPage.language")}
+          </label>
+          <select
+            id="ui-lang"
+            value={language}
+            onChange={(e) => changeLanguage(e.target.value as SupportedLanguage)}
+            className="h-11 w-full max-w-xs rounded-xl border border-[#CBD5E1] bg-white px-3 text-sm focus-visible:outline-2 focus-visible:outline-[#0E7490]"
+          >
+            {SUPPORTED_LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.nativeName}
+              </option>
+            ))}
+          </select>
+          {langError && <Alert kind="warning">{t("healthProfilePage.languageFailed")}</Alert>}
+        </Card>
+
+        <section aria-labelledby="mydata-h" className="space-y-4">
+          <div className="space-y-1">
+            <h2 id="mydata-h" className="text-xl font-bold text-[#0B1F33]">
+              {t("myData.title")}
+            </h2>
+            <p className="text-sm text-[#475569]">{t("myData.subtitle")}</p>
           </div>
-        )}
-
-        <form onSubmit={handleSave} className="space-y-6">
-          {/* Language & Regional Localization */}
-          <Card className="p-6 sm:p-8 space-y-6">
-            <CardHeader
-              title="Language & Regional Localization"
-              subtitle="Select your preferred language for the AI intelligence suite, voice synthesis, and clinical reports"
-              badge={<Globe className="w-5 h-5 text-[#0E7490]" />}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Select
-                label="Interface Language"
-                value={formData.language}
-                onChange={(e) => setFormData({ ...formData, language: e.target.value as any })}
-                options={SUPPORTED_LANGUAGES.map((l) => ({
-                  value: l.code,
-                  label: `${l.name} (${l.nativeName})`,
-                }))}
-              />
-
-              <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-1 text-xs text-[#475569]">
-                <span className="font-semibold text-[#0B1F33]">Regional Dialect Coverage:</span>
-                <p>Supports Pune, PCMC, and peri-urban Marathi/Hindi phrasing including health terminology and voice transcripts.</p>
-              </div>
-            </div>
-          </Card>
-
-          {/* User Profile Info */}
-          <Card className="p-6 sm:p-8 space-y-6">
-            <CardHeader
-              title="Account & Identity"
-              subtitle="Your identity details within the research and connected care prototype"
-              badge={<User className="w-5 h-5 text-[#0E7490]" />}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label="Full Name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
-              <Input
-                label="Email Address"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-            </div>
-          </Card>
-
-          {/* Privacy & Research Governance Consent */}
-          <Card className="p-6 sm:p-8 space-y-6">
-            <CardHeader
-              title="Data Privacy & Research Consent"
-              subtitle="Control how your screening data is processed and stored"
-              badge={<Shield className="w-5 h-5 text-[#0E7490]" />}
-            />
-
-            <div className="space-y-4 text-xs">
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.researchConsent}
-                  onChange={(e) => setFormData({ ...formData, researchConsent: e.target.checked })}
-                  className="w-4 h-4 rounded border-[#CBD5E1] text-[#0E7490] focus:ring-[#0E7490] mt-0.5"
-                />
-                <div>
-                  <span className="font-semibold text-[#0B1F33]">Anonymized Research Participation</span>
-                  <p className="text-[#64748B]">
-                    Allow de-identified screening values to be included in aggregate statistics. (Purpose-specific consent is rebuilt in a later phase.)
-                  </p>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.notificationsEnabled}
-                  onChange={(e) => setFormData({ ...formData, notificationsEnabled: e.target.checked })}
-                  className="w-4 h-4 rounded border-[#CBD5E1] text-[#0E7490] focus:ring-[#0E7490] mt-0.5"
-                />
-                <div>
-                  <span className="font-semibold text-[#0B1F33]">Automated Follow-up Reminders</span>
-                  <p className="text-[#64748B]">
-                    Receive periodic health check prompts when risk factors indicate re-screening is advised.
-                  </p>
-                </div>
-              </label>
-            </div>
-          </Card>
-
-          <div className="flex justify-end gap-3 pt-2">
-            <Button type="submit" variant="primary" size="md">
-              <Save className="w-4 h-4 mr-2" />
-              Save Preferences
-            </Button>
-          </div>
-        </form>
+          {role === "patient" ? (
+            <>
+              <Card className="space-y-4">
+                <CardHeader title={t("myData.consents")} />
+                <ConsentCentre />
+              </Card>
+              <ExportAndDelete />
+              <ButtonLink href="/reports" variant="outline">
+                <QrCode className="h-4 w-4" aria-hidden="true" />
+                {t("myData.shareLink")}
+              </ButtonLink>
+            </>
+          ) : (
+            <Alert kind="info">{t("myData.staffNote")}</Alert>
+          )}
+        </section>
       </div>
     </AppShell>
   );

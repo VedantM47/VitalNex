@@ -1,6 +1,7 @@
 "use client";
 
 import React, { ButtonHTMLAttributes, forwardRef } from "react";
+import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -66,3 +67,40 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = "Button";
+
+/** A link styled as a button (avoids nesting a <button> inside an <a>). */
+export function ButtonLink({
+  href,
+  children,
+  variant = "primary",
+  size = "sm",
+  className = "",
+  external = false,
+}: {
+  href: string;
+  children: React.ReactNode;
+  variant?: "primary" | "outline" | "teal";
+  size?: "sm" | "md";
+  className?: string;
+  external?: boolean;
+}) {
+  const v = {
+    primary: "bg-[#0B1F33] text-white hover:bg-[#132E4A]",
+    outline: "bg-transparent text-[#0B1F33] border border-[#CBD5E1] hover:bg-[#F8FAFC]",
+    teal: "bg-[#0E7490] text-white hover:bg-[#0C627A]",
+  }[variant];
+  const s = size === "sm" ? "h-9 px-3.5 text-xs gap-1.5 min-h-[36px]" : "h-11 px-5 text-sm gap-2 min-h-[44px]";
+  const cls = `inline-flex items-center justify-center font-medium rounded-xl transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E7490] ${v} ${s} ${className}`;
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className={cls}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={cls}>
+      {children}
+    </Link>
+  );
+}

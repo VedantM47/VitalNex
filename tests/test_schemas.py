@@ -6,50 +6,39 @@ import pytest
 from pydantic import ValidationError
 from apps.api.schemas import (
     ProfileBase,
-    ClinicalModelFeatures,
-    LifestyleFeatures,
-    NutritionFeatures,
-    ContextFeatures,
+    HealthProfileAnswers,
     AssessmentRequest,
     DoctorResponse,
 )
 
 
-def test_clinical_model_features_valid():
-    features = ClinicalModelFeatures(
-        age=52,
-        sex=1,
-        bmi=24.9,
-        smoking=0,
-        family_history=0,
-        diabetes=0,
-        hypertension=1,
-        cp=4,
-        trestbps=132.0,
-        chol=181.0,
-        fbs=0,
-        restecg=0,
-        thalach=195.0,
-        exang=0,
-        oldpeak=0.0,
-        slope=1,
-        ca=0,
-        thal=3,
-    )
-    assert features.age == 52
-    assert features.sex == 1
-    assert features.bmi == 24.9
+def test_health_profile_answers_have_no_defaults():
+    """Health profile = the 14-question contract. Unanswered questions stay absent (hard rule 3)."""
+    empty = HealthProfileAnswers()
+    assert empty.answered() == {}
+    some = HealthProfileAnswers(age=52, sex="male", high_bp=True)
+    assert some.answered() == {"age": 52, "sex": "male", "high_bp": True}
 
 
-def test_clinical_model_features_invalid_age():
+@pytest.mark.parametrize("bad", [
+    {"age": 10},                    # under 18
+    {"height_cm": 90},              # outside 120-220
+    {"gen_health": 6},
+    {"sex": 1},                     # old integer coding
+    {"trestbps": 120},              # old pre-P4 clinical field: unknown fields are rejected
+    {"ca": 0, "thal": 3},
+])
+def test_health_profile_answers_reject_invalid_and_old_fields(bad):
     with pytest.raises(ValidationError):
-        ClinicalModelFeatures(
-            age=10,  # Below minimum 18
-            sex=1,
-            bmi=22.0,
-            trestbps=120.0,
-            chol=180.0,
-        )
+        HealthProfileAnswers(**bad)
+
+
+def test_old_clinical_health_profile_schema_removed():
+    import apps.api.schemas as schemas
+
+    for name in ("ClinicalModelFeatures", "LifestyleFeatures", "NutritionFeatures", "ContextFeatures",
+                 "HealthProfileCreate"):
+        assert not hasattr(schemas, name)
 
 
 def test_doctor_schema_demo_flag():

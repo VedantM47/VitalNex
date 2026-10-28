@@ -3,6 +3,7 @@
 // P5: the health profile holds only the 14 answers of the screening form (docs/SPEC.md §3.3)
 // plus the language preference. Every answer is optional here; an unanswered question stays
 // empty and is never filled in. Saved answers pre-fill the screening form, visibly marked.
+// P6/P7: saved through the API (PUT /api/v1/health-profile), which validates the same contract.
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -14,7 +15,7 @@ import { AnswerFields, validateKeys } from "../../components/assessment/AnswerFi
 import { loadSavedAnswers, saveAnswers } from "../../lib/patient-data";
 import { useTranslation, SUPPORTED_LANGUAGES, type SupportedLanguage } from "../../lib/i18n";
 import { useAuth } from "../../lib/auth-context";
-import { ANSWER_KEYS, EMPTY_DRAFT, type AnswerKey, type AssessmentAnswers, type Draft } from "../../lib/assessment";
+import { ANSWER_KEYS, EMPTY_DRAFT, FEATURE_OF, type AnswerKey, type AssessmentAnswers, type Draft } from "../../lib/assessment";
 
 const GROUPS: { id: string; keys: AnswerKey[] }[] = [
   { id: "about", keys: ["age", "sex", "height_cm", "weight_kg"] },
@@ -173,22 +174,3 @@ export default function HealthProfilePage() {
     </AppShell>
   );
 }
-
-/** Answer key → model feature name, used for the short labels in results.features. */
-const FEATURE_OF: Record<AnswerKey, string> = {
-  age: "Age",
-  sex: "Sex",
-  height_cm: "Height",
-  weight_kg: "Weight",
-  high_bp: "HighBP",
-  high_chol: "HighChol",
-  smoker: "Smoker",
-  phys_activity: "PhysActivity",
-  fruits: "Fruits",
-  veggies: "Veggies",
-  heavy_alcohol: "HvyAlcoholConsump",
-  gen_health: "GenHlth",
-  ment_health_days: "MentHlth",
-  phys_health_days: "PhysHlth",
-  diff_walk: "DiffWalk",
-};

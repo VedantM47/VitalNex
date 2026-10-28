@@ -284,3 +284,36 @@ def test_share_endpoints_are_patient_only(store):
         assert client.post("/api/v1/shares", headers=bearer(uid),
                            json={"sections": ["history"], "expires_in": "1h"}).status_code == 403
         assert client.get("/api/v1/shares", headers=bearer(uid)).status_code == 403
+
+
+# --- Health profile (14-answer contract, no defaults) ----------------------------------------
+
+def test_health_profile_round_trip_keeps_only_answered(store):
+    got = client.get("/api/v1/health-profile", headers=bearer(PAT_A))
+    assert got.status_code == 200 and got.json()["saved"] is False and got.json()["answers"] == {}
+    res = client.put("/api/v1/health-profile", headers=bearer(PAT_A),
+                     json={"answers": {"age": 45, "sex": "female", "smoker": False, "gen_health": None}})
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["saved"] is True
+    # Only answered questions are stored; nothing is filled in.
+    assert body["answers"] == {"age": 45, "sex": "female", "smoker": False}
+    row = store.rows("health_profiles")[0]
+    assert row["answers"] == {"age": 45, "sex": "female", "smoker": False}
+
+
+@pytest.mark.parametrize("answers", [{"trestbps": 120}, {"age": 15}, {"sex": 1}])
+def test_health_profile_rejects_old_or_invalid_fields(store, answers):
+    res = client.put("/api/v1/health-profile", headers=bearer(PAT_A), json={"answers": answers})
+    assert res.status_code == 422
+    assert store.rows("health_profiles") == []
+
+
+def test_health_profile_drops_old_stored_fields(store):
+    store.add("health_profiles", user_id=PAT_A, answers={"age": 50, "ca": 0, "thal": 3, "sex": 1})
+    body = client.get("/api/v1/health-profile", headers=bearer(PAT_A)).json()
+    assert body["answers"] == {"age": 50}
+
+
+def test_health_profile_is_patient_only(store):
+    assert client.get("/api/v1/health-profile", headers=bearer(DOC)).status_code == 403

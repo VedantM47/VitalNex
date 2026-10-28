@@ -272,3 +272,80 @@ Removed in P5 (no longer used): `status.assessmentUnavailableTitle/Body`, `statu
 | `historyPage.reviewPending` | Waiting for clinician review | चिकित्सक समीक्षा की प्रतीक्षा | डॉक्टरांच्या पुनरावलोकनाची प्रतीक्षा | pending |
 | `historyPage.emergencyRow` | Emergency symptoms reported — no levels shown | आपात लक्षण बताए गए — कोई स्तर नहीं दिखाया गया | आपत्कालीन लक्षणे नोंदवली — कोणताही स्तर दाखवला नाही | pending |
 | `historyPage.clinicianLevel` | Clinician's level | चिकित्सक द्वारा तय स्तर | डॉक्टरांनी ठरवलेला स्तर | pending |
+
+---
+
+## Added in Phase P6/P7 (web UI)
+
+### Web UI — `apps/web/src/messages/{en,hi,mr}.json`
+
+| Key | EN | HI | MR | _review |
+|---|---|---|---|---|
+| `doctor.dashboard.subtitle` | Review queue for High, not-confident and emergency screenings, and your appointments. | उच्च, अनिश्चित और आपात स्क्रीनिंग की समीक्षा सूची, और आपके अपॉइंटमेंट। | उच्च, अनिश्चित आणि आपत्कालीन स्क्रीनिंगची पुनरावलोकन यादी आणि तुमच्या अपॉइंटमेंट. | pending |
+| `doctor.case.orderNote` | For each condition, the main factors and the model's uncertainty are shown first and the model's level last, so the level does not anchor your judgement. | हर स्थिति के लिए पहले मुख्य कारक और मॉडल की अनिश्चितता दिखाई जाती है और मॉडल का स्तर अंत में, ताकि स्तर आपके निर्णय को प्रभावित न करे। | प्रत्येक स्थितीसाठी आधी मुख्य घटक आणि मॉडेलची अनिश्चितता दाखवली जाते आणि मॉडेलचा स्तर शेवटी, जेणेकरून स्तर तुमच्या निर्णयावर प्रभाव टाकणार नाही. | pending |
+| `doctor.case.factors` | 1. Main factors (SHAP) | 1. मुख्य कारक (SHAP) | 1. मुख्य घटक (SHAP) | pending |
+| `doctor.case.raises` | raises | बढ़ाता है | वाढवतो | pending |
+| `doctor.case.lowers` | lowers | घटाता है | कमी करतो | pending |
+| `doctor.case.uncertainty` | 2. Uncertainty | 2. अनिश्चितता | 2. अनिश्चितता | pending |
+| `doctor.case.probability` | Calibrated probability | कैलिब्रेटेड संभावना | कॅलिब्रेटेड संभाव्यता | pending |
+| `doctor.case.conformalSet` | Conformal set | कन्फ़ॉर्मल सेट | कन्फॉर्मल संच | pending |
+| `doctor.case.set0` | 0 (no condition) | 0 (स्थिति नहीं) | 0 (स्थिती नाही) | pending |
+| `doctor.case.set1` | 1 (condition) | 1 (स्थिति) | 1 (स्थिती) | pending |
+| `doctor.case.abstained` | Model abstained (not confident) | मॉडल ने निर्णय नहीं दिया (निश्चित नहीं) | मॉडेलने निर्णय दिला नाही (खात्री नाही) | pending |
+| `doctor.case.confident` | Model confident | मॉडल निश्चित | मॉडेलला खात्री | pending |
+| `doctor.case.abstainReason.conformal_uncertain` | Conformal set contains both outcomes. | कन्फ़ॉर्मल सेट में दोनों परिणाम हैं। | कन्फॉर्मल संचात दोन्ही परिणाम आहेत. | pending |
+| `doctor.case.abstainReason.out_of_distribution` | Answers are outside the training data (out of distribution). | उत्तर प्रशिक्षण डेटा से बाहर हैं (आउट ऑफ़ डिस्ट्रीब्यूशन)। | उत्तरे प्रशिक्षण डेटाच्या बाहेर आहेत (आउट ऑफ डिस्ट्रिब्यूशन). | pending |
+| `doctor.case.thresholds` | Band thresholds: Moderate ≥ {t_mod}, High ≥ {t_high} | स्तर सीमाएँ: मध्यम ≥ {t_mod}, उच्च ≥ {t_high} | स्तर मर्यादा: मध्यम ≥ {t_mod}, उच्च ≥ {t_high} | pending |
+| `doctor.case.modelBand` | 3. Model's level | 3. मॉडल का स्तर | 3. मॉडेलचा स्तर | pending |
+| `doctor.case.modelLevel` | Model's level | मॉडल का स्तर | मॉडेलचा स्तर | pending |
+| `doctor.case.notConfident` | Not confident | निश्चित नहीं | खात्री नाही | pending |
+| `doctor.case.noResults` | No model ran for this screening (for example, emergency symptoms were reported). | इस स्क्रीनिंग के लिए कोई मॉडल नहीं चला (उदाहरण के लिए, आपात लक्षण बताए गए)। | या स्क्रीनिंगसाठी कोणतेही मॉडेल चालले नाही (उदा. आपत्कालीन लक्षणे नोंदवली गेली). | pending |
+| `doctor.case.emergency` | Emergency symptoms were reported in this screening. | इस स्क्रीनिंग में आपात लक्षण बताए गए। | या स्क्रीनिंगमध्ये आपत्कालीन लक्षणे नोंदवली गेली. | pending |
+| `doctor.case.nextStep` | Next step shown to the patient | मरीज़ को दिखाया गया अगला कदम | रुग्णाला दाखवलेले पुढील पाऊल | pending |
+| `doctor.case.historyIntro` | Calibrated probability per screening. A gap means the model abstained or did not run. | हर स्क्रीनिंग की कैलिब्रेटेड संभावना। खाली जगह का अर्थ है कि मॉडल ने निर्णय नहीं दिया या नहीं चला। | प्रत्येक स्क्रीनिंगची कॅलिब्रेटेड संभाव्यता. रिकामी जागा म्हणजे मॉडेलने निर्णय दिला नाही किंवा चालले नाही. | pending |
+| `doctor.case.noteHelp` | The patient sees this note with their result. Do not name or dose medicines. | मरीज़ यह नोट अपने परिणाम के साथ देखता है। दवाओं के नाम या खुराक न लिखें। | रुग्ण ही टीप त्यांच्या निकालासोबत पाहतो. औषधांची नावे किंवा डोस लिहू नका. | pending |
+| `doctor.case.newBand` | New level | नया स्तर | नवीन स्तर | pending |
+| `doctor.case.reasons.clinical_history_not_captured` | Clinical history not captured | क्लिनिकल इतिहास शामिल नहीं | क्लिनिकल इतिहास समाविष्ट नाही | pending |
+| `doctor.case.reasons.symptoms_present` | Symptoms present | लक्षण मौजूद | लक्षणे आहेत | pending |
+| `doctor.case.reasons.model_overestimates` | Model overestimates | मॉडल ज़्यादा आँकता है | मॉडेल जास्त अंदाज करते | pending |
+| `doctor.case.reasons.model_underestimates` | Model underestimates | मॉडल कम आँकता है | मॉडेल कमी अंदाज करते | pending |
+| `admin.gov.recall` | Recall at Moderate threshold | मध्यम सीमा पर रिकॉल | मध्यम मर्यादेवर रिकॉल | pending |
+| `admin.gov.recallShort` | Recall | रिकॉल | रिकॉल | pending |
+| `admin.gov.abstention` | Abstention (test) | निर्णय न देना (टेस्ट) | निर्णय न देणे (चाचणी) | pending |
+| `admin.gov.fpr` | False-positive rate | फ़ॉल्स-पॉज़िटिव दर | फॉल्स-पॉझिटिव्ह दर | pending |
+| `admin.gov.act.abstained` | Not confident (any condition) | निश्चित नहीं (कोई भी स्थिति) | खात्री नाही (कोणतीही स्थिती) | pending |
+| `admin.gov.act.emergencyForm` | Emergency (screening form) | आपात (स्क्रीनिंग फ़ॉर्म) | आपत्कालीन (स्क्रीनिंग फॉर्म) | pending |
+| `admin.gov.act.emergencyAssistant` | Emergency (assistant) | आपात (सहायक) | आपत्कालीन (सहाय्यक) | pending |
+| `trust.what.title` | What VITALNEX is, and is not | VITALNEX क्या है, और क्या नहीं | VITALNEX काय आहे आणि काय नाही | pending |
+| `trust.what.items.screening` | A screening tool: it estimates how similar your answers are to people who have been told they have diabetes or prediabetes, heart disease or stroke. | एक स्क्रीनिंग साधन: यह अनुमान लगाता है कि आपके उत्तर उन लोगों से कितने मिलते हैं जिन्हें मधुमेह या प्रीडायबिटीज़, हृदय रोग या स्ट्रोक बताया गया है। | एक स्क्रीनिंग साधन: ज्यांना मधुमेह किंवा प्रीडायबेटीस, हृदयरोग किंवा स्ट्रोक असल्याचे सांगितले आहे अशा लोकांशी तुमची उत्तरे किती जुळतात याचा ते अंदाज लावते. | pending |
+| `trust.what.items.care_navigation` | Care navigation: it tells you what kind of care to seek and how soon. | देखभाल मार्गदर्शन: यह बताता है कि किस तरह की देखभाल और कितनी जल्दी लेनी है। | काळजी मार्गदर्शन: कोणत्या प्रकारची काळजी आणि किती लवकर घ्यावी हे ते सांगते. | pending |
+| `trust.what.items.diagnosis` | A diagnosis | निदान | निदान | pending |
+| `trust.what.items.prescription` | A prescription or medicine advice | प्रिस्क्रिप्शन या दवा की सलाह | प्रिस्क्रिप्शन किंवा औषधाचा सल्ला | pending |
+| `trust.what.items.replacement_for_doctor` | A replacement for a doctor | डॉक्टर का विकल्प | डॉक्टरांचा पर्याय | pending |
+| `trust.what.items.validated_on_indian_patients` | Validated on Indian patients (it was trained on US survey data) | भारतीय मरीज़ों पर प्रमाणित (इसे अमेरिकी सर्वे डेटा पर प्रशिक्षित किया गया है) | भारतीय रुग्णांवर प्रमाणित (हे अमेरिकन सर्वेक्षण डेटावर प्रशिक्षित केले आहे) | pending |
+| `trust.data.prevalence` | Share of people with each condition | हर स्थिति वाले लोगों का हिस्सा | प्रत्येक स्थिती असलेल्या लोकांचा वाटा | pending |
+| `trust.models.aurocHelp` | How well the model ranks people with the condition above people without it (0.5 = chance, 1 = perfect). | मॉडल स्थिति वाले लोगों को बिना स्थिति वालों से कितना ऊपर रखता है (0.5 = संयोग, 1 = पूर्ण)। | मॉडेल स्थिती असलेल्या लोकांना नसलेल्यांपेक्षा किती वर ठेवते (0.5 = योगायोग, 1 = परिपूर्ण). | pending |
+| `trust.models.recall` | Recall at the Moderate threshold (95% CI) | मध्यम सीमा पर रिकॉल (95% CI) | मध्यम मर्यादेवर रिकॉल (95% CI) | pending |
+| `trust.models.recallHelp` | Of people with the condition, the share placed in Moderate or High. | स्थिति वाले लोगों में से मध्यम या उच्च में रखे गए लोगों का हिस्सा। | स्थिती असलेल्या लोकांपैकी मध्यम किंवा उच्च मध्ये ठेवलेल्यांचा वाटा. | pending |
+| `trust.models.miss` | Miss rate in the Low band | निम्न स्तर में छूटने की दर | निम्न स्तरात सुटण्याचा दर | pending |
+| `trust.models.missHelp` | Of people in the test set who had the condition, this share were placed in Low. Low does not mean no risk. | टेस्ट सेट में जिन लोगों को यह स्थिति थी, उनमें से इतने निम्न में रखे गए। निम्न का अर्थ जोखिम न होना नहीं है। | चाचणी संचात ज्यांना ही स्थिती होती त्यांपैकी इतके निम्न मध्ये ठेवले गेले. निम्न म्हणजे धोका नाही असे नाही. | pending |
+| `trust.models.observed` | Share who had the condition | जिन्हें स्थिति थी उनका हिस्सा | ज्यांना स्थिती होती त्यांचा वाटा | pending |
+| `trust.models.shap` | Most important factors overall (global SHAP) | कुल मिलाकर सबसे महत्वपूर्ण कारक (ग्लोबल SHAP) | एकूण सर्वात महत्त्वाचे घटक (ग्लोबल SHAP) | pending |
+| `trust.fairness.intro` | Recall and false-positive rate per group on the test set. Income, education and healthcare access are used only for this audit and are never asked in the app. | टेस्ट सेट पर हर समूह के लिए रिकॉल और फ़ॉल्स-पॉज़िटिव दर। आय, शिक्षा और स्वास्थ्य सेवा पहुँच केवल इस ऑडिट के लिए हैं और ऐप में कभी नहीं पूछे जाते। | चाचणी संचावर प्रत्येक गटासाठी रिकॉल आणि फॉल्स-पॉझिटिव्ह दर. उत्पन्न, शिक्षण आणि आरोग्यसेवा उपलब्धता फक्त या ऑडिटसाठी वापरले जातात आणि अॅपमध्ये कधीही विचारले जात नाहीत. | pending |
+| `trust.fairness.ageGap` | Age gap ({condition}): recall is {yr} for ages {young} and {or} for ages {old}. People under {age} see a note that results are less reliable for them. | आयु अंतर ({condition}): {young} आयु के लिए रिकॉल {yr} और {old} आयु के लिए {or} है। {age} से कम आयु के लोगों को नोट दिखता है कि उनके लिए परिणाम कम विश्वसनीय हैं। | वय फरक ({condition}): {young} वयासाठी रिकॉल {yr} आणि {old} वयासाठी {or} आहे. {age} पेक्षा कमी वयाच्या लोकांना त्यांच्यासाठी निकाल कमी विश्वासार्ह असल्याची टीप दिसते. | pending |
+| `trust.abst.title` | Abstention and coverage | निर्णय न देना और कवरेज | निर्णय न देणे आणि कव्हरेज | pending |
+| `trust.abst.intro` | When the model is not confident, VITALNEX shows no level and asks the person to see a doctor. | जब मॉडल निश्चित नहीं होता, VITALNEX कोई स्तर नहीं दिखाता और डॉक्टर से मिलने को कहता है। | मॉडेलला खात्री नसते तेव्हा VITALNEX कोणताही स्तर दाखवत नाही आणि डॉक्टरांना भेटण्यास सांगते. | pending |
+| `trust.abst.rate` | Abstention rate (test) | निर्णय न देने की दर (टेस्ट) | निर्णय न देण्याचा दर (चाचणी) | pending |
+| `trust.abst.liveAbstained` | Not confident for at least one condition | कम से कम एक स्थिति के लिए निश्चित नहीं | किमान एका स्थितीसाठी खात्री नाही | pending |
+| `trust.abst.liveEmergency` | Emergency triggers (form + assistant) | आपात ट्रिगर (फ़ॉर्म + सहायक) | आपत्कालीन ट्रिगर (फॉर्म + सहाय्यक) | pending |
+| `trust.report.emergency` | In an emergency, call {n}. | आपात स्थिति में {n} पर कॉल करें। | आपत्कालीन परिस्थितीत {n} वर कॉल करा. | pending |
+| `myData.purposes.assessment_processing.title` | Process my answers to give me a screening result | स्क्रीनिंग परिणाम देने के लिए मेरे उत्तरों को प्रोसेस करें | स्क्रीनिंग निकाल देण्यासाठी माझ्या उत्तरांवर प्रक्रिया करा | pending |
+| `myData.purposes.assessment_processing.notice` | VITALNEX uses the answers you type in the screening form to estimate how similar your answers are to people who have been told they have diabetes or prediabetes, heart disease or stroke. The calculation runs on the VITALNEX server; your answers are not sent to any other company. | VITALNEX स्क्रीनिंग फ़ॉर्म में आपके उत्तरों का उपयोग यह अनुमान लगाने के लिए करता है कि वे उन लोगों से कितने मिलते हैं जिन्हें मधुमेह या प्रीडायबिटीज़, हृदय रोग या स्ट्रोक बताया गया है। गणना VITALNEX सर्वर पर होती है; आपके उत्तर किसी अन्य कंपनी को नहीं भेजे जाते। | VITALNEX स्क्रीनिंग फॉर्ममधील तुमची उत्तरे, ज्यांना मधुमेह किंवा प्रीडायबेटीस, हृदयरोग किंवा स्ट्रोक असल्याचे सांगितले आहे अशा लोकांशी किती जुळतात याचा अंदाज घेण्यासाठी वापरते. गणना VITALNEX सर्व्हरवर होते; तुमची उत्तरे इतर कोणत्याही कंपनीला पाठवली जात नाहीत. | pending |
+| `myData.purposes.assessment_processing.effect` | You cannot run a screening. | आप स्क्रीनिंग नहीं चला सकते। | तुम्ही स्क्रीनिंग चालवू शकत नाही. | pending |
+| `myData.purposes.share_with_clinician.title` | Let VITALNEX clinicians review my results | VITALNEX चिकित्सकों को मेरे परिणाम देखने दें | VITALNEX डॉक्टरांना माझे निकाल पाहू द्या | pending |
+| `myData.purposes.share_with_clinician.notice` | Results that are high, uncertain or flagged as an emergency are put in a review list for VITALNEX clinicians. A clinician can see your answers, results and history while this is on. | उच्च, अनिश्चित या आपात चिह्नित परिणाम VITALNEX चिकित्सकों की समीक्षा सूची में रखे जाते हैं। यह चालू रहने तक एक चिकित्सक आपके उत्तर, परिणाम और इतिहास देख सकता है। | उच्च, अनिश्चित किंवा आपत्कालीन म्हणून चिन्हांकित निकाल VITALNEX डॉक्टरांच्या पुनरावलोकन यादीत ठेवले जातात. हे चालू असेपर्यंत डॉक्टर तुमची उत्तरे, निकाल आणि इतिहास पाहू शकतात. | pending |
+| `myData.purposes.share_with_clinician.effect` | No clinician review. If a result is high or uncertain, you are told to see a doctor directly. Clinicians lose access immediately. | कोई चिकित्सक समीक्षा नहीं। यदि परिणाम उच्च या अनिश्चित है, तो आपको सीधे डॉक्टर से मिलने को कहा जाता है। चिकित्सकों की पहुँच तुरंत हट जाती है। | डॉक्टर पुनरावलोकन नाही. निकाल उच्च किंवा अनिश्चित असल्यास तुम्हाला थेट डॉक्टरांना भेटण्यास सांगितले जाते. डॉक्टरांचा प्रवेश लगेच बंद होतो. | pending |
+| `share.public.notice` | This is a screening summary, not a diagnosis. Levels show how similar the patient's answers are to people who have been told they have each condition. In an emergency call 108 / 112. | यह स्क्रीनिंग सारांश है, निदान नहीं। स्तर बताते हैं कि मरीज़ के उत्तर उन लोगों से कितने मिलते हैं जिन्हें हर स्थिति बताई गई है। आपात स्थिति में 108 / 112 पर कॉल करें। | हा स्क्रीनिंग सारांश आहे, निदान नाही. स्तर दाखवतात की रुग्णाची उत्तरे प्रत्येक स्थिती असल्याचे सांगितलेल्या लोकांशी किती जुळतात. आपत्कालीन परिस्थितीत 108 / 112 वर कॉल करा. | pending |
+| `share.public.factors` | Main factors (latest screening) | मुख्य कारक (नवीनतम स्क्रीनिंग) | मुख्य घटक (नवीनतम स्क्रीनिंग) | pending |
+
+UI-only strings added in P6/P7 (labels, buttons, table headers, empty and error states) are not listed.

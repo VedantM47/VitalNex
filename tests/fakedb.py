@@ -332,6 +332,9 @@ class FakeClient:
         if table == "share_tokens" and op == "update":
             # P1 policy + P7 guard: the owner may only set revoked_at once.
             return row["user_id"] == uid and set(new) == {"revoked_at"} and row["revoked_at"] is None
+        if table == "health_profiles":
+            # "health_profiles: own" (FOR ALL, owner only).
+            return (row is None or row["user_id"] == uid) and new.get("user_id", uid) == uid
         if table == "data_requests" and op == "insert":
             return new.get("user_id") == uid and new.get("status", "pending") == "pending"
         return False

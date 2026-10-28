@@ -1,226 +1,171 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+// P6: real bookings from Supabase via GET /api/v1/appointments (a doctor sees bookings with them).
+// Video consultations are frozen for the MVP, so no video link is offered.
+
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Calendar,
-  Clock,
-  Video,
-  User,
-  CheckCircle2,
-  RefreshCw,
-  MapPin,
-  FileText,
-} from "lucide-react";
+import { Calendar, RefreshCw } from "lucide-react";
 import { AppShell } from "../../../components/layout/AppShell";
-import { Card, CardHeader } from "../../../components/ui/Card";
+import { Card } from "../../../components/ui/Card";
 import { Button } from "../../../components/ui/Button";
-import { StatusBadge, DemoBadge } from "../../../components/ui/StatusBadge";
-import { api } from "../../../lib/api-client";
+import { Alert } from "../../../components/ui/Alert";
+import { EmptyState } from "../../../components/ui/EmptyState";
+import { StatusBadge, type StatusVariant } from "../../../components/ui/StatusBadge";
+import { api, apiFailure } from "../../../lib/api-client";
 import { useTranslation } from "../../../lib/i18n";
+import { dateTime } from "../../../lib/format";
+
+interface Appointment {
+  id: string;
+  patient_name: string | null;
+  appointment_time: string;
+  status: string;
+  consultation_type: string;
+  patient_reason: string | null;
+  reason: string | null;
+  assessment_id: string | null;
+}
+
+const VARIANT: Record<string, StatusVariant> = {
+  scheduled: "info",
+  confirmed: "success",
+  in_progress: "info",
+  completed: "neutral",
+  cancelled: "danger",
+};
 
 export default function DoctorAppointmentsPage() {
-  const { t } = useTranslation();
-  const [appointments, setAppointments] = useState<any[]>([]);
+  const { t, language } = useTranslation();
+  const [items, setItems] = useState<Appointment[] | null>(null);
+  const [failure, setFailure] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
-  const fetchAppointments = async () => {
-    setLoading(true);
-    try {
-      const data = await api.getAppointments();
-      if (Array.isArray(data)) {
-        setAppointments(data);
-      }
-    } catch (e) {
-      console.warn("Could not fetch doctor appointments:", e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const sorted = (a: Appointment[]) => [...a].sort((x, y) => x.appointment_time.localeCompare(y.appointment_time));
 
   useEffect(() => {
     let active = true;
-    api.getAppointments()
-      .then((data) => {
-        if (active && Array.isArray(data)) {
-          setAppointments(data);
-        }
-      })
-      .catch((e) => {
-        console.warn("Could not fetch doctor appointments:", e);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
+    api
+      .getAppointments()
+      .then((a: Appointment[]) => active && setItems(sorted(a)))
+      .catch((e) => active && setFailure(apiFailure(e)))
+      .finally(() => active && setLoading(false));
     return () => {
       active = false;
     };
   }, []);
 
-  const handleMarkCompleted = async (id: string) => {
+  const refresh = useCallback(async () => {
+    setLoading(true);
     try {
-      await api.updateAppointment(id, { status: "completed" });
-      setActionSuccess("Consultation marked completed.");
-      await fetchAppointments();
-      setTimeout(() => setActionSuccess(null), 3000);
-    } catch (err) {
-      console.error("Failed to update status:", err);
+      setItems(sorted(await api.getAppointments()));
+      setFailure(null);
+    } catch (e) {
+      setFailure(apiFailure(e));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const update = async (id: string, status: "confirmed" | "completed" | "cancelled") => {
+    setBusy(id);
+    setMessage(null);
+    try {
+      await api.updateAppointment(id, { status });
+      setMessage({ ok: true, text: t("doctor.appointments.updated") });
+      await refresh();
+    } catch {
+      setMessage({ ok: false, text: t("doctor.appointments.updateFailed") });
+    } finally {
+      setBusy(null);
     }
   };
 
   return (
     <AppShell>
       <div className="space-y-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8E2EA] pb-6">
+        <div className="flex flex-col justify-between gap-4 border-b border-[#D8E2EA] pb-6 sm:flex-row sm:items-center">
           <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B1F33]">
-                Clinician Consultation Schedule
-              </h1>
-              <DemoBadge label="Dr. Anand Joshi, MD (Cardiology)" />
-            </div>
-            <p className="text-xs sm:text-sm text-[#475569]">
-              View your scheduled teleconsultations, access patient screening histories, and mark appointments completed.
-            </p>
+            <h1 className="text-2xl font-extrabold text-[#0B1F33] sm:text-3xl">{t("doctor.appointments.title")}</h1>
+            <p className="text-xs text-[#475569] sm:text-sm">{t("doctor.appointments.subtitle")}</p>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={fetchAppointments} isLoading={loading}>
-              <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
-              Refresh Schedule
-            </Button>
-            <Link href="/doctor/patients">
-              <Button size="sm" variant="primary">
-                Review Queue
-              </Button>
-            </Link>
-          </div>
+          <Button variant="outline" size="sm" onClick={refresh} isLoading={loading} leftIcon={<RefreshCw className="h-3.5 w-3.5" />}>
+            {t("common.refresh")}
+          </Button>
         </div>
 
-        {actionSuccess && (
-          <div className="p-4 bg-[#0F766E]/10 border border-[#0F766E]/30 rounded-2xl flex items-center gap-2 text-xs font-semibold text-[#0F766E]">
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-            {actionSuccess}
-          </div>
+        {message && <Alert kind={message.ok ? "success" : "error"}>{message.text}</Alert>}
+        {failure && (
+          <Alert kind="error">{failure === "signin" ? t("common.signInNeeded") : t("doctor.appointments.loadFailed")}</Alert>
         )}
 
-        <div className="space-y-4">
-          {loading ? (
-            <div className="p-12 text-center text-xs text-[#64748B]">
-              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#0E7490]" />
-              Loading clinician schedule...
-            </div>
-          ) : appointments.length === 0 ? (
-            <Card className="p-12 text-center space-y-3">
-              <Calendar className="w-10 h-10 text-[#94A3B8] mx-auto" />
-              <h3 className="font-bold text-sm text-[#0B1F33]">No Consultations Scheduled</h3>
-              <p className="text-xs text-[#64748B]">You currently have no patient appointments booked.</p>
-            </Card>
-          ) : (
-            appointments.map((apt) => {
-              const aptDate = new Date(apt.appointment_time);
-              const formattedDate = aptDate.toLocaleDateString("en-IN", {
-                weekday: "short",
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              });
-              const formattedTime = aptDate.toLocaleTimeString("en-IN", {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-
+        {items === null ? (
+          !failure && <p className="text-sm text-[#475569]">{t("common.loading")}</p>
+        ) : items.length === 0 ? (
+          <EmptyState
+            icon={<Calendar className="h-8 w-8" aria-hidden="true" />}
+            title={t("doctor.appointments.emptyTitle")}
+            description={t("doctor.appointments.emptyBody")}
+          />
+        ) : (
+          <ul className="space-y-4">
+            {items.map((a) => {
+              const open = a.status === "scheduled" || a.status === "confirmed";
               return (
-                <Card key={apt.id} className="p-6 space-y-4 border-[#D8E2EA]">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F1F5F9] pb-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#0B1F33] text-[#22C1DC] flex items-center justify-center font-bold text-sm shrink-0">
-                        <User className="w-5 h-5" />
-                      </div>
+                <li key={a.id}>
+                  <Card className="space-y-3">
+                    <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-base text-[#0B1F33]">Patient ID: {apt.patient_id}</h3>
-                        </div>
-                        <p className="text-xs text-[#0E7490]">Consultation: {apt.consultation_type === "video" ? "Secure Telehealth Video" : "In-Person Clinic"}</p>
+                        <h2 className="text-base font-bold text-[#0B1F33]">{a.patient_name ?? "—"}</h2>
+                        <p className="text-sm text-[#334155]">
+                          {dateTime(a.appointment_time, language)} ·{" "}
+                          {t(`doctor.appointments.modes.${a.consultation_type}`, a.consultation_type)}
+                        </p>
                       </div>
+                      <StatusBadge
+                        label={t(`doctor.appointments.status.${a.status}`, a.status)}
+                        variant={VARIANT[a.status] ?? "neutral"}
+                        size="sm"
+                      />
                     </div>
-                    <StatusBadge
-                      label={apt.status.toUpperCase()}
-                      variant={
-                        apt.status === "completed"
-                          ? "success"
-                          : apt.status === "cancelled"
-                          ? "danger"
-                          : "info"
-                      }
-                      size="sm"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#475569]">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#0E7490]" />
-                      <span className="font-semibold text-[#0B1F33]">{formattedDate} at {formattedTime}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-[#0E7490]" />
-                      <span>Demo clinic</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-[#0E7490]" />
-                      <span>Ref: {apt.id}</span>
-                    </div>
-                  </div>
-
-                  {(apt.patient_reason || apt.reason) && (
-                    <p className="text-xs text-[#64748B] pt-1">
-                      <strong>Reason for Visit:</strong> {apt.patient_reason || apt.reason}
-                    </p>
-                  )}
-
-                  <div className="pt-3 border-t border-[#F1F5F9] flex flex-wrap justify-between items-center gap-3">
-                    <div className="flex items-center gap-2">
-                      {apt.assessment_id && (
-                        <a
-                          href={api.getReportPdfUrl(apt.assessment_id)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-xs font-semibold text-[#0E7490] hover:underline flex items-center gap-1"
+                    {(a.patient_reason || a.reason) && (
+                      <p className="text-sm text-[#334155]">
+                        <span className="font-semibold">{t("doctor.appointments.reason")}:</span> {a.patient_reason || a.reason}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap items-center gap-2 border-t border-[#F1F5F9] pt-3">
+                      {a.assessment_id && (
+                        <Link
+                          href={`/doctor/cases/${a.assessment_id}`}
+                          className="mr-auto text-sm font-semibold text-[#0E7490] hover:underline focus-visible:outline-2 focus-visible:outline-[#0E7490]"
                         >
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>View Patient PDF Report</span>
-                        </a>
+                          {t("doctor.appointments.linkedScreening")}: {t("doctor.appointments.openCase")}
+                        </Link>
                       )}
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {apt.status !== "completed" && apt.status !== "cancelled" && (
+                      {a.status === "scheduled" && (
+                        <Button size="sm" variant="teal" isLoading={busy === a.id} onClick={() => update(a.id, "confirmed")}>
+                          {t("doctor.appointments.confirm")}
+                        </Button>
+                      )}
+                      {open && (
                         <>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleMarkCompleted(apt.id)}
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-[#0F766E]" />
-                            Mark Completed
+                          <Button size="sm" variant="outline" disabled={busy === a.id} onClick={() => update(a.id, "completed")}>
+                            {t("doctor.appointments.complete")}
                           </Button>
-                          <Link href={`/consultation/${apt.id}`}>
-                            <Button size="sm" variant="primary">
-                              <Video className="w-3.5 h-3.5 mr-1.5" />
-                              Launch Video Room
-                            </Button>
-                          </Link>
+                          <Button size="sm" variant="ghost" disabled={busy === a.id} onClick={() => update(a.id, "cancelled")}>
+                            {t("doctor.appointments.cancel")}
+                          </Button>
                         </>
                       )}
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </li>
               );
-            })
-          )}
-        </div>
+            })}
+          </ul>
+        )}
       </div>
     </AppShell>
   );

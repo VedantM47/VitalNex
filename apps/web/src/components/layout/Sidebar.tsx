@@ -44,14 +44,14 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
   ];
 
   const doctorNav = [
-    { label: "Clinician Dashboard", href: "/doctor/dashboard", icon: LayoutDashboard },
-    { label: "Patient Reviews", href: "/doctor/patients", icon: Activity },
-    { label: "Doctor Appointments", href: "/doctor/appointments", icon: Calendar },
+    { label: t("nav.doctorDashboard"), href: "/doctor/dashboard", icon: LayoutDashboard },
+    { label: t("nav.doctorPatients"), href: "/doctor/patients", icon: Activity },
+    { label: t("nav.doctorAppointments"), href: "/doctor/appointments", icon: Calendar },
   ];
 
   const adminNav = [
-    { label: "Admin Overview", href: "/admin/dashboard", icon: LayoutDashboard },
-    { label: "Governance & Audit", href: "/admin/governance", icon: Lock },
+    { label: t("nav.adminDashboard"), href: "/admin/dashboard", icon: LayoutDashboard },
+    { label: t("nav.adminGovernance"), href: "/admin/governance", icon: Lock },
   ];
 
   const renderNavLink = (item: { label: string; href: string; icon: any }) => {
@@ -113,6 +113,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
             Clinician Portal
           </p>
           {doctorNav.map(renderNavLink)}
+          {renderNavLink({ label: t("nav.aiTrust"), href: "/ai-trust", icon: ShieldCheck })}
           {renderNavLink({ label: t("nav.settings"), href: "/settings", icon: Settings })}
         </div>
         )}
@@ -124,6 +125,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
             Governance
           </p>
           {adminNav.map(renderNavLink)}
+          {renderNavLink({ label: t("nav.aiTrust"), href: "/ai-trust", icon: ShieldCheck })}
           {renderNavLink({ label: t("nav.settings"), href: "/settings", icon: Settings })}
         </div>
         )}

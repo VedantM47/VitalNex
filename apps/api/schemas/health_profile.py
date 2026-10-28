@@ -1,93 +1,56 @@
 """
-Health Profile Pydantic Schemas.
-Explicitly isolates Model Features, Context Features, Lifestyle Features, and Nutrition.
+Health profile schemas (docs/SPEC.md §1.2 F3: "trim fields to feature contract").
+
+The health profile holds only answers from the 14-question screening form
+(apps/api/schemas/assessment.py AssessmentInputs, docs/SPEC.md §3.3), stored in
+health_profiles.answers. Every answer is optional here, and none has a default: a question the
+user did not answer is simply absent, never filled in with a "normal" value (CLAUDE.md hard rule 3).
+Validation limits are the same as the screening form. Unknown fields are rejected.
 """
 
-from typing import Any, Dict, Optional
-from pydantic import BaseModel, Field
 from datetime import datetime
+from typing import Any, Dict, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from apps.api.schemas.assessment import Sex
 
 
-class ClinicalModelFeatures(BaseModel):
-    """
-    Old heart-disease feature set (replaced by the 14-feature contract in P4).
-    No field has a default: a missing medical input is rejected, never filled in
-    (CLAUDE.md hard rule 3).
-    """
-    age: int = Field(..., ge=18, le=100, description="Age in years")
-    sex: int = Field(..., ge=0, le=1, description="0=Female, 1=Male")
-    bmi: float = Field(..., ge=10.0, le=60.0, description="Body Mass Index")
-    smoking: int = Field(..., ge=0, le=1, description="0=No, 1=Yes")
-    family_history: int = Field(..., ge=0, le=1, description="Cardiovascular family history 0=No, 1=Yes")
-    diabetes: int = Field(..., ge=0, le=1, description="Diagnosed diabetes 0=No, 1=Yes")
-    hypertension: int = Field(..., ge=0, le=1, description="Diagnosed hypertension 0=No, 1=Yes")
-    cp: int = Field(..., ge=1, le=4, description="Chest pain type (1=typical, 2=atypical, 3=non-anginal, 4=asymptomatic)")
-    trestbps: float = Field(..., ge=80.0, le=220.0, description="Resting blood pressure (mm Hg)")
-    chol: float = Field(..., ge=100.0, le=550.0, description="Serum cholesterol (mg/dL)")
-    fbs: int = Field(..., ge=0, le=1, description="Fasting blood sugar > 120 mg/dL")
-    restecg: int = Field(..., ge=0, le=2, description="Resting electrocardiographic results")
-    thalach: float = Field(..., ge=60.0, le=220.0, description="Maximum heart rate achieved")
-    exang: int = Field(..., ge=0, le=1, description="Exercise-induced angina (0=No, 1=Yes)")
-    oldpeak: float = Field(..., ge=0.0, le=10.0, description="ST depression induced by exercise relative to rest")
-    slope: int = Field(..., ge=1, le=3, description="Slope of the peak exercise ST segment")
-    ca: int = Field(..., ge=0, le=3, description="Number of major vessels (0-3) colored by flourosopy")
-    thal: int = Field(..., description="3=normal, 6=fixed defect, 7=reversible defect")
+class HealthProfileAnswers(BaseModel):
+    """Saved answers. None / absent = not answered."""
+    model_config = ConfigDict(extra="forbid")
 
+    age: Optional[int] = Field(None, ge=18, le=120)
+    sex: Optional[Sex] = None
+    height_cm: Optional[float] = Field(None, ge=120, le=220)
+    weight_kg: Optional[float] = Field(None, ge=30, le=250)
+    high_bp: Optional[bool] = None
+    high_chol: Optional[bool] = None
+    smoker: Optional[bool] = None
+    phys_activity: Optional[bool] = None
+    fruits: Optional[bool] = None
+    veggies: Optional[bool] = None
+    heavy_alcohol: Optional[bool] = None
+    gen_health: Optional[int] = Field(None, ge=1, le=5)
+    ment_health_days: Optional[int] = Field(None, ge=0, le=30)
+    phys_health_days: Optional[int] = Field(None, ge=0, le=30)
+    diff_walk: Optional[bool] = None
 
-class LifestyleFeatures(BaseModel):
-    physical_activity: str = Field(..., pattern="^(Low|Moderate|High)$")
-    sedentary_hours_per_day: float = Field(..., ge=0.0, le=24.0)
-    sleep_hours_per_night: float = Field(..., ge=2.0, le=16.0)
-    stress_level: str = Field(..., pattern="^(Low|Moderate|High|Severe)$")
-    hydration_liters_per_day: float = Field(..., ge=0.5, le=10.0)
-
-
-class NutritionFeatures(BaseModel):
-    diet_quality: str = Field(..., pattern="^(Needs_Improvement|Moderate|Healthy)$")
-    diet_pattern: str = Field(..., pattern="^(Vegetarian|Non-Vegetarian|Vegan|Jain|Mixed)$")
-    meal_frequency_per_day: int = Field(..., ge=1, le=6)
-    daily_fruit_veg_servings: int = Field(..., ge=0, le=15)
-    processed_food_frequency: str = Field(..., pattern="^(Rarely|Occasional|Frequent|Daily)$")
-
-
-class ContextFeatures(BaseModel):
-    locality_type: str = Field("Urban_Pune", pattern="^(Urban_Pune|Peri_Urban_Pune|PCMC|Rural_Maharashtra)$")
-    city: str = "Pune"
-    region: str = "Maharashtra"
-    country: str = "India"
-    occupation: Optional[str] = None
-    work_pattern: Optional[str] = None
-
-
-class HealthProfileCreate(BaseModel):
-    """The owner is the signed-in user (from the JWT), never a field in the body."""
-    clinical_model: ClinicalModelFeatures
-    lifestyle: LifestyleFeatures
-    nutrition: NutritionFeatures
-    context: ContextFeatures
-    height_cm: Optional[float] = Field(None, ge=50, le=250)
-    weight_kg: Optional[float] = Field(None, ge=20, le=300)
-    blood_group: Optional[str] = None
+    def answered(self) -> Dict[str, Any]:
+        """Only the questions the user answered."""
+        return self.model_dump(mode="json", exclude_none=True)
 
 
 class HealthProfileUpdate(BaseModel):
-    clinical_model: Optional[ClinicalModelFeatures] = None
-    lifestyle: Optional[LifestyleFeatures] = None
-    nutrition: Optional[NutritionFeatures] = None
-    context: Optional[ContextFeatures] = None
-    height_cm: Optional[float] = None
-    weight_kg: Optional[float] = None
-    blood_group: Optional[str] = None
+    """PUT body. Replaces the saved answers; the owner is the signed-in user (from the JWT)."""
+    model_config = ConfigDict(extra="forbid")
+
+    answers: HealthProfileAnswers
 
 
 class HealthProfileResponse(BaseModel):
-    """Saved profile. `answers` holds only what the user answered; nothing is filled in."""
-    id: str
-    user_id: str
-    age: Optional[int] = None
-    sex: Optional[int] = None
-    height_cm: Optional[float] = None
-    weight_kg: Optional[float] = None
+    """`answers` holds only what the user answered; nothing is filled in. `saved` is False when
+    the user has never saved a profile (then `answers` is empty)."""
+    saved: bool
     answers: Dict[str, Any] = {}
-    created_at: datetime
-    updated_at: datetime
+    updated_at: Optional[datetime] = None

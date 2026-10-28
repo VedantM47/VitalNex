@@ -17,7 +17,12 @@ import type {
   WhatIfResponse,
 } from "./assessment";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+/** Absolute URL for an API path the server returned (e.g. "/api/v1/trust-passport/images/…"). */
+export function apiUrl(path: string): string {
+  return `${API_BASE}${path}`;
+}
 
 export class ApiError extends Error {
   constructor(public status: number, public detail: string) {
@@ -86,13 +91,38 @@ export const api = {
   getConsents: () => fetchApi<any[]>("/api/v1/consents"),
   setConsent: (purpose: string, granted: boolean) =>
     fetchApi<any[]>(`/api/v1/consents/${purpose}`, { method: "PUT", body: JSON.stringify({ granted }) }),
+  getConsentNotice: () => fetchApi<any>("/api/v1/consents/notice"),
+
+  // Data rights ("My data", SPEC §2.2)
+  downloadMyData: async (): Promise<{ blob: Blob; filename: string }> => {
+    const res = await fetch(`${API_BASE}/api/v1/me/data-export`, { headers: await authHeader() });
+    if (!res.ok) throw new ApiError(res.status, res.statusText);
+    const cd = res.headers.get("Content-Disposition") || "";
+    const m = /filename="([^"]+)"/.exec(cd);
+    return { blob: await res.blob(), filename: m ? m[1] : "vitalnex-my-data.json" };
+  },
+  deleteMyData: () =>
+    fetchApi<any>("/api/v1/me/data-deletion", { method: "POST", body: JSON.stringify({ confirm: "DELETE" }) }),
+
+  // QR patient-held record (P7)
+  createShare: (payload: { sections: string[]; expires_in: "1h" | "24h" | "7d" }) =>
+    fetchApi<any>("/api/v1/shares", { method: "POST", body: JSON.stringify(payload) }),
+  getShares: () => fetchApi<any[]>("/api/v1/shares"),
+  revokeShare: (id: string) => fetchApi<void>(`/api/v1/shares/${id}/revoke`, { method: "POST" }),
+  openShare: (token: string) => fetchApi<any>(`/api/v1/share/${encodeURIComponent(token)}`),
 
   // User Profile
   getProfile: () => fetchApi<any>("/api/v1/profile"),
   updateProfile: (data: any) => fetchApi<any>("/api/v1/profile", { method: "PUT", body: JSON.stringify(data) }),
 
-  // Health Profile
-  getHealthProfile: () => fetchApi<any>("/api/v1/health-profile"),
+  // Health Profile (14-answer contract; unanswered questions are absent, never defaulted)
+  getHealthProfile: () =>
+    fetchApi<{ saved: boolean; answers: Record<string, unknown>; updated_at: string | null }>("/api/v1/health-profile"),
+  saveHealthProfile: (answers: Record<string, unknown>) =>
+    fetchApi<{ saved: boolean; answers: Record<string, unknown>; updated_at: string | null }>("/api/v1/health-profile", {
+      method: "PUT",
+      body: JSON.stringify({ answers }),
+    }),
 
   // Screening (P4 API). Patients receive bands and text only (D-10).
   runAssessment: (payload: AssessmentRequest) =>
@@ -104,8 +134,10 @@ export const api = {
   getRecourse: (payload: { base: AssessmentAnswers; language: Lang }) =>
     fetchApi<RecourseResponse>("/api/v1/recourse", { method: "POST", body: JSON.stringify(payload) }),
 
-  // AI Trust Passport
-  getTrustPassport: (assessmentId: string) => fetchApi<any>(`/api/v1/trust-passport/${assessmentId}`),
+  // AI Trust Passport + principle map (public; built from model_meta.json and DB aggregates)
+  getTrustPassport: () => fetchApi<any>("/api/v1/trust-passport"),
+  getPrincipleMap: () => fetchApi<any>("/api/v1/trust-passport/principles"),
+  modelCardUrl: (disease: string) => `${API_BASE}/api/v1/models/${disease}/card`,
 
   // Doctors & Care Connect
   getDoctors: (params?: Record<string, string>) => {
@@ -129,6 +161,8 @@ export const api = {
   getDoctorReview: (assessmentId: string) => fetchApi<any>(`/api/v1/doctor/reviews/${assessmentId}`),
   updateDoctorReview: (assessmentId: string, payload: any) =>
     fetchApi<any>(`/api/v1/doctor/reviews/${assessmentId}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  getDoctorPatients: () => fetchApi<any[]>("/api/v1/doctor/patients"),
+  getDoctorCase: (assessmentId: string) => fetchApi<any>(`/api/v1/doctor/cases/${assessmentId}`),
 
   // Assistant & Voice
   sendAssistantMessage: (payload: { message: string; language: string }) =>
@@ -148,4 +182,16 @@ export const api = {
   getGovernanceSummary: () => fetchApi<any>("/api/v1/governance/summary"),
   // Frozen page (admin/datasets): the endpoint does not exist in the MVP.
   getDatasetMetadata: () => fetchApi<any>("/api/v1/dataset/metadata"),
+
+  // Admin governance (aggregates only, no patient identities)
+  getGovModels: () => fetchApi<any[]>("/api/v1/admin/governance/models"),
+  getGovFairness: () => fetchApi<any>("/api/v1/admin/governance/fairness"),
+  getGovOverrides: () => fetchApi<any>("/api/v1/admin/governance/overrides"),
+  getGovActivity: (days: number) => fetchApi<any>(`/api/v1/admin/governance/activity?days=${days}`),
+  getGovConsents: () => fetchApi<any>("/api/v1/admin/governance/consents"),
+  getGovAuditLogs: (filters: Record<string, string | number | undefined>) => {
+    const q = new URLSearchParams();
+    for (const [k, v] of Object.entries(filters)) if (v !== undefined && v !== "") q.set(k, String(v));
+    return fetchApi<any>(`/api/v1/admin/governance/audit-logs?${q.toString()}`);
+  },
 };

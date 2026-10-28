@@ -266,3 +266,22 @@ export function fmt(template: string, vars: Record<string, string | number>): st
 export function bandIndex(band: Band | null | undefined): number | null {
   return band ? BANDS.indexOf(band) + 1 : null;
 }
+
+/** Answer key → model feature name, used for the short labels in results.features. */
+export const FEATURE_OF: Record<AnswerKey, string> = {
+  age: "Age",
+  sex: "Sex",
+  height_cm: "Height",
+  weight_kg: "Weight",
+  high_bp: "HighBP",
+  high_chol: "HighChol",
+  smoker: "Smoker",
+  phys_activity: "PhysActivity",
+  fruits: "Fruits",
+  veggies: "Veggies",
+  heavy_alcohol: "HvyAlcoholConsump",
+  gen_health: "GenHlth",
+  ment_health_days: "MentHlth",
+  phys_health_days: "PhysHlth",
+  diff_walk: "DiffWalk",
+};
