@@ -107,7 +107,7 @@ flowchart TD
 |---|---|---|---|
 | Diabetes / prediabetes | LightGBM | 0.824 (0.819–0.828) | 37% |
 | Heart disease / attack | LightGBM | 0.842 (0.836–0.848) | 39% |
-| Stroke | Logistic Regression | 0.810 (0.801–0.819) | 44% |
+| Stroke | Logistic Regression | 0.810 (0.801–0.818) | 44% |
 
 ---
 

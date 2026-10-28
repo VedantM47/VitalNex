@@ -27,6 +27,18 @@ from seed_demo import existing_users, service_client  # noqa: E402
 
 N_PATIENTS = 6
 
+# P10 demo: patient1 (shares with clinicians) gets one extra, most recent visit with answers that
+# the real models score High, so the clinician review/override part of the demo has a High case.
+# These answers are invented for the demo (labelled assessment_mode='demo'); the band is NOT
+# hard-coded: the script runs screening.assess and only reports what it returns.
+# Height/weight give BMI 27.0. Offline check (43-year-old male profile): see_doctor_soon.
+HIGH_CASE_PATIENT = 1
+HIGH_CASE_ANSWERS = {
+    "height_cm": 168.0, "weight_kg": 76.2, "high_bp": True, "high_chol": True, "smoker": True,
+    "phys_activity": False, "fruits": False, "veggies": True, "heavy_alcohol": False,
+    "gen_health": 5, "ment_health_days": 2, "phys_health_days": 7, "diff_walk": True,
+}
+
 
 def visits(age: int, sex: int, rng: np.random.Generator) -> list[dict]:
     """2-4 visits, oldest first. Lifestyle answers drift a little between visits."""
@@ -68,6 +80,8 @@ def main() -> None:
 
         rng = np.random.default_rng(100 + i)
         seq = visits(int(hp[0]["age"]), int(hp[0]["sex"]), rng)
+        if i == HIGH_CASE_PATIENT:
+            seq.append({**seq[-1], **HIGH_CASE_ANSWERS})
         summary = []
         for k, answers in enumerate(seq):
             when = now - timedelta(days=30 * (len(seq) - k) + int(rng.integers(0, 10)))
@@ -86,7 +100,7 @@ def main() -> None:
                 client.table("review_queue").insert(
                     {"assessment_id": asm_id, "patient_id": user_id, "reasons": result["queue_reasons"]}
                 ).execute()
-            summary.append(result["next_step"])
+            summary.append(result["next_step"] + (" (queued)" if queue else ""))
         print(f"  {email}: {len(seq)} demo assessments -> {', '.join(summary)}")
     print("Done. Demo assessments are labelled assessment_mode='demo'.")
 
