@@ -1,0 +1,56 @@
+{
+  "_review": "approved",
+  "_note": "Curated from public WHO / Government of India material. General information, not medical advice.",
+  "items": {
+    "bmi_overweight": {
+      "text": "Your BMI is 23 or more. For South Asian adults, health risks start rising at a lower BMI than the global cut-off, so 23 or more counts as overweight. Small, steady changes in diet and activity help.",
+      "source_title": "WHO Expert Consultation. Appropriate body-mass index for Asian populations. The Lancet, 2004",
+      "source_url": "https://doi.org/10.1016/S0140-6736(03)15268-3"
+    },
+    "bmi_obese": {
+      "text": "Your BMI is 27.5 or more, which is in the obese range for South Asian adults. A doctor can help you plan safe weight loss.",
+      "source_title": "WHO Expert Consultation. Appropriate body-mass index for Asian populations. The Lancet, 2004",
+      "source_url": "https://doi.org/10.1016/S0140-6736(03)15268-3"
+    },
+    "physical_activity": {
+      "text": "WHO recommends adults do at least 150 minutes of moderate activity (such as brisk walking) each week. Any activity is better than none.",
+      "source_title": "WHO fact sheet: Physical activity",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"
+    },
+    "diet": {
+      "text": "WHO recommends eating at least 400 g (five portions) of fruit and vegetables a day, and limiting salt, sugar and fried foods.",
+      "source_title": "WHO fact sheet: Healthy diet",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    "tobacco": {
+      "text": "If you still use tobacco in any form (cigarettes, bidis, gutka or khaini), stopping lowers the risk of heart disease and stroke. A doctor can help you quit.",
+      "source_title": "WHO fact sheet: Tobacco",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/tobacco"
+    },
+    "alcohol": {
+      "text": "Drinking less alcohol lowers health risks. WHO states there is no level of alcohol use that is safe for health.",
+      "source_title": "WHO fact sheet: Alcohol",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/alcohol"
+    },
+    "blood_pressure": {
+      "text": "You said you have been told you have high blood pressure. Keep it under control with your doctor and get it checked regularly.",
+      "source_title": "WHO fact sheet: Hypertension",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+    },
+    "cholesterol": {
+      "text": "You said you have been told your cholesterol is high. Keep it under control with your doctor; diet and activity also help.",
+      "source_title": "WHO fact sheet: Cardiovascular diseases (CVDs)",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)"
+    },
+    "mental_health": {
+      "text": "You reported many days when your mental health was not good. Talking to someone helps. Tele-MANAS, the free national mental health helpline, is available on 14416.",
+      "source_title": "Tele-MANAS, Ministry of Health and Family Welfare, Government of India",
+      "source_url": "https://telemanas.mohfw.gov.in/"
+    },
+    "regular_checkups": {
+      "text": "Regular check-ups help find conditions like diabetes and high blood pressure early, often before symptoms appear.",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    }
+  }
+}

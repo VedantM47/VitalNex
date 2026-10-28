@@ -22,12 +22,9 @@ NO_PROFILE = "00000000-0000-4000-a000-000000000004"
 ROLES = {PATIENT: "patient", DOCTOR: "doctor", ADMIN: "admin"}
 
 ASSESSMENT_PAYLOAD = {
-    "clinical_inputs": {
-        "age": 55, "sex": 1, "bmi": 26.2, "smoking": 1, "family_history": 1,
-        "diabetes": 0, "hypertension": 1, "cp": 4, "trestbps": 140.0, "chol": 220.0,
-        "fbs": 0, "restecg": 0, "thalach": 145.0, "exang": 0, "oldpeak": 0.5,
-        "slope": 1, "ca": 0, "thal": 3,
-    },
+    "age": 55, "sex": "male", "height_cm": 170, "weight_kg": 78, "high_bp": True, "high_chol": False,
+    "smoker": True, "phys_activity": True, "fruits": True, "veggies": True, "heavy_alcohol": False,
+    "gen_health": 3, "ment_health_days": 2, "phys_health_days": 3, "diff_walk": False,
 }
 
 
@@ -146,29 +143,26 @@ def test_role_guard_forbids_wrong_role(sub, method, path):
     assert res.status_code == 403, f"{ROLES[sub]} {method} {path} -> {res.status_code}"
 
 
-def test_role_guard_allows_right_role():
-    """A patient passes the guard; the request then stops at 'no models yet' (503), not 401/403."""
+def test_role_guard_allows_right_role(monkeypatch):
+    """A patient passes the guard; without assessment_processing consent the request stops there."""
+    from apps.api.services import prediction_service
+
+    async def no_consents(user_id):
+        return set()
+
+    monkeypatch.setattr(prediction_service, "granted_purposes", no_consents)
     res = client.post("/api/v1/assessment", headers=bearer(PATIENT), json=ASSESSMENT_PAYLOAD)
-    assert res.status_code == 503
-    assert "not available" in res.json()["detail"]
+    assert res.status_code == 403
+    assert "Consent" in res.json()["detail"]
 
 
 def test_missing_medical_input_is_rejected_not_defaulted():
     """Hard rule 3: a missing medical input must never be silently filled in."""
-    import copy
-
-    payload = copy.deepcopy(ASSESSMENT_PAYLOAD)
-    for field in ("ca", "thal", "oldpeak", "cp"):
-        del payload["clinical_inputs"][field]
+    payload = {k: v for k, v in ASSESSMENT_PAYLOAD.items() if k not in ("smoker", "gen_health", "high_bp", "sex")}
     res = client.post("/api/v1/assessment", headers=bearer(PATIENT), json=payload)
     assert res.status_code == 422
     missing = {err["loc"][-1] for err in res.json()["detail"]}
-    assert {"ca", "thal", "oldpeak", "cp"} <= missing
-
-
-def test_what_if_returns_503_without_models():
-    res = client.post("/api/v1/what-if", headers=bearer(PATIENT), json=ASSESSMENT_PAYLOAD)
-    assert res.status_code == 503
+    assert {"smoker", "gen_health", "high_bp", "sex"} <= missing
 
 
 def test_unknown_consent_purpose_rejected():

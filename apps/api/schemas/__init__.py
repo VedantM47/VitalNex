@@ -13,14 +13,20 @@ from .health_profile import (
     HealthProfileUpdate,
     HealthProfileResponse,
 )
-from .assessment import AssessmentRequest, AssessmentResponse, AssessmentRecord
+from .assessment import (
+    AssessmentInputs,
+    AssessmentRequest,
+    AssessmentResponse,
+    AssessmentRecord,
+    WhatIfRequest,
+    RecourseRequest,
+)
 from .doctor import DoctorResponse, DoctorFilter, DoctorLocation, DoctorSlot
 from .appointment import AppointmentCreate, AppointmentUpdate, AppointmentResponse
 from .review import ReviewQueueItem
 from .assistant import ChatMessage, AssistantMessageRequest, AssistantMessageResponse, ActionSuggestion
 from .voice import VoiceTranscribeRequest, VoiceTranscribeResponse, VoiceSynthesizeRequest, VoiceSynthesizeResponse
 from .governance import GovernanceEvent, GovernanceSummaryResponse
-from .models import ModelRegistryItem, ModelVersionItem
 
 __all__ = [
     "ProfileBase",
@@ -34,7 +40,10 @@ __all__ = [
     "HealthProfileCreate",
     "HealthProfileUpdate",
     "HealthProfileResponse",
+    "AssessmentInputs",
     "AssessmentRequest",
+    "WhatIfRequest",
+    "RecourseRequest",
     "AssessmentResponse",
     "AssessmentRecord",
     "DoctorResponse",
@@ -57,6 +66,4 @@ __all__ = [
     "VoiceSynthesizeResponse",
     "GovernanceEvent",
     "GovernanceSummaryResponse",
-    "ModelRegistryItem",
-    "ModelVersionItem",
 ]

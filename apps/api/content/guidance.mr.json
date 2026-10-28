@@ -1,0 +1,56 @@
+{
+  "_review": "pending",
+  "_note": "Curated from public WHO / Government of India material. General information, not medical advice.",
+  "items": {
+    "bmi_overweight": {
+      "text": "तुमचा BMI 23 किंवा अधिक आहे. दक्षिण आशियाई प्रौढांमध्ये आरोग्य धोके जागतिक मर्यादेपेक्षा कमी BMI वरच वाढू लागतात, त्यामुळे 23 किंवा अधिक हे जास्त वजन मानले जाते. आहार आणि हालचालींमध्ये लहान, नियमित बदल उपयोगी ठरतात.",
+      "source_title": "WHO Expert Consultation. Appropriate body-mass index for Asian populations. The Lancet, 2004",
+      "source_url": "https://doi.org/10.1016/S0140-6736(03)15268-3"
+    },
+    "bmi_obese": {
+      "text": "तुमचा BMI 27.5 किंवा अधिक आहे, जो दक्षिण आशियाई प्रौढांसाठी लठ्ठपणाच्या श्रेणीत येतो. सुरक्षितपणे वजन कमी करण्याची योजना आखण्यासाठी डॉक्टर मदत करू शकतात.",
+      "source_title": "WHO Expert Consultation. Appropriate body-mass index for Asian populations. The Lancet, 2004",
+      "source_url": "https://doi.org/10.1016/S0140-6736(03)15268-3"
+    },
+    "physical_activity": {
+      "text": "WHO नुसार प्रौढांनी दर आठवड्याला किमान 150 मिनिटे मध्यम हालचाल (उदा. वेगाने चालणे) करावी. काहीच न करण्यापेक्षा थोडी हालचालही चांगली.",
+      "source_title": "WHO fact sheet: Physical activity",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"
+    },
+    "diet": {
+      "text": "WHO दररोज किमान 400 ग्रॅम (पाच भाग) फळे आणि भाज्या खाण्याची आणि मीठ, साखर व तळलेले पदार्थ मर्यादित ठेवण्याची शिफारस करते.",
+      "source_title": "WHO fact sheet: Healthy diet",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    "tobacco": {
+      "text": "तुम्ही अजूनही कोणत्याही स्वरूपात तंबाखू (सिगारेट, बिडी, गुटखा किंवा खैनी) घेत असाल, तर ती सोडल्याने हृदयरोग आणि स्ट्रोकचा धोका कमी होतो. ती सोडण्यासाठी डॉक्टर मदत करू शकतात.",
+      "source_title": "WHO fact sheet: Tobacco",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/tobacco"
+    },
+    "alcohol": {
+      "text": "कमी मद्यपान केल्याने आरोग्य धोके कमी होतात. WHO नुसार मद्याचे कोणतेही प्रमाण आरोग्यासाठी सुरक्षित नाही.",
+      "source_title": "WHO fact sheet: Alcohol",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/alcohol"
+    },
+    "blood_pressure": {
+      "text": "तुम्हाला उच्च रक्तदाब असल्याचे सांगितले गेले आहे असे तुम्ही सांगितले. तुमच्या डॉक्टरांसोबत तो नियंत्रणात ठेवा आणि नियमितपणे तपासणी करा.",
+      "source_title": "WHO fact sheet: Hypertension",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+    },
+    "cholesterol": {
+      "text": "तुमचे कोलेस्टेरॉल जास्त असल्याचे सांगितले गेले आहे असे तुम्ही सांगितले. तुमच्या डॉक्टरांसोबत ते नियंत्रणात ठेवा; आहार आणि हालचालही मदत करतात.",
+      "source_title": "WHO fact sheet: Cardiovascular diseases (CVDs)",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)"
+    },
+    "mental_health": {
+      "text": "अनेक दिवस तुमचे मानसिक आरोग्य चांगले नव्हते असे तुम्ही सांगितले. कोणाशी तरी बोलल्याने मदत होते. टेली-मानस ही मोफत राष्ट्रीय मानसिक आरोग्य हेल्पलाइन 14416 वर उपलब्ध आहे.",
+      "source_title": "Tele-MANAS, Ministry of Health and Family Welfare, Government of India",
+      "source_url": "https://telemanas.mohfw.gov.in/"
+    },
+    "regular_checkups": {
+      "text": "नियमित तपासणीमुळे मधुमेह आणि उच्च रक्तदाब यांसारख्या स्थिती लवकर, अनेकदा लक्षणे दिसण्यापूर्वीच, लक्षात येतात.",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    }
+  }
+}

@@ -9,7 +9,7 @@ are excluded (docs/SPEC.md §2.2). Full analytics are built in P6.
 from typing import List, Optional
 
 from apps.api.core.db import service_db
-from apps.api.schemas import GovernanceEvent, GovernanceSummaryResponse, ModelRegistryItem
+from apps.api.schemas import GovernanceEvent, GovernanceSummaryResponse
 
 RECENT_EVENTS = 10
 
@@ -61,19 +61,3 @@ class GovernanceService:
                 for e in events
             ],
         )
-
-
-class ModelRegistryService:
-    """Model registry. Empty until P3 writes ml/artifacts/<disease>/model_meta.json."""
-
-    def __init__(self):
-        self._models: List[ModelRegistryItem] = []
-
-    async def list_models(self) -> List[ModelRegistryItem]:
-        return self._models
-
-    async def get_model(self, model_id: str) -> Optional[ModelRegistryItem]:
-        for m in self._models:
-            if m.id == model_id:
-                return m
-        return None

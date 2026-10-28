@@ -1,0 +1,23 @@
+{
+  "_review": "approved",
+  "templates": {
+    "raises": "{feature} made your answers more similar to people who have been told they have this condition.",
+    "lowers": "{feature} made your answers less similar to people who have been told they have this condition."
+  },
+  "features": {
+    "Age": "your age group",
+    "Sex": "your sex",
+    "BMI": "your body-mass index (BMI)",
+    "HighBP": "having been told you have high blood pressure",
+    "HighChol": "having been told your cholesterol is high",
+    "Smoker": "your smoking history",
+    "PhysActivity": "your physical activity in the past 30 days",
+    "Fruits": "how often you eat fruit",
+    "Veggies": "how often you eat vegetables",
+    "HvyAlcoholConsump": "your alcohol use",
+    "GenHlth": "how you rated your general health",
+    "MentHlth": "days your mental health was not good",
+    "PhysHlth": "days your physical health was not good",
+    "DiffWalk": "difficulty walking or climbing stairs"
+  }
+}

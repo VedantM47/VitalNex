@@ -9,11 +9,22 @@ from fastapi.responses import JSONResponse
 import time
 import uuid
 
+from contextlib import asynccontextmanager
+
 from apps.api.core.config import settings
+from apps.api.services import screening
 from apps.api.routers.v1 import api_v1_router
 from apps.api.routers.v1.health import router as health_root_router
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the three disease models once at startup (docs/PROMPTS.md P4).
+    screening.models()
+    yield
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title="VITALNEX Clinical Intelligence & Connected Care API",
     description=(
         "Production-grade backend services for VITALNEX: clinical risk prediction, "

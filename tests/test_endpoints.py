@@ -29,12 +29,6 @@ def test_trust_passport_not_available():
     assert response.status_code == 503
 
 
-def test_models_registry_empty_until_trained():
-    response = client.get("/api/v1/models")
-    assert response.status_code == 200
-    assert response.json() == []
-
-
 def test_video_token_not_in_mvp():
     res = client.get("/api/v1/appointments/apt-demo-001/video-token")
     assert res.status_code == 503

@@ -1,0 +1,56 @@
+{
+  "_review": "pending",
+  "_note": "Curated from public WHO / Government of India material. General information, not medical advice.",
+  "items": {
+    "bmi_overweight": {
+      "text": "आपका BMI 23 या अधिक है। दक्षिण एशियाई वयस्कों में स्वास्थ्य जोखिम वैश्विक सीमा से कम BMI पर ही बढ़ने लगते हैं, इसलिए 23 या अधिक को अधिक वज़न माना जाता है। आहार और गतिविधि में छोटे, नियमित बदलाव मदद करते हैं।",
+      "source_title": "WHO Expert Consultation. Appropriate body-mass index for Asian populations. The Lancet, 2004",
+      "source_url": "https://doi.org/10.1016/S0140-6736(03)15268-3"
+    },
+    "bmi_obese": {
+      "text": "आपका BMI 27.5 या अधिक है, जो दक्षिण एशियाई वयस्कों के लिए मोटापे की श्रेणी में आता है। सुरक्षित रूप से वज़न घटाने की योजना बनाने में डॉक्टर आपकी मदद कर सकते हैं।",
+      "source_title": "WHO Expert Consultation. Appropriate body-mass index for Asian populations. The Lancet, 2004",
+      "source_url": "https://doi.org/10.1016/S0140-6736(03)15268-3"
+    },
+    "physical_activity": {
+      "text": "WHO सलाह देता है कि वयस्क हर सप्ताह कम से कम 150 मिनट मध्यम गतिविधि (जैसे तेज़ चलना) करें। कुछ भी गतिविधि न करने से थोड़ी गतिविधि बेहतर है।",
+      "source_title": "WHO fact sheet: Physical activity",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"
+    },
+    "diet": {
+      "text": "WHO दिन में कम से कम 400 ग्राम (पाँच हिस्से) फल और सब्ज़ियाँ खाने और नमक, चीनी तथा तले हुए भोजन को सीमित करने की सलाह देता है।",
+      "source_title": "WHO fact sheet: Healthy diet",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    "tobacco": {
+      "text": "यदि आप अब भी किसी भी रूप में तंबाकू (सिगरेट, बीड़ी, गुटखा या खैनी) लेते हैं, तो इसे छोड़ने से हृदय रोग और स्ट्रोक का जोखिम कम होता है। छोड़ने में डॉक्टर आपकी मदद कर सकते हैं।",
+      "source_title": "WHO fact sheet: Tobacco",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/tobacco"
+    },
+    "alcohol": {
+      "text": "कम शराब पीने से स्वास्थ्य जोखिम कम होते हैं। WHO के अनुसार शराब की कोई भी मात्रा स्वास्थ्य के लिए सुरक्षित नहीं है।",
+      "source_title": "WHO fact sheet: Alcohol",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/alcohol"
+    },
+    "blood_pressure": {
+      "text": "आपने बताया कि आपको उच्च रक्तचाप होने के बारे में बताया गया है। अपने डॉक्टर के साथ मिलकर इसे नियंत्रण में रखें और नियमित रूप से जाँच कराएँ।",
+      "source_title": "WHO fact sheet: Hypertension",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+    },
+    "cholesterol": {
+      "text": "आपने बताया कि आपको कोलेस्ट्रॉल अधिक होने के बारे में बताया गया है। अपने डॉक्टर के साथ मिलकर इसे नियंत्रण में रखें; आहार और गतिविधि भी मदद करते हैं।",
+      "source_title": "WHO fact sheet: Cardiovascular diseases (CVDs)",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)"
+    },
+    "mental_health": {
+      "text": "आपने बताया कि कई दिनों तक आपका मानसिक स्वास्थ्य ठीक नहीं था। किसी से बात करने से मदद मिलती है। टेली-मानस, निःशुल्क राष्ट्रीय मानसिक स्वास्थ्य हेल्पलाइन, 14416 पर उपलब्ध है।",
+      "source_title": "Tele-MANAS, Ministry of Health and Family Welfare, Government of India",
+      "source_url": "https://telemanas.mohfw.gov.in/"
+    },
+    "regular_checkups": {
+      "text": "नियमित जाँच से मधुमेह और उच्च रक्तचाप जैसी स्थितियों का जल्दी पता चलता है, अक्सर लक्षण दिखने से पहले ही।",
+      "source_title": "WHO fact sheet: Diabetes",
+      "source_url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    }
+  }
+}

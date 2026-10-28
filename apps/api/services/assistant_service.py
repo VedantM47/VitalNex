@@ -11,6 +11,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import List
 
+from apps.api.core.emergency import text_has_red_flag
 from apps.api.schemas import (
     AssistantMessageRequest,
     AssistantMessageResponse,
@@ -25,11 +26,7 @@ class AgentService:
         lang = request.language
 
         # ── 1. HARD DETERMINISTIC EMERGENCY ESCALATION GATE ──
-        emergency_keywords = [
-            "chest pain", "pressure in chest", "shortness of breath", "heart attack", "crushing pain",
-            "छातीत दुखणे", "श्वास घेण्यास त्रास", "सीने में दर्द", "सांस लेने में तकलीफ", "दिल का दौरा"
-        ]
-        is_emergency = any(kw in msg_lower for kw in emergency_keywords)
+        is_emergency = text_has_red_flag(msg_lower)
 
         if is_emergency:
             if lang == "mr":

@@ -74,3 +74,43 @@ Non-medical status strings added in P0 (`status.notInMvp*`, `status.noData*`,
 
 Other P1 strings (`auth.*` sign-in / sign-up / password texts, `reviewQueue` titles and
 buttons, `care.bookedWith`, `care.bookingFailed`) are UI text only and are not listed.
+
+---
+
+## Added in Phase P4 (API content, `apps/api/content/*.{hi,mr}.json`, file-level `_review: pending`)
+
+### Explanation templates — `explanations.{en,hi,mr}.json`
+
+| Key | EN | HI | MR | _review |
+|---|---|---|---|---|
+| `templates.raises` | {feature} made your answers more similar to people who have been told they have this condition. | {feature} के कारण आपके उत्तर उन लोगों से अधिक मिलते-जुलते हैं जिन्हें यह स्थिति होने के बारे में बताया गया है। | {feature} यामुळे तुमची उत्तरे, ज्यांना ही स्थिती असल्याचे सांगितले गेले आहे अशा लोकांशी अधिक जुळतात. | pending |
+| `templates.lowers` | {feature} made your answers less similar to people who have been told they have this condition. | {feature} के कारण आपके उत्तर उन लोगों से कम मिलते-जुलते हैं जिन्हें यह स्थिति होने के बारे में बताया गया है। | {feature} यामुळे तुमची उत्तरे, ज्यांना ही स्थिती असल्याचे सांगितले गेले आहे अशा लोकांशी कमी जुळतात. | pending |
+| `features.Age` | your age group | आपका आयु वर्ग | तुमचा वयोगट | pending |
+| `features.Sex` | your sex | आपका लिंग | तुमचे लिंग | pending |
+| `features.BMI` | your body-mass index (BMI) | आपका बॉडी मास इंडेक्स (BMI) | तुमचा बॉडी मास इंडेक्स (BMI) | pending |
+| `features.HighBP` | having been told you have high blood pressure | उच्च रक्तचाप होने के बारे में पहले बताया जाना | उच्च रक्तदाब असल्याचे पूर्वी सांगितले जाणे | pending |
+| `features.HighChol` | having been told your cholesterol is high | कोलेस्ट्रॉल अधिक होने के बारे में पहले बताया जाना | कोलेस्टेरॉल जास्त असल्याचे पूर्वी सांगितले जाणे | pending |
+| `features.Smoker` | your smoking history | आपका धूम्रपान का इतिहास | तुमचा धूम्रपानाचा इतिहास | pending |
+| `features.PhysActivity` | your physical activity in the past 30 days | पिछले 30 दिनों में आपकी शारीरिक गतिविधि | मागील 30 दिवसांतील तुमची शारीरिक हालचाल | pending |
+| `features.Fruits` | how often you eat fruit | आप कितनी बार फल खाते हैं | तुम्ही किती वेळा फळे खाता | pending |
+| `features.Veggies` | how often you eat vegetables | आप कितनी बार सब्ज़ियाँ खाते हैं | तुम्ही किती वेळा भाज्या खाता | pending |
+| `features.HvyAlcoholConsump` | your alcohol use | आपका शराब का सेवन | तुमचे मद्यपान | pending |
+| `features.GenHlth` | how you rated your general health | आपने अपने सामान्य स्वास्थ्य को कैसा बताया | तुम्ही तुमच्या सर्वसाधारण आरोग्याला दिलेले मूल्यांकन | pending |
+| `features.MentHlth` | days your mental health was not good | जिन दिनों आपका मानसिक स्वास्थ्य ठीक नहीं था | ज्या दिवशी तुमचे मानसिक आरोग्य चांगले नव्हते | pending |
+| `features.PhysHlth` | days your physical health was not good | जिन दिनों आपका शारीरिक स्वास्थ्य ठीक नहीं था | ज्या दिवशी तुमचे शारीरिक आरोग्य चांगले नव्हते | pending |
+| `features.DiffWalk` | difficulty walking or climbing stairs | चलने या सीढ़ियाँ चढ़ने में कठिनाई | चालण्यात किंवा जिना चढण्यात अडचण | pending |
+
+### Guidance — `guidance.{en,hi,mr}.json` (sources in the files)
+
+| Key | EN | HI | MR | _review |
+|---|---|---|---|---|
+| `items.bmi_overweight` | Your BMI is 23 or more. For South Asian adults, health risks start rising at a lower BMI than the global cut-off, so 23 or more counts as overweight. Small, steady changes in diet and activity help. | आपका BMI 23 या अधिक है। दक्षिण एशियाई वयस्कों में स्वास्थ्य जोखिम वैश्विक सीमा से कम BMI पर ही बढ़ने लगते हैं, इसलिए 23 या अधिक को अधिक वज़न माना जाता है। आहार और गतिविधि में छोटे, नियमित बदलाव मदद करते हैं। | तुमचा BMI 23 किंवा अधिक आहे. दक्षिण आशियाई प्रौढांमध्ये आरोग्य धोके जागतिक मर्यादेपेक्षा कमी BMI वरच वाढू लागतात, त्यामुळे 23 किंवा अधिक हे जास्त वजन मानले जाते. आहार आणि हालचालींमध्ये लहान, नियमित बदल उपयोगी ठरतात. | pending |
+| `items.bmi_obese` | Your BMI is 27.5 or more, which is in the obese range for South Asian adults. A doctor can help you plan safe weight loss. | आपका BMI 27.5 या अधिक है, जो दक्षिण एशियाई वयस्कों के लिए मोटापे की श्रेणी में आता है। सुरक्षित रूप से वज़न घटाने की योजना बनाने में डॉक्टर आपकी मदद कर सकते हैं। | तुमचा BMI 27.5 किंवा अधिक आहे, जो दक्षिण आशियाई प्रौढांसाठी लठ्ठपणाच्या श्रेणीत येतो. सुरक्षितपणे वजन कमी करण्याची योजना आखण्यासाठी डॉक्टर मदत करू शकतात. | pending |
+| `items.physical_activity` | WHO recommends adults do at least 150 minutes of moderate activity (such as brisk walking) each week. Any activity is better than none. | WHO सलाह देता है कि वयस्क हर सप्ताह कम से कम 150 मिनट मध्यम गतिविधि (जैसे तेज़ चलना) करें। कुछ भी गतिविधि न करने से थोड़ी गतिविधि बेहतर है। | WHO नुसार प्रौढांनी दर आठवड्याला किमान 150 मिनिटे मध्यम हालचाल (उदा. वेगाने चालणे) करावी. काहीच न करण्यापेक्षा थोडी हालचालही चांगली. | pending |
+| `items.diet` | WHO recommends eating at least 400 g (five portions) of fruit and vegetables a day, and limiting salt, sugar and fried foods. | WHO दिन में कम से कम 400 ग्राम (पाँच हिस्से) फल और सब्ज़ियाँ खाने और नमक, चीनी तथा तले हुए भोजन को सीमित करने की सलाह देता है। | WHO दररोज किमान 400 ग्रॅम (पाच भाग) फळे आणि भाज्या खाण्याची आणि मीठ, साखर व तळलेले पदार्थ मर्यादित ठेवण्याची शिफारस करते. | pending |
+| `items.tobacco` | If you still use tobacco in any form (cigarettes, bidis, gutka or khaini), stopping lowers the risk of heart disease and stroke. A doctor can help you quit. | यदि आप अब भी किसी भी रूप में तंबाकू (सिगरेट, बीड़ी, गुटखा या खैनी) लेते हैं, तो इसे छोड़ने से हृदय रोग और स्ट्रोक का जोखिम कम होता है। छोड़ने में डॉक्टर आपकी मदद कर सकते हैं। | तुम्ही अजूनही कोणत्याही स्वरूपात तंबाखू (सिगारेट, बिडी, गुटखा किंवा खैनी) घेत असाल, तर ती सोडल्याने हृदयरोग आणि स्ट्रोकचा धोका कमी होतो. ती सोडण्यासाठी डॉक्टर मदत करू शकतात. | pending |
+| `items.alcohol` | Drinking less alcohol lowers health risks. WHO states there is no level of alcohol use that is safe for health. | कम शराब पीने से स्वास्थ्य जोखिम कम होते हैं। WHO के अनुसार शराब की कोई भी मात्रा स्वास्थ्य के लिए सुरक्षित नहीं है। | कमी मद्यपान केल्याने आरोग्य धोके कमी होतात. WHO नुसार मद्याचे कोणतेही प्रमाण आरोग्यासाठी सुरक्षित नाही. | pending |
+| `items.blood_pressure` | You said you have been told you have high blood pressure. Keep it under control with your doctor and get it checked regularly. | आपने बताया कि आपको उच्च रक्तचाप होने के बारे में बताया गया है। अपने डॉक्टर के साथ मिलकर इसे नियंत्रण में रखें और नियमित रूप से जाँच कराएँ। | तुम्हाला उच्च रक्तदाब असल्याचे सांगितले गेले आहे असे तुम्ही सांगितले. तुमच्या डॉक्टरांसोबत तो नियंत्रणात ठेवा आणि नियमितपणे तपासणी करा. | pending |
+| `items.cholesterol` | You said you have been told your cholesterol is high. Keep it under control with your doctor; diet and activity also help. | आपने बताया कि आपको कोलेस्ट्रॉल अधिक होने के बारे में बताया गया है। अपने डॉक्टर के साथ मिलकर इसे नियंत्रण में रखें; आहार और गतिविधि भी मदद करते हैं। | तुमचे कोलेस्टेरॉल जास्त असल्याचे सांगितले गेले आहे असे तुम्ही सांगितले. तुमच्या डॉक्टरांसोबत ते नियंत्रणात ठेवा; आहार आणि हालचालही मदत करतात. | pending |
+| `items.mental_health` | You reported many days when your mental health was not good. Talking to someone helps. Tele-MANAS, the free national mental health helpline, is available on 14416. | आपने बताया कि कई दिनों तक आपका मानसिक स्वास्थ्य ठीक नहीं था। किसी से बात करने से मदद मिलती है। टेली-मानस, निःशुल्क राष्ट्रीय मानसिक स्वास्थ्य हेल्पलाइन, 14416 पर उपलब्ध है। | अनेक दिवस तुमचे मानसिक आरोग्य चांगले नव्हते असे तुम्ही सांगितले. कोणाशी तरी बोलल्याने मदत होते. टेली-मानस ही मोफत राष्ट्रीय मानसिक आरोग्य हेल्पलाइन 14416 वर उपलब्ध आहे. | pending |
+| `items.regular_checkups` | Regular check-ups help find conditions like diabetes and high blood pressure early, often before symptoms appear. | नियमित जाँच से मधुमेह और उच्च रक्तचाप जैसी स्थितियों का जल्दी पता चलता है, अक्सर लक्षण दिखने से पहले ही। | नियमित तपासणीमुळे मधुमेह आणि उच्च रक्तदाब यांसारख्या स्थिती लवकर, अनेकदा लक्षणे दिसण्यापूर्वीच, लक्षात येतात. | pending |
