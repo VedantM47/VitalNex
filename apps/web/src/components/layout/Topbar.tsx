@@ -18,7 +18,7 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
           <button
             type="button"
             onClick={onMenuClick}
-            aria-label="Open mobile navigation menu"
+            aria-label={t("shell.openMenu")}
             className="md:hidden p-2 text-[#475569] hover:bg-[#F1F5F9] rounded-xl focus-visible:outline-2 focus-visible:outline-[#0E7490]"
           >
             <Menu className="w-5 h-5" aria-hidden="true" />
@@ -26,7 +26,7 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
         )}
         <div className="hidden sm:block">
           <span className="text-xs font-semibold text-[#0E7490] tracking-wide uppercase">
-            Clinical AI & Connected Care
+            {t("shell.tag")}
           </span>
         </div>
       </div>

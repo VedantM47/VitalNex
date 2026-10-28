@@ -83,7 +83,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         </div>
 
         <div className="px-2">
-          <DemoBadge label="Demo Environment" />
+          <DemoBadge label={t("shell.demoEnv")} />
         </div>
 
         {role === "patient" && (
@@ -91,7 +91,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         {/* Primary Patient Section */}
         <div className="space-y-1">
           <p className="px-3 text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
-            Intelligence Suite
+            {t("shell.section.patient")}
           </p>
           {patientNav.map(renderNavLink)}
         </div>
@@ -99,7 +99,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         {/* Secondary Patient Section */}
         <div className="space-y-1 pt-2 border-t border-[#F1F5F9]">
           <p className="px-3 text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
-            Connected Care
+            {t("shell.section.care")}
           </p>
           {secondaryNav.map(renderNavLink)}
         </div>
@@ -110,7 +110,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         {role === "doctor" && (
         <div className="space-y-1">
           <p className="px-3 text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
-            Clinician Portal
+            {t("shell.section.doctor")}
           </p>
           {doctorNav.map(renderNavLink)}
           {renderNavLink({ label: t("nav.aiTrust"), href: "/ai-trust", icon: ShieldCheck })}
@@ -122,7 +122,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         {role === "admin" && (
         <div className="space-y-1">
           <p className="px-3 text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
-            Governance
+            {t("shell.section.admin")}
           </p>
           {adminNav.map(renderNavLink)}
           {renderNavLink({ label: t("nav.aiTrust"), href: "/ai-trust", icon: ShieldCheck })}

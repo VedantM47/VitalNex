@@ -4,9 +4,11 @@ import React, { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { X } from "lucide-react";
+import { useTranslation } from "../../lib/i18n";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="flex h-screen w-full bg-[#F7FAFC] overflow-hidden">
@@ -31,7 +33,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                aria-label="Close menu"
+                aria-label={t("shell.closeMenu")}
                 className="p-2 text-[#475569] hover:bg-[#F1F5F9] rounded-xl"
               >
                 <X className="w-5 h-5" aria-hidden="true" />
@@ -51,7 +53,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <footer className="mt-12 pt-6 pb-2 border-t border-[#E2E8F0] text-center text-xs text-[#64748B] w-full">
             <p className="max-w-3xl mx-auto leading-relaxed">
-              <span className="font-semibold text-[#0B1F33]">VITALNEX Clinical Intelligence</span> • Research & Decision-Support Prototype • Non-diagnostic • Emergency: 108 / 112 (India)
+              {t("shell.footer")}
             </p>
           </footer>
         </main>

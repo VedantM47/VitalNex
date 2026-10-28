@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "../../lib/i18n";
 
 export function BrandLogo({
   variant = "full",
@@ -10,6 +13,7 @@ export function BrandLogo({
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
+  const { t } = useTranslation();
   const markSizes = {
     sm: "w-7 h-7",
     md: "w-8 h-8",
@@ -26,7 +30,7 @@ export function BrandLogo({
     <Link
       href="/"
       className={`inline-flex items-center gap-2.5 select-none focus-visible:outline-2 focus-visible:outline-[#0E7490] rounded-lg ${className}`}
-      aria-label="VITALNEX Home"
+      aria-label={t("shell.home")}
     >
       {/* Precision Geometric V + Pulse Mark */}
       <div
@@ -57,7 +61,7 @@ export function BrandLogo({
             VITAL<span className="text-[#0E7490]">NEX</span>
           </span>
           <span className="text-[10px] text-[#64748B] tracking-normal font-medium mt-0.5 hidden sm:inline">
-            Health. Humanity. High-Tech.
+            {t("brand.tagline")}
           </span>
         </div>
       )}

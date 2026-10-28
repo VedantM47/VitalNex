@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "../lib/i18n";
 import { AuthProvider } from "../lib/auth-context";
+import en from "../messages/en.json";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -18,10 +19,11 @@ const notoSansDevanagari = Noto_Sans_Devanagari({
   display: "swap",
 });
 
+// Server-rendered metadata cannot follow the client-side language switch, so it uses the English
+// strings from the messages file (the visible UI follows the chosen language).
 export const metadata: Metadata = {
-  title: "VITALNEX | Health. Humanity. High-Tech.",
-  description:
-    "Responsible clinical intelligence, transparent risk assessment, AI Trust Passport, and connected regional care.",
+  title: en.meta.title,
+  description: en.meta.description,
   icons: {
     icon: "/favicon.ico",
   },

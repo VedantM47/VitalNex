@@ -2,18 +2,20 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Globe, Check } from "lucide-react";
-import { useTranslation, SupportedLanguage } from "../../lib/i18n";
+import { useTranslation, SUPPORTED_LANGUAGES, type SupportedLanguage } from "../../lib/i18n";
 
 export function LanguageSelector({ variant = "normal" }: { variant?: "normal" | "compact" }) {
-  const { language, setLanguage } = useTranslation();
+  const { language, setLanguage, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const languages: { code: SupportedLanguage; label: string; native: string }[] = [
-    { code: "en", label: "English", native: "English" },
-    { code: "hi", label: "Hindi", native: "हिन्दी" },
-    { code: "mr", label: "Marathi", native: "मराठी" },
-  ];
+  // Each language is shown in its own script (a proper name, not translated) plus its name in the
+  // current interface language.
+  const languages: { code: SupportedLanguage; label: string; native: string }[] = SUPPORTED_LANGUAGES.map((l) => ({
+    code: l.code,
+    label: t(`common.langName.${l.code}`),
+    native: l.nativeName,
+  }));
 
   const currentLang = languages.find((l) => l.code === language) || languages[0];
 
@@ -34,7 +36,7 @@ export function LanguageSelector({ variant = "normal" }: { variant?: "normal" | 
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-        aria-label="Select interface language"
+        aria-label={t("common.selectLanguage")}
         className={`inline-flex items-center gap-2 rounded-xl border border-[#D8E2EA] bg-white text-[#0B1F33] hover:bg-[#F8FAFC] transition-colors focus-visible:outline-2 focus-visible:outline-[#0E7490] ${
           variant === "compact" ? "h-9 px-2.5 text-xs" : "h-10 px-3 text-xs sm:text-sm font-medium"
         }`}

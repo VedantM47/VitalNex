@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckCircle2, AlertTriangle, AlertCircle, Info, Clock, ShieldCheck } from "lucide-react";
+import { CheckCircle2, AlertTriangle, AlertCircle, Info, Clock } from "lucide-react";
 
 export type StatusVariant = "success" | "warning" | "danger" | "info" | "neutral";
 
@@ -46,38 +46,8 @@ export function StatusBadge({
   );
 }
 
-export function RiskBadge({ band }: { band: "Low" | "Moderate" | "High" | string }) {
-  if (band === "Low") {
-    return (
-      <StatusBadge
-        label="Low Risk"
-        variant="success"
-        icon={<ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />}
-      />
-    );
-  }
-  if (band === "Moderate") {
-    return (
-      <StatusBadge
-        label="Moderate Risk"
-        variant="warning"
-        icon={<AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />}
-      />
-    );
-  }
-  if (band === "High") {
-    return (
-      <StatusBadge
-        label="High Risk (Review Advised)"
-        variant="danger"
-        icon={<AlertCircle className="w-3.5 h-3.5" aria-hidden="true" />}
-      />
-    );
-  }
-  return <StatusBadge label={band || "Pending Evaluation"} variant="neutral" />;
-}
-
-export function DemoBadge({ label = "Demo Mode" }: { label?: string }) {
+/** A "demo / synthetic" marker. The label must come from the messages files. */
+export function DemoBadge({ label }: { label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11px] font-semibold tracking-wide uppercase bg-[#0B1F33] text-[#22C1DC] border border-[#22C1DC]/30 rounded-full">
       <span className="w-1.5 h-1.5 rounded-full bg-[#22C1DC] animate-pulse" aria-hidden="true" />

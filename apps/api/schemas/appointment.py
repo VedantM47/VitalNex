@@ -27,6 +27,7 @@ class AppointmentResponse(BaseModel):
     doctor_id: str
     doctor_name: str
     specialization: str
+    specialization_code: Optional[str] = None  # doctor_specializations.code, for translated labels
     appointment_date: str
     start_time: str
     end_time: str

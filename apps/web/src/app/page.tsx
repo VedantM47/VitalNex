@@ -1,274 +1,187 @@
 "use client";
 
+// Public landing page (SPEC §1.1 roles: public). What VITALNEX is and is not, what it does, and
+// links to the Trust Passport and sign-in. No example scores and no metrics are shown here.
+
 import React from "react";
 import Link from "next/link";
-import {
-  Activity,
-  ShieldCheck,
-  Stethoscope,
-  Mic,
-  Globe,
-  ArrowRight,
-  CheckCircle2,
-  Lock,
-  Cpu,
-  HeartHandshake,
-  Sparkles,
-  BarChart3,
-  Users,
-} from "lucide-react";
+import { Activity, ArrowRight, CheckCircle2, Globe, Lock, ShieldCheck, Stethoscope, Users } from "lucide-react";
 import { BrandLogo } from "../components/layout/BrandLogo";
 import { LanguageSelector } from "../components/ui/LanguageSelector";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
-import { StatusBadge, RiskBadge, DemoBadge } from "../components/ui/StatusBadge";
+import { DemoBadge } from "../components/ui/StatusBadge";
 import { Footer } from "../components/layout/Footer";
-import { useTranslation } from "../lib/i18n";
+import { SUPPORTED_LANGUAGES, useTranslation } from "../lib/i18n";
 
 export default function LandingPage() {
   const { t } = useTranslation();
 
+  const features = [
+    { Icon: Activity, title: "landing.f1Title", body: "landing.f1Body", cls: "bg-[#0E7490]/10 text-[#0E7490]" },
+    { Icon: ShieldCheck, title: "landing.f2Title", body: "landing.f2Body", cls: "bg-[#0F766E]/10 text-[#0F766E]" },
+    { Icon: Stethoscope, title: "landing.f3Title", body: "landing.f3Body", cls: "bg-[#22C1DC]/15 text-[#0B1F33]" },
+  ];
+  const trustPoints = ["t1", "t2", "t3", "t4"];
+
   return (
-    <div className="min-h-screen bg-[#F7FAFC] flex flex-col selection:bg-[#0E7490] selection:text-white">
-      {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#D8E2EA] px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <div className="flex min-h-screen flex-col bg-[#F7FAFC] selection:bg-[#0E7490] selection:text-white">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[#D8E2EA] bg-white/95 px-4 py-3.5 backdrop-blur-md sm:px-8">
         <BrandLogo size="md" />
-        <div className="hidden md:flex items-center gap-6 text-xs sm:text-sm font-medium text-[#475569]">
-          <a href="#features" className="hover:text-[#0E7490] transition-colors">Capabilities</a>
-          <a href="#trust-passport" className="hover:text-[#0E7490] transition-colors">AI Trust Passport</a>
-          <a href="#connected-care" className="hover:text-[#0E7490] transition-colors">Connected Care</a>
-          <a href="#how-it-works" className="hover:text-[#0E7490] transition-colors">Workflow</a>
-        </div>
+        <nav className="hidden items-center gap-6 text-xs font-medium text-[#475569] sm:text-sm md:flex">
+          <a href="#features" className="transition-colors hover:text-[#0E7490]">{t("landing.navFeatures")}</a>
+          <a href="#trust-passport" className="transition-colors hover:text-[#0E7490]">{t("landing.navTrust")}</a>
+          <a href="#languages" className="transition-colors hover:text-[#0E7490]">{t("landing.navLanguages")}</a>
+        </nav>
         <div className="flex items-center gap-3">
           <LanguageSelector variant="compact" />
           <Link href="/dashboard">
-            <Button size="sm" variant="primary">
-              Enter Platform
-            </Button>
+            <Button size="sm" variant="primary">{t("landing.open")}</Button>
           </Link>
         </div>
       </header>
 
       <main className="flex-1 space-y-24 sm:space-y-32">
-        {/* 1. HERO SECTION */}
-        <section className="pt-12 sm:pt-20 px-4 sm:px-8 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="inline-flex items-center gap-2">
-                <DemoBadge label="Research & Decision-Support" />
-                <span className="text-xs font-semibold text-[#0E7490] tracking-wide uppercase">
-                  Continuous Clinical Intelligence
-                </span>
+        <section className="mx-auto max-w-7xl px-4 pt-12 sm:px-8 sm:pt-20">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
+            <div className="space-y-6 text-left lg:col-span-7">
+              <div className="inline-flex flex-wrap items-center gap-2">
+                <DemoBadge label={t("landing.badge")} />
+                <span className="text-xs font-semibold uppercase tracking-wide text-[#0E7490]">{t("landing.kicker")}</span>
               </div>
-
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#0B1F33] tracking-tight leading-[1.12]">
-                {t("hero.title")}
+              <h1 className="text-3xl font-extrabold leading-[1.12] tracking-tight text-[#0B1F33] sm:text-5xl lg:text-6xl">
+                {t("landing.title")}
               </h1>
-
-              <p className="text-base sm:text-lg text-[#475569] leading-relaxed max-w-2xl">
-                {t("hero.subtitle")}
-              </p>
-
+              <p className="max-w-2xl text-base leading-relaxed text-[#475569] sm:text-lg">{t("landing.subtitle")}</p>
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link href="/onboarding">
-                  <Button size="lg" variant="primary" rightIcon={<ArrowRight className="w-4 h-4" />}>
-                    {t("hero.ctaBuild")}
+                  <Button size="lg" variant="primary" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                    {t("landing.ctaStart")}
                   </Button>
                 </Link>
                 <Link href="/dashboard">
-                  <Button size="lg" variant="outline">
-                    {t("hero.ctaExplore")}
-                  </Button>
+                  <Button size="lg" variant="outline">{t("landing.ctaDashboard")}</Button>
                 </Link>
               </div>
-
-              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-[#64748B]">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#0F766E]" />
-                  <span>Screening, not diagnosis</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#0F766E]" />
-                  <span>Clinician review for high-risk results</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-[#0F766E]" />
-                  <span>Regional Care Connect</span>
-                </div>
-              </div>
+              <ul className="flex flex-wrap items-center gap-6 pt-4 text-xs text-[#64748B]">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-[#0F766E]" aria-hidden="true" />
+                  {t("landing.point1")}
+                </li>
+                <li className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-[#0F766E]" aria-hidden="true" />
+                  {t("landing.point2")}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-[#0F766E]" aria-hidden="true" />
+                  {t("landing.point3")}
+                </li>
+              </ul>
             </div>
 
-            {/* Hero card: what VITALNEX is and is not (no example scores, P0 honesty pass) */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative bg-white rounded-2xl border border-[#D8E2EA] p-6 shadow-xl space-y-4">
-                <p className="text-xs font-bold text-[#0B1F33] border-b border-[#F1F5F9] pb-3">What VITALNEX is</p>
+            <div className="lg:col-span-5">
+              <div className="space-y-4 rounded-2xl border border-[#D8E2EA] bg-white p-6 shadow-xl">
+                <p className="border-b border-[#F1F5F9] pb-3 text-xs font-bold text-[#0B1F33]">{t("landing.isTitle")}</p>
                 <ul className="space-y-2 text-xs text-[#475569]">
-                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-[#0F766E] shrink-0" />A screening and care-navigation aid for diabetes, heart disease and stroke.</li>
-                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-[#0F766E] shrink-0" />Tells you what kind of care to seek and how soon.</li>
-                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-[#0F766E] shrink-0" />Available in English, Hindi and Marathi.</li>
+                  {["is1", "is2", "is3"].map((k) => (
+                    <li key={k} className="flex gap-2">
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-[#0F766E]" aria-hidden="true" />
+                      {t(`landing.${k}`)}
+                    </li>
+                  ))}
                 </ul>
-                <p className="text-xs font-bold text-[#0B1F33] border-b border-[#F1F5F9] pb-3 pt-2">What it is not</p>
+                <p className="border-b border-[#F1F5F9] pb-3 pt-2 text-xs font-bold text-[#0B1F33]">{t("landing.notTitle")}</p>
                 <ul className="space-y-2 text-xs text-[#475569]">
-                  <li className="flex gap-2"><Lock className="w-4 h-4 text-[#B42318] shrink-0" />Not a diagnosis and not a replacement for a doctor.</li>
-                  <li className="flex gap-2"><Lock className="w-4 h-4 text-[#B42318] shrink-0" />Never names or doses medicines.</li>
-                  <li className="flex gap-2"><Lock className="w-4 h-4 text-[#B42318] shrink-0" />Not yet validated on Indian patients. Accounts are demo accounts.</li>
+                  {["not1", "not2", "not3"].map((k) => (
+                    <li key={k} className="flex gap-2">
+                      <Lock className="h-4 w-4 shrink-0 text-[#B42318]" aria-hidden="true" />
+                      {t(`landing.${k}`)}
+                    </li>
+                  ))}
                 </ul>
-                <div className="p-3 bg-[#FEF2F2] rounded-xl border border-[#B42318]/20 text-xs text-[#B42318] font-semibold">
-                  Emergency? Call 108 / 112 now.
-                </div>
-                <p className="text-[11px] text-[#64748B]">Project status: MVP in progress. The risk screening is being rebuilt.</p>
+                <p className="rounded-xl border border-[#B42318]/20 bg-[#FEF2F2] p-3 text-xs font-semibold text-[#B42318]">
+                  {t("landing.emergency")}
+                </p>
+                <p className="text-[11px] text-[#64748B]">{t("landing.status")}</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 2. WHAT VITALNEX DOES */}
-        <section id="features" className="px-4 sm:px-8 max-w-7xl mx-auto space-y-12">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-semibold text-[#0E7490] tracking-wider uppercase">
-              End-to-End Clinical Intelligence
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-bold text-[#0B1F33]">
-              From Vitals to Verifiable AI and Connected Care
-            </h2>
-            <p className="text-sm sm:text-base text-[#475569]">
-              Planned for the MVP. Features are being rebuilt; anything not yet working says so in the app.
-            </p>
+        <section id="features" className="mx-auto max-w-7xl space-y-12 px-4 sm:px-8">
+          <div className="mx-auto max-w-2xl space-y-3 text-center">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#0E7490]">{t("landing.featuresKicker")}</span>
+            <h2 className="text-2xl font-bold text-[#0B1F33] sm:text-4xl">{t("landing.featuresTitle")}</h2>
+            <p className="text-sm text-[#475569] sm:text-base">{t("landing.featuresIntro")}</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card hoverable className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#0E7490]/10 text-[#0E7490] flex items-center justify-center">
-                <Activity className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-[#0B1F33]">1. Clinical Risk Prediction</h3>
-              <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                About 15 simple questions you can answer yourself. Results show a screening level, the main factors and a next step. Being rebuilt on real survey data.
-              </p>
-            </Card>
-
-            <Card hoverable className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#0F766E]/10 text-[#0F766E] flex items-center justify-center">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-[#0B1F33]">2. AI Trust Passport</h3>
-              <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                A public page explaining how the models work and where they fail. Every number on it will come from the real model cards.
-              </p>
-            </Card>
-
-            <Card hoverable className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#22C1DC]/15 text-[#0B1F33] flex items-center justify-center">
-                <Stethoscope className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-[#0B1F33]">3. Connected Care</h3>
-              <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                Browse demo clinicians by specialty and language and book a demo appointment. All doctors in the MVP are synthetic.
-              </p>
-            </Card>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {features.map(({ Icon, title, body, cls }) => (
+              <Card key={title} hoverable className="space-y-4">
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${cls}`}>
+                  <Icon className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <h3 className="text-lg font-bold text-[#0B1F33]">{t(title)}</h3>
+                <p className="text-xs leading-relaxed text-[#475569] sm:text-sm">{t(body)}</p>
+              </Card>
+            ))}
           </div>
         </section>
 
-        {/* 3. AI TRUST PASSPORT HIGHLIGHT */}
-        <section id="trust-passport" className="px-4 sm:px-8 max-w-7xl mx-auto">
-          <div className="bg-[#0B1F33] rounded-3xl p-8 sm:p-12 text-white space-y-8">
+        <section id="trust-passport" className="mx-auto max-w-7xl px-4 sm:px-8">
+          <div className="space-y-8 rounded-3xl bg-[#0B1F33] p-8 text-white sm:p-12">
             <div className="max-w-2xl space-y-3">
-              <span className="text-xs font-semibold text-[#22C1DC] uppercase tracking-wider">
-                Explainability & Ethical AI
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight">
-                No Black Boxes. Total Transparency with the AI Trust Passport.
-              </h2>
-              <p className="text-xs sm:text-sm text-[#CBD5E1] leading-relaxed">
-                Health predictions should not be trusted on numbers alone. The Trust Passport will explain how the models were built, how well they work and where they fail. It is being rebuilt; no metrics are shown until they are computed.
-              </p>
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#22C1DC]">{t("landing.trustKicker")}</span>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("landing.trustTitle")}</h2>
+              <p className="text-xs leading-relaxed text-[#CBD5E1] sm:text-sm">{t("landing.trustBody")}</p>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                <p className="text-xs font-bold text-[#22C1DC]">Main factors</p>
-                <p className="text-xs text-[#CBD5E1]">Planned: the main factors behind each result, in plain language.</p>
-              </div>
-              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                <p className="text-xs font-bold text-[#22C1DC]">Fairness checks</p>
-                <p className="text-xs text-[#CBD5E1]">Planned: how results differ across groups, with the gaps reported openly.</p>
-              </div>
-              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                <p className="text-xs font-bold text-[#22C1DC]">Knowing when it is unsure</p>
-                <p className="text-xs text-[#CBD5E1]">Planned: when the model is not confident, it says so and asks you to see a doctor.</p>
-              </div>
-              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                <p className="text-xs font-bold text-[#22C1DC]">Safety rules first</p>
-                <p className="text-xs text-[#CBD5E1]">Emergency symptoms always override everything and show 108 / 112.</p>
-              </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {trustPoints.map((k) => (
+                <div key={k} className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-xs font-bold text-[#22C1DC]">{t(`landing.${k}Title`)}</p>
+                  <p className="text-xs text-[#CBD5E1]">{t(`landing.${k}Body`)}</p>
+                </div>
+              ))}
             </div>
-
-            <div className="pt-2">
-              <Link href="/ai-trust">
-                <Button variant="teal" size="md">
-                  About the Trust Passport
-                </Button>
-              </Link>
-            </div>
+            <Link href="/ai-trust">
+              <Button variant="teal" size="md">{t("landing.trustCta")}</Button>
+            </Link>
           </div>
         </section>
 
-        {/* 4. MULTILINGUAL & ACCESSIBILITY SECTION */}
-        <section className="px-4 sm:px-8 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <section id="languages" className="mx-auto max-w-7xl px-4 sm:px-8">
+          <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
             <div className="space-y-4">
-              <span className="text-xs font-semibold text-[#0E7490] tracking-wider uppercase">
-                Accessibility For All
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1F33]">
-                Available in English, Hindi and Marathi
-              </h2>
-              <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                Health technology should leave no one behind. VITALNEX is being built in English, Hindi (हिन्दी) and Marathi (मराठी). Hindi and Marathi medical wording is still awaiting human review.
-              </p>
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#0E7490]">{t("landing.langKicker")}</span>
+              <h2 className="text-2xl font-bold text-[#0B1F33] sm:text-3xl">{t("landing.langTitle")}</h2>
+              <p className="text-xs leading-relaxed text-[#475569] sm:text-sm">{t("landing.langBody")}</p>
             </div>
-
-            <div className="bg-white rounded-2xl border border-[#D8E2EA] p-6 space-y-4 shadow-sm">
-              <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3">
-                <span className="text-xs font-bold text-[#0B1F33]">Supported Regional Languages</span>
-                <span className="text-xs text-[#0F766E] font-medium">3 languages</span>
-              </div>
-              <div className="space-y-3">
-                <div className="p-3 bg-[#F8FAFC] rounded-xl flex items-center justify-between">
-                  <span className="text-xs font-medium text-[#0B1F33]">English (en)</span>
-                  <span className="text-xs text-[#64748B]">Interface language</span>
-                </div>
-                <div className="p-3 bg-[#F8FAFC] rounded-xl flex items-center justify-between">
-                  <span className="text-xs font-medium text-[#0B1F33]">हिन्दी - Hindi (hi)</span>
-                  <span className="text-xs text-[#64748B]">Translation review pending</span>
-                </div>
-                <div className="p-3 bg-[#F8FAFC] rounded-xl flex items-center justify-between">
-                  <span className="text-xs font-medium text-[#0B1F33]">मराठी - Marathi (mr)</span>
-                  <span className="text-xs text-[#64748B]">Translation review pending</span>
-                </div>
-              </div>
-            </div>
+            <ul className="space-y-3 rounded-2xl border border-[#D8E2EA] bg-white p-6 shadow-sm">
+              {SUPPORTED_LANGUAGES.map((l) => (
+                <li key={l.code} className="flex items-center justify-between rounded-xl bg-[#F8FAFC] p-3">
+                  <span className="flex items-center gap-2 text-xs font-medium text-[#0B1F33]">
+                    <Globe className="h-4 w-4 text-[#0E7490]" aria-hidden="true" />
+                    {l.nativeName} ({t(`common.langName.${l.code}`)})
+                  </span>
+                  <span className="text-xs text-[#64748B]">
+                    {l.code === "en" ? t("landing.langSource") : t("landing.langReview")}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
-        {/* 5. CALL TO ACTION SECTION */}
-        <section className="px-4 sm:px-8 max-w-7xl mx-auto pb-16">
-          <div className="bg-gradient-to-br from-[#0B1F33] to-[#132E4A] rounded-3xl p-8 sm:p-14 text-center text-white space-y-6">
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Try the MVP
-            </h2>
-            <p className="text-xs sm:text-sm text-[#CBD5E1] max-w-xl mx-auto leading-relaxed">
-              Explore the demo with a dummy account. Some features are still being rebuilt and say so.
-            </p>
-            <div className="flex justify-center gap-4 pt-2">
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-8">
+          <div className="space-y-6 rounded-3xl bg-gradient-to-br from-[#0B1F33] to-[#132E4A] p-8 text-center text-white sm:p-14">
+            <h2 className="text-2xl font-extrabold tracking-tight sm:text-4xl">{t("landing.ctaTitle")}</h2>
+            <p className="mx-auto max-w-xl text-xs leading-relaxed text-[#CBD5E1] sm:text-sm">{t("landing.ctaBody")}</p>
+            <div className="flex flex-wrap justify-center gap-4 pt-2">
               <Link href="/onboarding">
-                <Button size="lg" variant="teal">
-                  Start Multi-Step Onboarding
-                </Button>
+                <Button size="lg" variant="teal">{t("landing.ctaStart")}</Button>
               </Link>
               <Link href="/dashboard">
                 <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
-                  Launch Dashboard
+                  {t("landing.ctaDashboard")}
                 </Button>
               </Link>
             </div>

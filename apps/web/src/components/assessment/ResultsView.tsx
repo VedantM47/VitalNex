@@ -20,6 +20,7 @@ import { BandBadge } from "./BandBadge";
 import { WhatIfPanel } from "./WhatIfPanel";
 import { api } from "../../lib/api-client";
 import { useTranslation } from "../../lib/i18n";
+import { suggestedSpecialty } from "../../lib/care";
 import {
   DISEASES,
   fmt,
@@ -244,6 +245,9 @@ export function ResultsView({
   const { t } = useTranslation();
   const { results } = response;
   const anyFactors = DISEASES.some((d) => (results[d]?.top_factors?.length ?? 0) > 0);
+  // "See a doctor soon": link to Care Connect with the specialty of the highest-band condition.
+  const specialty = response.next_step === "see_doctor_soon" ? suggestedSpecialty(results, DISEASES) : null;
+  const careHref = specialty ? `/care-connect?specialty=${specialty}` : "/care-connect";
 
   return (
     <div className="space-y-6">
@@ -253,6 +257,17 @@ export function ResultsView({
       </div>
 
       <NextStepBanner step={response.next_step} />
+
+      {specialty && (
+        <div className="flex flex-col gap-3 rounded-2xl border border-[#0E7490]/40 bg-[#0E7490]/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-[#0F172A]">{t("results.careSuggestBody")}</p>
+          <Link href={careHref} className="shrink-0">
+            <Button variant="teal" leftIcon={<Stethoscope className="h-4 w-4" />}>
+              {fmt(t("results.careSuggest"), { specialty: t(`care.specialty.${specialty}`) })}
+            </Button>
+          </Link>
+        </div>
+      )}
 
       {response.queued_for_review && (
         <p className="flex items-center gap-2 rounded-2xl border border-[#0E7490]/40 bg-[#0E7490]/10 p-4 text-sm font-semibold text-[#0B1F33]">
@@ -382,7 +397,7 @@ export function ResultsView({
         <Link href="/history">
           <Button variant="outline">{t("results.toHistory")}</Button>
         </Link>
-        <Link href="/care-connect">
+        <Link href={careHref}>
           <Button variant="outline" leftIcon={<Stethoscope className="h-4 w-4" />}>
             {t("results.bookDoctor")}
           </Button>

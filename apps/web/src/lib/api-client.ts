@@ -173,9 +173,18 @@ export const api = {
       body: JSON.stringify({ audio_base64: audioBase64, language }),
     }),
 
-  // Reports (PDF rebuilt in P9)
+  // Reports: saved screenings and the printable PDF (bands only, D-10)
   getReports: () => fetchApi<any[]>("/api/v1/reports"),
-  getReportPdfUrl: (assessmentId: string) => `${API_BASE}/api/v1/reports/${assessmentId}/pdf`,
+  downloadReportPdf: async (assessmentId: string, lang: Lang): Promise<{ blob: Blob; filename: string }> => {
+    const res = await fetch(
+      `${API_BASE}/api/v1/reports/${encodeURIComponent(assessmentId)}/pdf?lang=${encodeURIComponent(lang)}`,
+      { headers: await authHeader() },
+    );
+    if (!res.ok) throw new ApiError(res.status, res.statusText);
+    const cd = res.headers.get("Content-Disposition") || "";
+    const m = /filename="([^"]+)"/.exec(cd);
+    return { blob: await res.blob(), filename: m ? m[1] : `vitalnex-report-${lang}.pdf` };
+  },
 
   // Model registry & governance
   getModels: () => fetchApi<any[]>("/api/v1/models"),

@@ -1,0 +1,88 @@
+{
+  "_review": "approved",
+  "_source": "PDF report wording. Keys under 'from web' are copied from apps/web/src/messages; keep both in sync.",
+  "condition": {
+    "diabetes": "Diabetes or prediabetes",
+    "heart": "Heart disease or heart attack",
+    "stroke": "Stroke"
+  },
+  "condition_short": {
+    "diabetes": "diabetes or prediabetes",
+    "heart": "heart disease or a heart attack",
+    "stroke": "a stroke"
+  },
+  "band": {
+    "low": "Low",
+    "moderate": "Moderate",
+    "high": "High"
+  },
+  "similar": {
+    "low": "Your answers are less similar to people who have been told they have {condition}.",
+    "moderate": "Your answers are somewhat similar to people who have been told they have {condition}.",
+    "high": "Your answers are similar to people who have been told they have {condition}."
+  },
+  "not_confident": "Not confident — see a doctor",
+  "not_confident_body": "VITALNEX is not confident about your answers for this condition, so no level is shown. Please see a doctor.",
+  "next_steps": {
+    "emergency": {
+      "title": "Emergency: call 108 / 112 now",
+      "body": "Emergency symptoms were reported."
+    },
+    "correct_inputs": {
+      "title": "Please correct your answers",
+      "body": "Some answers do not look possible."
+    },
+    "not_confident": {
+      "title": "VITALNEX is not confident for you. Please see a doctor.",
+      "body": "For at least one condition the screening could not give a confident level."
+    },
+    "see_doctor_soon": {
+      "title": "See a doctor soon (within 2 weeks)",
+      "body": "At least one condition is at the High level. A doctor can check this properly."
+    },
+    "discuss_next_checkup": {
+      "title": "Discuss this at your next check-up",
+      "body": "At least one condition is at the Moderate level."
+    },
+    "routine_checkup": {
+      "title": "Keep up regular check-ups",
+      "body": "All three conditions are at the Low level. Low does not mean no risk."
+    }
+  },
+  "notes": {
+    "age_under_40_less_reliable": "Results are less reliable for people under 40. In testing, VITALNEX missed more cases in younger people than in older people.",
+    "sex_not_stated_higher_band_used": "You chose not to say your sex, so VITALNEX checked both and shows the higher level for each condition.",
+    "no_clinician_review_without_consent": "This result would normally be sent for clinician review, but sharing with clinicians is turned off in your consent settings."
+  },
+  "queued": "A clinician will review this result.",
+  "disclaimer": "VITALNEX is a screening and care-navigation prototype. It does not diagnose disease, does not recommend medicines, and does not replace a qualified healthcare professional. If you have chest pain, signs of stroke or severe breathlessness, call 108 / 112 now.",
+  "emergency_no_scores": "No screening levels are shown, because these symptoms need urgent care.",
+  "title": "VITALNEX screening report",
+  "subtitle": "Diabetes or prediabetes, heart disease and stroke — screening summary, not a diagnosis.",
+  "name": "Name",
+  "name_missing": "Not given",
+  "date": "Date of screening",
+  "generated": "Report created",
+  "reference": "Reference",
+  "demo_record": "Demo record (dummy account, not a real patient)",
+  "results_title": "Results by condition",
+  "level": "Level",
+  "factors": "Main factors",
+  "no_factors": "No factors were found for this condition.",
+  "no_results": "No screening levels were made for this record.",
+  "next_step": "Next step",
+  "clinician": "Clinician review",
+  "reviewed": "Reviewed by a clinician",
+  "review_pending": "Waiting for clinician review",
+  "not_reviewed": "This result was not sent for clinician review.",
+  "clinician_level": "Clinician's level",
+  "clinician_note": "Clinician note",
+  "model_versions": "Model versions",
+  "limitations": "Limitations",
+  "limit_inputs": "This screening uses only the answers you gave. It does not use blood tests, an ECG or a physical examination.",
+  "limit_data": "The models learned from a large US health survey (BRFSS). They may work less well for people in India.",
+  "limit_low": "Low does not mean no risk. In testing, for every 100 people who had been told they have {condition}, about {n} were shown as Low.",
+  "notice_title": "This is not a diagnosis",
+  "trust": "How VITALNEX works, how accurate it is and its limits (Trust Passport):",
+  "page": "Page {n}"
+}

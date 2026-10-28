@@ -7,12 +7,14 @@ email-validator==2.3.0
 pydantic-settings==2.13.1
 httpx==0.28.1
 pytest==8.2.2
+pypdf==6.14.2  # tests only: reads the generated PDF reports
 pandas==2.2.3
 numpy==2.2.0
 python-multipart==0.0.32
 PyJWT[crypto]==2.12.1
 scikit-learn==1.6.1
-reportlab==4.2.5
+reportlab==4.4.10
+uharfbuzz==0.53.7  # Devanagari shaping for HI/MR PDF reports (reportlab >= 4.3 uses it)
 supabase==2.33.0
 qrcode[pil]==8.0
 pillow==11.0.0

@@ -1,280 +1,273 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+// Care Connect (SPEC §1.2 F9): synthetic demo doctors and slots from Supabase via the API.
+// Filter by specialty, book a free slot, see and cancel upcoming bookings. The results page links
+// here with ?specialty=<code> when the next step is "see a doctor soon".
+// Nothing here is a real doctor or a real appointment, and the page says so.
+
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Stethoscope,
-  MapPin,
-  Calendar,
-  Video,
-  Languages,
-  Clock,
-  Star,
-  Search,
-  CheckCircle2,
-  ChevronRight,
-  Filter,
-} from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Calendar, Clock, Languages, MapPin } from "lucide-react";
 import { AppShell } from "../../components/layout/AppShell";
-import { Card } from "../../components/ui/Card";
+import { Card, CardHeader } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
-import { Input } from "../../components/ui/Input";
 import { Select } from "../../components/ui/Select";
-import { StatusBadge, DemoBadge } from "../../components/ui/StatusBadge";
-import { api } from "../../lib/api-client";
+import { Alert } from "../../components/ui/Alert";
+import { DemoBadge } from "../../components/ui/StatusBadge";
+import { AppointmentCard, isUpcoming, type Appointment } from "../../components/care/AppointmentCard";
+import { ApiError, api } from "../../lib/api-client";
 import { useTranslation } from "../../lib/i18n";
+import { fmt } from "../../lib/assessment";
+import { dateTime } from "../../lib/format";
+import { SPECIALTIES } from "../../lib/care";
 
-export default function CareConnectPage() {
-  const { t } = useTranslation();
-  const [specialtyFilter, setSpecialtyFilter] = useState("all");
-  const [localityFilter, setLocalityFilter] = useState("all");
-  const [languageFilter, setLanguageFilter] = useState("all");
-  const [modeFilter, setModeFilter] = useState("all");
-  const [doctors, setDoctors] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedDoctor, setSelectedDoctor] = useState<any | null>(null);
-  const [bookingSuccess, setBookingSuccess] = useState(false);
+interface Slot {
+  id: string;
+  starts_at: string;
+  ends_at: string;
+}
 
-  useEffect(() => {
-    async function loadDoctors() {
-      setIsLoading(true);
-      try {
-        const data = await api.getDoctors();
-        if (data && data.length > 0) {
-          setDoctors(data);
-        }
-      } catch {
-        // Fallback default demo doctors
-      } finally {
-        setIsLoading(false);
-      }
+interface Doctor {
+  id: string;
+  full_name: string;
+  specialization: string;
+  specialization_code: string;
+  years_of_experience: number;
+  languages_spoken: string[];
+  is_demo: boolean;
+  locations: { facility_name: string; locality: string; city: string }[];
+  next_slots: Slot[];
+}
+
+type Notice = { kind: "success" | "error"; text: string } | null;
+
+function CareConnect() {
+  const { t, language } = useTranslation();
+  const params = useSearchParams();
+  const fromUrl = params.get("specialty");
+  const preselected = SPECIALTIES.find((s) => s === fromUrl) ?? null;
+
+  const [specialty, setSpecialty] = useState<string>(preselected ?? "all");
+  const [doctors, setDoctors] = useState<Doctor[] | null | "error">(null);
+  const [appointments, setAppointments] = useState<Appointment[] | "error">([]);
+  const [chosen, setChosen] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState<string | null>(null);
+  const [notice, setNotice] = useState<Notice>(null);
+
+  const specialtyLabel = (code: string, fallback = code) => {
+    const key = `care.specialty.${code}`;
+    return t(key) === key ? fallback : t(key);
+  };
+
+  const loadDoctors = useCallback(async (code: string) => {
+    try {
+      return (await api.getDoctors(code === "all" ? undefined : { specialization: code })) as Doctor[];
+    } catch {
+      return "error" as const;
     }
-    loadDoctors();
   }, []);
 
-  const filteredDoctors = doctors.filter((doc) => {
-    if (specialtyFilter !== "all" && !doc.specialization.toLowerCase().includes(specialtyFilter.toLowerCase())) {
-      return false;
+  const loadAppointments = useCallback(async () => {
+    try {
+      return (await api.getAppointments()) as Appointment[];
+    } catch {
+      return "error" as const;
     }
-    if (localityFilter !== "all" && !doc.locations.some((l: any) => l.locality.toLowerCase().includes(localityFilter.toLowerCase()))) {
-      return false;
-    }
-    if (languageFilter !== "all" && !doc.languages_spoken.some((l: string) => l.toLowerCase() === languageFilter.toLowerCase())) {
-      return false;
-    }
-    if (modeFilter !== "all" && !doc.consultation_modes.includes(modeFilter)) {
-      return false;
-    }
-    return true;
-  });
+  }, []);
 
-  const [bookingError, setBookingError] = useState<string | null>(null);
-  const [bookedTime, setBookedTime] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    loadDoctors(specialty).then((d) => active && setDoctors(d));
+    return () => {
+      active = false;
+    };
+  }, [specialty, loadDoctors]);
 
-  // Books the doctor's earliest free slot (synthetic demo slots). Full slot picker: P9.
-  const handleBook = async (doc: any) => {
-    setBookingSuccess(false);
-    setBookingError(null);
-    const slot = doc.next_slots?.[0];
-    if (!slot) {
-      setSelectedDoctor(doc);
-      setBookingError(t("care.noSlots"));
-      return;
-    }
+  useEffect(() => {
+    let active = true;
+    loadAppointments().then((a) => active && setAppointments(a));
+    return () => {
+      active = false;
+    };
+  }, [loadAppointments]);
+
+  const refresh = async () => {
+    const [d, a] = await Promise.all([loadDoctors(specialty), loadAppointments()]);
+    setDoctors(d);
+    setAppointments(a);
+  };
+
+  const book = async (doc: Doctor) => {
+    const slotId = chosen[doc.id];
+    const slot = doc.next_slots.find((s) => s.id === slotId);
+    if (!slot) return;
+    setBusy(doc.id);
+    setNotice(null);
     try {
       const apt = await api.createAppointment({ slot_id: slot.id, consultation_type: "in_person" });
-      setSelectedDoctor(doc);
-      setBookedTime(new Date(apt.appointment_time).toLocaleString());
-      setBookingSuccess(true);
-      // Refresh free slots so the booked one disappears.
-      setDoctors(await api.getDoctors());
+      setNotice({
+        kind: "success",
+        text: fmt(t("care.booked"), { doctor: doc.full_name, time: dateTime(apt.appointment_time, language) ?? "" }),
+      });
+      setChosen((c) => ({ ...c, [doc.id]: "" }));
     } catch (err) {
-      setSelectedDoctor(doc);
-      setBookingError(`${t("care.bookingFailed")} ${err instanceof Error ? err.message : ""}`);
+      const taken = err instanceof ApiError && err.status === 409;
+      setNotice({ kind: "error", text: t(taken ? "care.slotTaken" : "care.bookingFailed") });
+    } finally {
+      setBusy(null);
+      await refresh();
     }
   };
 
+  const cancel = async (id: string) => {
+    if (!window.confirm(t("appt.confirmCancel"))) return;
+    setBusy(id);
+    setNotice(null);
+    try {
+      await api.updateAppointment(id, { status: "cancelled" });
+      setNotice({ kind: "success", text: t("appt.cancelled") });
+    } catch {
+      setNotice({ kind: "error", text: t("appt.cancelFailed") });
+    } finally {
+      setBusy(null);
+      await refresh();
+    }
+  };
+
+  const upcoming = appointments === "error" ? [] : appointments.filter((a) => isUpcoming(a));
+
   return (
-    <AppShell>
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8E2EA] pb-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B1F33]">
-                {t("care.title")}
-              </h1>
-              <DemoBadge label="Pune Regional Network" />
-            </div>
-            <p className="text-xs sm:text-sm text-[#475569]">
-              {t("care.subtitle")}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-[#64748B]">Transparent Matching — Zero Sponsored Rankings</span>
-          </div>
+    <div className="space-y-6">
+      <div className="space-y-2 border-b border-[#D8E2EA] pb-6">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h1 className="text-2xl font-extrabold text-[#0B1F33] sm:text-3xl">{t("care.title")}</h1>
+          <DemoBadge label={t("care.demoDoctor")} />
         </div>
+        <p className="text-xs text-[#475569] sm:text-sm">{t("care.subtitle")}</p>
+      </div>
 
-        {bookingError && (
-          <p role="alert" className="p-4 rounded-2xl border border-[#B42318]/20 bg-[#B42318]/5 text-xs text-[#B42318]">
-            {bookingError}
-          </p>
-        )}
+      <Alert kind="warning">{t("care.demoNotice")}</Alert>
+      <p className="text-xs font-semibold text-[#991B1B]">{t("care.emergency")}</p>
 
-        {bookingSuccess && selectedDoctor && (
-          <div className="p-4 bg-[#F0FDF4] rounded-2xl border border-[#0F766E]/30 flex items-center justify-between text-xs text-[#0F766E]">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 shrink-0" />
-              <span>
-                {t("care.bookedWith")} {selectedDoctor.full_name} — {bookedTime}
-              </span>
-            </div>
-            <Link href="/appointments" className="underline font-semibold">
-              View Appointments
+      {notice && <Alert kind={notice.kind}>{notice.text}</Alert>}
+
+      <Card className="space-y-3">
+        <CardHeader
+          title={t("care.upcomingTitle")}
+          action={
+            <Link href="/appointments" className="text-xs font-semibold text-[#0E7490] hover:underline">
+              {t("care.viewAll")}
             </Link>
+          }
+        />
+        {appointments === "error" ? (
+          <Alert kind="error">{t("appt.loadFailed")}</Alert>
+        ) : upcoming.length === 0 ? (
+          <p className="text-sm text-[#475569]">{t("care.upcomingEmpty")}</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {upcoming.map((a) => (
+              <AppointmentCard key={a.id} appointment={a} onCancel={cancel} busy={busy === a.id} compact />
+            ))}
           </div>
         )}
+      </Card>
 
-        {/* Filter Controls Bar */}
-        <div className="p-5 bg-white rounded-2xl border border-[#D8E2EA] space-y-4 shadow-xs">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#0B1F33] uppercase tracking-wider">
-            <Filter className="w-4 h-4 text-[#0E7490]" />
-            <span>Search & Filter Pune Specialists</span>
-          </div>
+      <div className="max-w-sm space-y-2">
+        <Select
+          label={t("care.filterSpecialty")}
+          value={specialty}
+          onChange={(e) => setSpecialty(e.target.value)}
+          options={[
+            { value: "all", label: t("care.allSpecialties") },
+            ...SPECIALTIES.map((s) => ({ value: s, label: specialtyLabel(s) })),
+          ]}
+        />
+        {preselected && specialty === preselected && (
+          <p className="text-xs text-[#0E7490]">{fmt(t("care.suggested"), { specialty: specialtyLabel(preselected) })}</p>
+        )}
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Select
-              label={t("care.filterSpecialty")}
-              value={specialtyFilter}
-              onChange={(e) => setSpecialtyFilter(e.target.value)}
-              options={[
-                { value: "all", label: "All Specializations" },
-                { value: "cardiology", label: "Cardiology & Heart Health" },
-                { value: "endocrinology", label: "Endocrinology & Diabetes" },
-                { value: "internal", label: "General & Internal Medicine" },
-                { value: "lifestyle", label: "Preventive & Lifestyle Medicine" },
-              ]}
-            />
-            <Select
-              label={t("care.filterLocality")}
-              value={localityFilter}
-              onChange={(e) => setLocalityFilter(e.target.value)}
-              options={[
-                { value: "all", label: "All Pune Localities" },
-                { value: "kothrud", label: "Kothrud (West Pune)" },
-                { value: "baner", label: "Baner / Balewadi" },
-                { value: "shivajinagar", label: "Shivajinagar / Central" },
-                { value: "pcmc", label: "PCMC / Akurdi" },
-              ]}
-            />
-            <Select
-              label={t("care.filterLanguage")}
-              value={languageFilter}
-              onChange={(e) => setLanguageFilter(e.target.value)}
-              options={[
-                { value: "all", label: "Any Spoken Language" },
-                { value: "marathi", label: "मराठी (Marathi)" },
-                { value: "hindi", label: "हिन्दी (Hindi)" },
-                { value: "english", label: "English" },
-              ]}
-            />
-            <Select
-              label={t("care.filterMode")}
-              value={modeFilter}
-              onChange={(e) => setModeFilter(e.target.value)}
-              options={[
-                { value: "all", label: "All Consultation Modes" },
-                { value: "video", label: "Video E-Connect" },
-                { value: "in_person", label: "In-Person Clinic Visit" },
-              ]}
-            />
-          </div>
-        </div>
-
-        {/* Doctor Results Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredDoctors.map((doc) => {
-            const primaryLocation = doc.locations?.[0] || {
-              facility_name: "Location not listed",
-              locality: "",
-              distance_estimate_km: null,
-            };
-
+      {doctors === "error" ? (
+        <Alert kind="error">{t("care.loadFailed")}</Alert>
+      ) : doctors === null ? (
+        <p className="text-sm text-[#475569]">{t("common.loading")}</p>
+      ) : doctors.length === 0 ? (
+        <p className="text-sm text-[#475569]">{t("care.empty")}</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {doctors.map((doc) => {
+            const loc = doc.locations[0];
             return (
-              <Card key={doc.id} className="p-6 space-y-5 flex flex-col justify-between hover:border-[#0E7490] transition-colors">
-                <div className="space-y-4">
-                  {/* Doctor Card Top */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-[#0B1F33] text-[#22C1DC] flex items-center justify-center font-bold text-base shrink-0">
-                        {doc.full_name.replace("Dr. ", "").charAt(0)}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-base text-[#0B1F33]">{doc.full_name}</h3>
-                          <DemoBadge label="Demo Clinician" />
-                        </div>
-                        <p className="text-xs font-semibold text-[#0E7490] mt-0.5">{doc.specialization}</p>
-                        <p className="text-[11px] text-[#64748B]">License: {doc.medical_license_number}</p>
-                      </div>
-                    </div>
+              <Card key={doc.id} className="flex flex-col justify-between space-y-4">
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-base font-bold text-[#0B1F33]">{doc.full_name}</h2>
+                    {doc.is_demo && <DemoBadge label={t("care.demoDoctor")} />}
                   </div>
-
-                  {/* Bio */}
-                  <p className="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    {doc.bio}
+                  <p className="text-sm font-semibold text-[#0E7490]">
+                    {specialtyLabel(doc.specialization_code, doc.specialization)}
                   </p>
-
-                  {/* Badges / Metrics Row */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 text-xs border-t border-[#F1F5F9]">
-                    <div className="flex items-center gap-1.5 text-[#475569]">
-                      <MapPin className="w-3.5 h-3.5 text-[#0E7490] shrink-0" />
-                      <span className="truncate">{primaryLocation.locality}{primaryLocation.distance_estimate_km != null ? ` (${primaryLocation.distance_estimate_km} km)` : ""}</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-[#475569]">
-                      <Clock className="w-3.5 h-3.5 text-[#0E7490] shrink-0" />
-                      <span>{doc.years_of_experience} yrs exp.</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-[#475569]">
-                      <Languages className="w-3.5 h-3.5 text-[#0E7490] shrink-0" />
-                      <span className="truncate">{doc.languages_spoken.join(", ")}</span>
-                    </div>
-                  </div>
-
-                  {/* Transparent Matching Criteria */}
-                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#D8E2EA] flex flex-wrap gap-2 text-[11px]">
-                    <span className="inline-flex items-center gap-1 text-[#0F766E] font-medium">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Matches Your Risk Profile
-                    </span>
-                    <span className="text-[#64748B]">•</span>
-                    <span className="text-[#475569]">Available this week</span>
-                    <span className="text-[#64748B]">•</span>
-                    <span className="text-[#475569]">Video & In-Person</span>
-                  </div>
+                  <ul className="space-y-1 text-sm text-[#475569]">
+                    <li className="flex items-center gap-1.5">
+                      <Clock className="h-4 w-4 text-[#0E7490]" aria-hidden="true" />
+                      {fmt(t("care.experience"), { n: doc.years_of_experience })}
+                    </li>
+                    <li className="flex items-center gap-1.5">
+                      <Languages className="h-4 w-4 text-[#0E7490]" aria-hidden="true" />
+                      {fmt(t("care.languages"), { list: doc.languages_spoken.join(", ") })}
+                    </li>
+                    {loc && (
+                      <li className="flex items-center gap-1.5">
+                        <MapPin className="h-4 w-4 text-[#0E7490]" aria-hidden="true" />
+                        {loc.facility_name}, {loc.locality}
+                      </li>
+                    )}
+                  </ul>
                 </div>
-
-                {/* Card Action */}
-                <div className="pt-2 border-t border-[#F1F5F9] flex items-center justify-between">
-                  <div className="text-xs text-[#64748B]">
-                    Facility: <strong className="text-[#0B1F33]">{primaryLocation.facility_name}</strong>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="primary"
-                    onClick={() => handleBook(doc)}
-                    leftIcon={<Calendar className="w-3.5 h-3.5" />}
-                  >
-                    {t("care.btnBook")}
-                  </Button>
+                <div className="space-y-2 border-t border-[#F1F5F9] pt-3">
+                  {doc.next_slots.length === 0 ? (
+                    <p className="text-sm text-[#475569]">{t("care.noSlots")}</p>
+                  ) : (
+                    <>
+                      <Select
+                        label={t("care.freeSlots")}
+                        value={chosen[doc.id] ?? ""}
+                        onChange={(e) => setChosen((c) => ({ ...c, [doc.id]: e.target.value }))}
+                        options={[
+                          { value: "", label: "—" },
+                          ...doc.next_slots.map((s) => ({ value: s.id, label: dateTime(s.starts_at, language) ?? s.starts_at })),
+                        ]}
+                      />
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        disabled={!chosen[doc.id]}
+                        isLoading={busy === doc.id}
+                        onClick={() => book(doc)}
+                        leftIcon={<Calendar className="h-3.5 w-3.5" />}
+                      >
+                        {t("care.book")}
+                      </Button>
+                    </>
+                  )}
                 </div>
               </Card>
             );
           })}
         </div>
-      </div>
+      )}
+    </div>
+  );
+}
+
+export default function CareConnectPage() {
+  return (
+    <AppShell>
+      <Suspense fallback={null}>
+        <CareConnect />
+      </Suspense>
     </AppShell>
   );
 }

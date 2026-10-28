@@ -159,6 +159,7 @@ class AppointmentService:
                     doctor_id=r["doctor_id"],
                     doctor_name=doc.get("full_name", ""),
                     specialization=titles.get(doc.get("specialization"), doc.get("specialization", "")),
+                    specialization_code=doc.get("specialization"),
                     appointment_date=start.strftime("%Y-%m-%d"),
                     start_time=start.strftime("%H:%M"),
                     end_time=end.strftime("%H:%M") if end else "",

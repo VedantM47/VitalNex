@@ -31,14 +31,6 @@
     "adminDashboard": "Admin overview",
     "adminGovernance": "Governance & audit"
   },
-  "hero": {
-    "badge": "Responsible Healthcare Intelligence Platform",
-    "title": "Your health. Your intelligence. Your care — connected.",
-    "subtitle": "A human-centered clinical AI ecosystem combining transparent risk assessment, verifiable AI Trust Passports, and connected regional care.",
-    "ctaBuild": "Build Your Health Profile",
-    "ctaExplore": "Explore Intelligence Platform",
-    "demoBadge": "Demo Mode Active (Deterministic Synthetic Data)"
-  },
   "dashboard": {
     "welcome": "Good morning",
     "subtitle": "Here is your health and clinical screening overview.",
@@ -59,38 +51,42 @@
     "title": "Clinical Risk Screening",
     "subtitle": "Screening for diabetes, heart disease and stroke. This is not a diagnosis."
   },
-  "care": {
-    "title": "Care Connect",
-    "subtitle": "Transparent doctor discovery across Pune and regional healthcare hubs.",
-    "filterSpecialty": "Filter by Specialization",
-    "filterLocality": "Filter by Locality (Pune)",
-    "filterLanguage": "Spoken Language",
-    "filterMode": "Consultation Type",
-    "allSpecialties": "All Specializations",
-    "allLocalities": "All Pune Hubs",
-    "allLanguages": "All Languages",
-    "btnBook": "Schedule Consultation",
-    "demoDoctorNotice": "Demo Clinician Record (Synthetic Provider)",
-    "verifiedNotice": "Demo clinician profile (not a real doctor)",
-    "experience": "years clinical experience",
-    "rating": "Patient Satisfaction",
-    "distance": "away",
-    "bookedWith": "Appointment booked (demo) with",
-    "noSlots": "This demo doctor has no free slots in the next 14 days.",
-    "bookingFailed": "Booking failed."
-  },
   "assistant": {
-    "title": "AI Health Intelligence Assistant",
-    "subtitle": "Ask questions regarding your health metrics, screening report, or care guidance.",
-    "placeholder": "Ask about your health indicators, risk score, or doctor booking...",
-    "btnSend": "Send Message",
-    "suggestedTitle": "Suggested Inquiries",
-    "prompt1": "Explain my health profile completeness",
-    "prompt2": "What does my risk assessment mean?",
-    "prompt3": "Help me find a cardiologist in Pune",
-    "prompt4": "Explain this assessment in Marathi",
-    "prompt5": "Explain this assessment in Hindi",
-    "emergencyBanner": "If experiencing severe chest pain, shortness of breath, or emergency symptoms, immediately call 108 / 112."
+    "title": "VITALNEX assistant",
+    "subtitle": "Ask about your latest screening, diabetes, heart disease and stroke, finding a doctor, or your data.",
+    "notice": "Answers come from a fixed, reviewed library — VITALNEX does not generate medical advice.",
+    "noticeDetail": "It does not diagnose and does not recommend medicines. Your chat messages are not stored.",
+    "languageLabel": "Answer language",
+    "conversationLabel": "Conversation with the VITALNEX assistant",
+    "inputLabel": "Your question",
+    "placeholder": "Type your question…",
+    "btnSend": "Send",
+    "clear": "Clear chat",
+    "suggestedTitle": "Try asking",
+    "chips": {
+      "explain": "Explain my result",
+      "change": "What can I change?",
+      "disease": "What is prediabetes?",
+      "ai": "How does VITALNEX work?",
+      "doctor": "Find a doctor",
+      "data": "What happens to my data?"
+    },
+    "welcome": "Hello! I can explain your latest screening result, suggest general steps you could take, answer common questions about diabetes, heart disease and stroke, and help you find a doctor or book an appointment.",
+    "you": "You",
+    "bot": "VITALNEX assistant",
+    "thinking": "Looking up the answer…",
+    "sources": "Source",
+    "goTo": "Go to",
+    "error": "The assistant could not be reached, so no answer is shown. If you feel unwell, call 108 / 112.",
+    "signIn": "Please sign in to use the assistant.",
+    "emergencyBanner": "Chest pain, trouble breathing, a drooping face or sudden weakness? Call 108 / 112 now.",
+    "emergencyCard": {
+      "title": "Call for emergency help now if this is happening",
+      "body": "Stroke, heart attack, chest pain and sudden weakness or numbness can be emergencies. If you or someone near you has these signs now, call 108 (ambulance) or 112, or go to the nearest emergency department.",
+      "call108": "Call 108",
+      "call112": "Call 112",
+      "answerBelow": "The answer to your question is below."
+    }
   },
   "voice": {
     "title": "Voice & Multilingual Accessibility",
@@ -102,24 +98,6 @@
     "btnStop": "Stop & Transcribe",
     "ttsPlay": "Listen to Assessment",
     "textFallback": "Switch to Text Input"
-  },
-  "onboarding": {
-    "title": "Welcome to VITALNEX",
-    "step": "Step",
-    "of": "of",
-    "step1": "Welcome & Overview",
-    "step2": "Basic Profile",
-    "step3": "Lifestyle Factors",
-    "step4": "Nutrition & Diet",
-    "step5": "Clinical Background",
-    "step6": "Regional Context",
-    "step7": "Consent & Preferences",
-    "step8": "Review & Complete",
-    "btnNext": "Continue",
-    "btnBack": "Back",
-    "btnSkip": "Skip Optional",
-    "btnFinish": "Complete Onboarding",
-    "privacyBadge": "Your data is strictly encrypted and protected by Row Level Security."
   },
   "common": {
     "save": "Save Changes",
@@ -148,7 +126,14 @@
     "reset": "Reset",
     "all": "All",
     "signInNeeded": "Please sign in again to see this page.",
-    "apiUnavailable": "The VITALNEX server is not reachable right now. Nothing is shown rather than guessed. Please try again later."
+    "apiUnavailable": "The VITALNEX server is not reachable right now. Nothing is shown rather than guessed. Please try again later.",
+    "selectLanguage": "Choose the interface language",
+    "langName": {
+      "en": "English",
+      "hi": "Hindi",
+      "mr": "Marathi"
+    },
+    "progress": "Progress"
   },
   "status": {
     "notInMvpTitle": "Not in MVP",
@@ -203,7 +188,8 @@
       "patient": "Patient",
       "doctor": "Clinician",
       "admin": "Admin"
-    }
+    },
+    "redirecting": "Opening the sign-in page…"
   },
   "reviewQueue": {
     "title": "Clinician review queue",
@@ -464,7 +450,9 @@
     },
     "newAssessment": "Start a new screening",
     "toHistory": "See my history",
-    "bookDoctor": "Find a doctor"
+    "bookDoctor": "Find a doctor",
+    "careSuggest": "Book a demo {specialty} doctor",
+    "careSuggestBody": "Your result says to see a doctor soon. Care Connect opens with this specialty pre-selected (demo doctors only)."
   },
   "whatIf": {
     "title": "What if…?",
@@ -1019,9 +1007,174 @@
   },
   "reportsPage": {
     "subtitle": "Share your record with a doctor, and see your saved screenings.",
-    "pdfLater": "Printable PDF reports are rebuilt for the new results in a later version. Until then no PDF is offered.",
     "saved": "Saved screenings",
     "openHistory": "Open my history",
-    "count": "{n} saved screenings"
+    "count": "{n} saved screenings",
+    "pdfTitle": "Printable report (PDF)",
+    "pdfIntro": "Download a PDF of a saved screening. It shows levels only, never percentages, and it is not a diagnosis.",
+    "pdfLanguage": "Report language",
+    "download": "Download PDF",
+    "downloadFailed": "Could not create the PDF."
+  },
+  "care": {
+    "title": "Care Connect",
+    "subtitle": "Find a demo doctor and book a time slot.",
+    "demoNotice": "All doctors and time slots here are synthetic demo data. They are not real doctors, and no real appointment is made.",
+    "demoDoctor": "Demo doctor (synthetic)",
+    "filterSpecialty": "Specialty",
+    "allSpecialties": "All specialties",
+    "specialty": {
+      "cardiology": "Cardiology (heart)",
+      "endocrinology": "Endocrinology (diabetes and hormones)",
+      "neurology": "Neurology (brain and stroke)"
+    },
+    "suggested": "Pre-selected from your screening result: {specialty}. You can change it.",
+    "experience": "{n} years' experience",
+    "languages": "Languages: {list}",
+    "freeSlots": "Choose a free slot",
+    "noSlots": "No free slots in the next 14 days.",
+    "book": "Book this slot",
+    "booked": "Booked (demo) with {doctor} on {time}.",
+    "bookingFailed": "Booking failed. Please try again.",
+    "slotTaken": "That slot is no longer free. Please choose another one.",
+    "loadFailed": "Could not load the demo doctors.",
+    "empty": "No demo doctors match this filter.",
+    "upcomingTitle": "Your upcoming appointments",
+    "upcomingEmpty": "You have no upcoming appointments.",
+    "viewAll": "See all appointments",
+    "emergency": "This is not for emergencies. If you have chest pain, signs of stroke or severe breathlessness, call 108 / 112 now."
+  },
+  "appt": {
+    "subtitle": "Your demo appointments with demo doctors.",
+    "demo": "Demo appointments",
+    "bookNew": "Book an appointment",
+    "tabs": {
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "cancelled": "Cancelled"
+    },
+    "empty": {
+      "upcoming": "No upcoming appointments.",
+      "past": "No past appointments.",
+      "cancelled": "No cancelled appointments."
+    },
+    "status": {
+      "scheduled": "Booked",
+      "confirmed": "Confirmed",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "type": {
+      "in_person": "In-person visit",
+      "audio": "Phone call"
+    },
+    "demoClinic": "Demo clinic",
+    "reason": "Your reason",
+    "doctorNotes": "Doctor's notes",
+    "reference": "Reference: {id}",
+    "cancel": "Cancel appointment",
+    "confirmCancel": "Cancel this appointment?",
+    "cancelled": "Appointment cancelled.",
+    "cancelFailed": "Could not cancel the appointment.",
+    "loadFailed": "Could not load your appointments."
+  },
+  "meta": {
+    "title": "VITALNEX — health screening and care navigation",
+    "description": "Screening for diabetes, heart disease and stroke in English, Hindi and Marathi. Not a diagnosis."
+  },
+  "shell": {
+    "closeMenu": "Close menu",
+    "openMenu": "Open navigation menu",
+    "home": "VITALNEX home",
+    "tag": "Screening and care navigation",
+    "demoEnv": "Demo environment",
+    "section": {
+      "patient": "Screening",
+      "care": "Care and records",
+      "doctor": "Clinician portal",
+      "admin": "Governance"
+    },
+    "footer": "VITALNEX — screening and care-navigation prototype. Not a diagnosis. Emergency: 108 / 112 (India)."
+  },
+  "footer": {
+    "about": "A screening and care-navigation aid. MVP with demo accounts only.",
+    "product": "Screening",
+    "screening": "Risk screening",
+    "trust": "AI Trust Passport",
+    "profile": "Health profile",
+    "care": "Care Connect (demo doctors)",
+    "governance": "Governance",
+    "audit": "Governance and audit",
+    "privacy": "Privacy",
+    "settings": "Settings and my data",
+    "disclaimerLabel": "Not a diagnosis:",
+    "disclaimer": "VITALNEX is a research and decision-support prototype. It does not diagnose disease, does not recommend medicines and does not replace a qualified doctor. In an emergency call 108 / 112 (India).",
+    "copyright": "© {year} VITALNEX."
+  },
+  "landing": {
+    "navFeatures": "What it does",
+    "navTrust": "Trust Passport",
+    "navLanguages": "Languages",
+    "open": "Open VITALNEX",
+    "badge": "Research prototype",
+    "kicker": "Screening and care navigation",
+    "title": "Know what kind of care to seek, and how soon.",
+    "subtitle": "VITALNEX compares your answers with people who have been told they have diabetes or prediabetes, heart disease or stroke, explains the main factors and suggests a next step. It is not a diagnosis.",
+    "ctaStart": "Get started",
+    "ctaDashboard": "Open my dashboard",
+    "point1": "Screening, not diagnosis",
+    "point2": "Clinician review for high and uncertain results",
+    "point3": "English, Hindi and Marathi",
+    "isTitle": "What VITALNEX is",
+    "is1": "A screening and care-navigation aid for diabetes, heart disease and stroke.",
+    "is2": "Tells you what kind of care to seek and how soon.",
+    "is3": "Available in English, Hindi and Marathi.",
+    "notTitle": "What it is not",
+    "not1": "Not a diagnosis and not a replacement for a doctor.",
+    "not2": "Never names or doses medicines.",
+    "not3": "Not validated on Indian patients. Accounts are demo accounts.",
+    "emergency": "Emergency? Call 108 / 112 now.",
+    "status": "Status: MVP with dummy accounts only.",
+    "featuresKicker": "What it does",
+    "featuresTitle": "Screening, explanations and next steps",
+    "featuresIntro": "Every number shown comes from the models or the database. Anything that is not available says so.",
+    "f1Title": "Screening for three conditions",
+    "f1Body": "14 questions you can answer yourself. Each condition gets a level (Low, Moderate or High) or “not confident — see a doctor”, with the main factors and a next step.",
+    "f2Title": "AI Trust Passport",
+    "f2Body": "A public page that shows how the models were built, how well they work, where they fail and how often they are not confident.",
+    "f3Title": "Care Connect",
+    "f3Body": "Book a time slot with a demo doctor by specialty. All doctors are synthetic.",
+    "trustKicker": "Transparency",
+    "trustTitle": "No black boxes",
+    "trustBody": "Health predictions should not be trusted on numbers alone. The Trust Passport explains how the models were built, how well they work and where they fail. Every number on it comes from the model cards.",
+    "t1Title": "Main factors",
+    "t1Body": "The answers that mattered most for each result, in plain language.",
+    "t2Title": "Fairness checks",
+    "t2Body": "How results differ across groups, with the gaps reported openly.",
+    "t3Title": "Knowing when it is unsure",
+    "t3Body": "When the model is not confident, it shows no level and asks you to see a doctor.",
+    "t4Title": "Safety rules first",
+    "t4Body": "Emergency symptoms always override everything and show 108 / 112.",
+    "trustCta": "Open the Trust Passport",
+    "langKicker": "Languages",
+    "langTitle": "English, Hindi and Marathi",
+    "langBody": "Hindi and Marathi medical wording is still waiting for review by a native-speaking clinician.",
+    "langSource": "Source language",
+    "langReview": "Wording review pending",
+    "ctaTitle": "Try the demo",
+    "ctaBody": "Use a dummy account. Please do not enter real personal health data."
+  },
+  "onboarding": {
+    "title": "Welcome to VITALNEX",
+    "intro": "Before your first screening, please read what VITALNEX is and is not, and choose what you agree to.",
+    "step1": "1. Choose your language",
+    "step2": "2. Choose what you agree to",
+    "step2Body": "Processing your answers is required for a screening. Keeping your history, clinician review and anonymous statistics are optional, and you can turn each one off at any time in My data.",
+    "step2Button": "Open My data (consent)",
+    "step3": "3. Fill in your health profile",
+    "step3Body": "Your answers are used only for the screening. Questions you do not answer stay empty; nothing is filled in for you.",
+    "step3Button": "Go to my health profile",
+    "skip": "Go to my dashboard"
   }
 }
