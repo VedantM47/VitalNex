@@ -1,0 +1,554 @@
+{
+  "disease": "heart",
+  "version": "heart-v1.0.0",
+  "created_at": "2026-10-28T12:24:51+00:00",
+  "data_hash": "2f3939868b6b6653d84458193a2c94280921ff5a3b2849adc18b1b307be55cbc",
+  "data_file": "data/processed/brfss2015.parquet",
+  "target": "HeartDiseaseorAttack",
+  "features": [
+    "Age",
+    "Sex",
+    "BMI",
+    "HighBP",
+    "HighChol",
+    "Smoker",
+    "PhysActivity",
+    "Fruits",
+    "Veggies",
+    "HvyAlcoholConsump",
+    "GenHlth",
+    "MentHlth",
+    "PhysHlth",
+    "DiffWalk"
+  ],
+  "fairness_only_columns": [
+    "Income",
+    "Education",
+    "AnyHealthcare",
+    "NoDocbcCost",
+    "CholCheck"
+  ],
+  "split_sizes": {
+    "train": 152208,
+    "cal_a": 25368,
+    "cal_b": 25368,
+    "test": 50736
+  },
+  "libraries": {
+    "python": "3.13.0",
+    "scikit-learn": "1.6.1",
+    "lightgbm": "4.7.0",
+    "torch": "2.6.0+cpu",
+    "shap": "0.51.0",
+    "fairlearn": "0.15.0",
+    "numpy": "2.2.0",
+    "pandas": "2.2.3"
+  },
+  "comparison": {
+    "logreg": {
+      "best_params": {
+        "C": 0.01
+      },
+      "cv_auroc_train": 0.8392680096887463,
+      "cal_b_auroc": 0.840930052956973,
+      "cal_b_brier_raw": 0.16902937237378732,
+      "cal_b_brier_calibrated": 0.07124097334069707,
+      "fit_seconds": 1.3,
+      "test": {
+        "auroc": 0.8389086475683816,
+        "brier": 0.07144088447213533,
+        "recall_at_t_mod": 0.8467978233570531,
+        "precision_at_t_high": 0.28293999825829486,
+        "t_mod_own": 0.08220064724919095
+      }
+    },
+    "lightgbm": {
+      "best_params": {
+        "min_child_samples": 300,
+        "num_leaves": 15
+      },
+      "cv_auroc_train": 0.8403444158017099,
+      "cal_b_auroc": 0.8428989279909437,
+      "cal_b_brier_raw": 0.07093474599076335,
+      "cal_b_brier_calibrated": 0.07100637501134877,
+      "fit_seconds": 8.3,
+      "best_iteration": 147,
+      "test": {
+        "auroc": 0.841939560227074,
+        "brier": 0.0710997772075378,
+        "recall_at_t_mod": 0.8384261197153621,
+        "precision_at_t_high": 0.30134357005758156,
+        "t_mod_own": 0.10256410256410256
+      }
+    },
+    "mlp": {
+      "best_params": {
+        "lr": 0.001
+      },
+      "cv_auroc_train": 0.8404803479204855,
+      "cal_b_auroc": 0.8425795106460698,
+      "cal_b_brier_raw": 0.17314340733812758,
+      "cal_b_brier_calibrated": 0.07109532149661779,
+      "fit_seconds": 21.8,
+      "best_epoch": 12,
+      "test": {
+        "auroc": 0.8403503132084253,
+        "brier": 0.0712282400685625,
+        "recall_at_t_mod": 0.8204269568857262,
+        "precision_at_t_high": 0.28681891746088833,
+        "t_mod_own": 0.1015843429636533
+      }
+    }
+  },
+  "selection_rule": "highest cal-B AUROC unless another model is within 0.005 AUROC and has a better calibrated Brier score; ties go to the simpler model",
+  "chosen_model": "lightgbm",
+  "chosen_reason": "highest cal-B AUROC (0.8429)",
+  "calibration": {
+    "fitted_on": "cal_a",
+    "evaluated_on": "cal_b",
+    "before": {
+      "brier": 0.07093474599076335,
+      "ece_10": 0.003349403915029441
+    },
+    "after": {
+      "brier": 0.07100637501134877,
+      "ece_10": 0.0031596870364752933
+    }
+  },
+  "thresholds": {
+    "t_mod": 0.10256410256410256,
+    "t_high": 0.1607239995130578,
+    "t_high_method": "smallest threshold with precision >= 3x prevalence",
+    "recall_target": 0.8,
+    "precision_target": 0.28252128666035947,
+    "base_prevalence": 0.09417376222011983
+  },
+  "bands_cal_b": {
+    "low": {
+      "share": 0.6568905707978555,
+      "n": 16664,
+      "observed_rate": 0.02526404224675948,
+      "share_of_true_cases": 0.17622436165759733
+    },
+    "moderate": {
+      "share": 0.15149006622516556,
+      "n": 3843,
+      "observed_rate": 0.12360135310954982,
+      "share_of_true_cases": 0.19882796149016324
+    },
+    "high": {
+      "share": 0.19161936297697887,
+      "n": 4861,
+      "observed_rate": 0.3071384488788315,
+      "share_of_true_cases": 0.6249476768522394
+    }
+  },
+  "conformal": {
+    "alpha": 0.1,
+    "score": "1 - p_hat(true class)",
+    "method": "mondrian split conformal",
+    "q0": 0.2518610421836228,
+    "n0": 22979,
+    "q1": 0.9503448275862069,
+    "n1": 2389
+  },
+  "ood": {
+    "method": "IsolationForest(n_estimators=200)",
+    "percentile": 99.0,
+    "threshold": 0.6494090691011138
+  },
+  "shap": {
+    "explainer": "TreeExplainer",
+    "background_rows": 200,
+    "global_rows": "2000 random cal-B rows",
+    "output_space": "raw model output (log-odds)",
+    "global_mean_abs": {
+      "Age": 0.7115052359233102,
+      "GenHlth": 0.5070517574817531,
+      "HighBP": 0.42759690788135585,
+      "HighChol": 0.3359867017538327,
+      "Sex": 0.2984303401523085,
+      "Smoker": 0.19068685788558437,
+      "DiffWalk": 0.1405253101401708,
+      "PhysHlth": 0.07963405246415502,
+      "BMI": 0.04913890949389132,
+      "MentHlth": 0.03695787128752717,
+      "HvyAlcoholConsump": 0.021509138722909892,
+      "PhysActivity": 0.008208322149461147,
+      "Fruits": 0.002989892298947696,
+      "Veggies": 0.0023139243127892
+    }
+  },
+  "artifact_files": [
+    "model.joblib",
+    "calibrator.joblib",
+    "ood.joblib",
+    "conformal.json",
+    "shap_background.json",
+    "model_meta.json",
+    "reliability.png",
+    "shap_global.png",
+    "training_curves.png",
+    "model_card.md"
+  ],
+  "test_metrics": {
+    "auroc": 0.841939560227074,
+    "brier": 0.0710997772075378,
+    "recall_at_t_mod": 0.8384261197153621,
+    "precision_at_t_mod": 0.22438805802946282,
+    "recall_at_t_high": 0.6243197990791126,
+    "precision_at_t_high": 0.30134357005758156,
+    "n": 50736,
+    "prevalence": 0.09417376222011983,
+    "ci95": {
+      "auroc": [
+        0.8363351659775201,
+        0.8476474028585014
+      ],
+      "recall_at_t_mod": [
+        0.8277326349703565,
+        0.8493063656614209
+      ],
+      "brier": [
+        0.06951520613210434,
+        0.07275125025803467
+      ]
+    }
+  },
+  "test_metrics_deduplicated": {
+    "auroc": 0.8260270346199935,
+    "brier": 0.081404344596186,
+    "recall_at_t_mod": 0.8361847733105218,
+    "precision_at_t_mod": 0.23676880222841226,
+    "recall_at_t_high": 0.6221129170230967,
+    "precision_at_t_high": 0.31039265898420826,
+    "n": 42996,
+    "prevalence": 0.10875430272583496,
+    "rows_removed": 7740
+  },
+  "bands_test": {
+    "low": {
+      "share": 0.6481196783349101,
+      "n": 32883,
+      "observed_rate": 0.023477176656631085,
+      "share_of_true_cases": 0.16157388028463793
+    },
+    "moderate": {
+      "share": 0.15677231157363608,
+      "n": 7954,
+      "observed_rate": 0.12861453356801608,
+      "share_of_true_cases": 0.2141063206362495
+    },
+    "high": {
+      "share": 0.1951080100914538,
+      "n": 9899,
+      "observed_rate": 0.30134357005758156,
+      "share_of_true_cases": 0.6243197990791126
+    }
+  },
+  "conformal_test": {
+    "coverage": {
+      "class_0": 0.9258018190521781,
+      "class_1": 0.9257011301799917,
+      "overall": 0.9257923368022706
+    },
+    "abstention_rate_conformal": 0.3804399243140965,
+    "ood_rate": 0.010603910438347524,
+    "abstention_rate_total": 0.3850126143172501,
+    "abstention_rate_by_true_class": {
+      "class_0": 0.3724052395665608,
+      "class_1": 0.5062787777312683
+    }
+  },
+  "fairness": {
+    "definition": "flagged = calibrated p >= t_mod (moderate or high band); test set; metrics on all rows, abstention reported separately",
+    "groups": {
+      "Sex": {
+        "by_group": {
+          "female": {
+            "recall": 0.7789369100844511,
+            "false_positive_rate": 0.2400998655655848,
+            "precision": 0.20053715308863027,
+            "mean_predicted": 0.07352507459332948,
+            "observed_rate": 0.07176982316029663,
+            "abstention_rate": 0.3629492298916144,
+            "n": 28048.0,
+            "positives": 2013.0
+          },
+          "male": {
+            "recall": 0.8817359855334539,
+            "false_positive_rate": 0.3812678813431712,
+            "precision": 0.24297388877815426,
+            "mean_predicted": 0.12342532964206945,
+            "observed_rate": 0.12187059238363893,
+            "abstention_rate": 0.41228843441466856,
+            "n": 22688.0,
+            "positives": 2765.0
+          }
+        },
+        "gaps": {
+          "recall": {
+            "max_gap": 0.1027990754490028,
+            "ratio_min_over_max": 0.8834128615190759
+          },
+          "false_positive_rate": {
+            "max_gap": 0.1411680157775864,
+            "ratio_min_over_max": 0.6297406031678707
+          },
+          "precision": {
+            "max_gap": 0.042436735689524,
+            "ratio_min_over_max": 0.8253444602507449
+          },
+          "abstention_rate": {
+            "max_gap": 0.04933920452305418,
+            "ratio_min_over_max": 0.8803284293116257
+          }
+        }
+      },
+      "AgeGroup": {
+        "by_group": {
+          "18-39": {
+            "recall": 0.11827956989247312,
+            "false_positive_rate": 0.013693270735524257,
+            "precision": 0.09482758620689655,
+            "mean_predicted": 0.010442866279967402,
+            "observed_rate": 0.01198299188248937,
+            "abstention_rate": 0.050766653781729155,
+            "n": 7761.0,
+            "positives": 93.0
+          },
+          "40-59": {
+            "recall": 0.6599362380446334,
+            "false_positive_rate": 0.15335846470185058,
+            "precision": 0.18784029038112524,
+            "mean_predicted": 0.05192311201617877,
+            "observed_rate": 0.0510054745514662,
+            "abstention_rate": 0.2765461542631037,
+            "n": 18449.0,
+            "positives": 941.0
+          },
+          "60+": {
+            "recall": 0.9011752136752137,
+            "false_positive_rate": 0.5320469637186026,
+            "precision": 0.2338022313076017,
+            "mean_predicted": 0.15589694986249972,
+            "observed_rate": 0.15265432602136508,
+            "abstention_rate": 0.5723721764657914,
+            "n": 24526.0,
+            "positives": 3744.0
+          }
+        },
+        "gaps": {
+          "recall": {
+            "max_gap": 0.7828956437827406,
+            "ratio_min_over_max": 0.13125035852916994
+          },
+          "false_positive_rate": {
+            "max_gap": 0.5183536929830783,
+            "ratio_min_over_max": 0.025736958707213993
+          },
+          "precision": {
+            "max_gap": 0.13897464510070515,
+            "ratio_min_over_max": 0.40558888457371783
+          },
+          "abstention_rate": {
+            "max_gap": 0.5216055226840622,
+            "ratio_min_over_max": 0.08869518098380746
+          }
+        }
+      },
+      "Income": {
+        "by_group": {
+          "high (>=$50k)": {
+            "recall": 0.762853470437018,
+            "false_positive_rate": 0.2031013314199155,
+            "precision": 0.1889525628780643,
+            "mean_predicted": 0.06548954824349112,
+            "observed_rate": 0.0584040237219428,
+            "abstention_rate": 0.3103370617821485,
+            "n": 26642.0,
+            "positives": 1556.0
+          },
+          "low (<$25k)": {
+            "recall": 0.8825413774693006,
+            "false_positive_rate": 0.48084933455247386,
+            "precision": 0.25884747886000625,
+            "mean_predicted": 0.14770162674356074,
+            "observed_rate": 0.1598668487538409,
+            "abstention_rate": 0.49829293274155,
+            "n": 11716.0,
+            "positives": 1873.0
+          },
+          "mid ($25-50k)": {
+            "recall": 0.8643439584877687,
+            "false_positive_rate": 0.36440293770967447,
+            "precision": 0.2248794599807136,
+            "mean_predicted": 0.11207467829070356,
+            "observed_rate": 0.10898368072386493,
+            "abstention_rate": 0.4385199547584424,
+            "n": 12378.0,
+            "positives": 1349.0
+          }
+        },
+        "gaps": {
+          "recall": {
+            "max_gap": 0.1196879070322826,
+            "ratio_min_over_max": 0.8643826679543465
+          },
+          "false_positive_rate": {
+            "max_gap": 0.2777480031325584,
+            "ratio_min_over_max": 0.422380394076955
+          },
+          "precision": {
+            "max_gap": 0.06989491598194195,
+            "ratio_min_over_max": 0.7299764467872466
+          },
+          "abstention_rate": {
+            "max_gap": 0.18795587095940153,
+            "ratio_min_over_max": 0.6228004480711976
+          }
+        }
+      },
+      "Education": {
+        "by_group": {
+          "high school or less": {
+            "recall": 0.8679430535100638,
+            "false_positive_rate": 0.4207716026171317,
+            "precision": 0.24011951650142604,
+            "mean_predicted": 0.13016558789790703,
+            "observed_rate": 0.13284205034563715,
+            "abstention_rate": 0.46139298291378633,
+            "n": 15334.0,
+            "positives": 2037.0
+          },
+          "more than high school": {
+            "recall": 0.816490331995622,
+            "false_positive_rate": 0.25265607299225373,
+            "precision": 0.21334604385128694,
+            "mean_predicted": 0.08097130236389104,
+            "observed_rate": 0.07742500423704876,
+            "abstention_rate": 0.35192926953279474,
+            "n": 35402.0,
+            "positives": 2741.0
+          }
+        },
+        "gaps": {
+          "recall": {
+            "max_gap": 0.0514527215144418,
+            "ratio_min_over_max": 0.9407187818297975
+          },
+          "false_positive_rate": {
+            "max_gap": 0.16811552962487797,
+            "ratio_min_over_max": 0.6004589459478101
+          },
+          "precision": {
+            "max_gap": 0.026773472650139102,
+            "ratio_min_over_max": 0.8884993896363268
+          },
+          "abstention_rate": {
+            "max_gap": 0.10946371338099159,
+            "ratio_min_over_max": 0.7627538401435866
+          }
+        }
+      },
+      "AnyHealthcare": {
+        "by_group": {
+          "has coverage": {
+            "recall": 0.8420709158146618,
+            "false_positive_rate": 0.3060420816448016,
+            "precision": 0.22456201415477434,
+            "mean_predicted": 0.09733603768128796,
+            "observed_rate": 0.09522724447942991,
+            "abstention_rate": 0.38890500062145256,
+            "n": 48274.0,
+            "positives": 4597.0
+          },
+          "no coverage": {
+            "recall": 0.7458563535911602,
+            "false_positive_rate": 0.2104340201665936,
+            "precision": 0.21951219512195122,
+            "mean_predicted": 0.06649280588402987,
+            "observed_rate": 0.07351746547522339,
+            "abstention_rate": 0.30869212022745735,
+            "n": 2462.0,
+            "positives": 181.0
+          }
+        },
+        "gaps": {
+          "recall": {
+            "max_gap": 0.09621456222350155,
+            "ratio_min_over_max": 0.8857405470055705
+          },
+          "false_positive_rate": {
+            "max_gap": 0.09560806147820802,
+            "ratio_min_over_max": 0.6875983166616525
+          },
+          "precision": {
+            "max_gap": 0.005049819032823116,
+            "ratio_min_over_max": 0.9775125857691024
+          },
+          "abstention_rate": {
+            "max_gap": 0.08021288039399521,
+            "ratio_min_over_max": 0.7937468526611418
+          }
+        }
+      },
+      "NoDocbcCost": {
+        "by_group": {
+          "cost barrier": {
+            "recall": 0.822380106571936,
+            "false_positive_rate": 0.3294491525423729,
+            "precision": 0.27123608670181604,
+            "mean_predicted": 0.10737100923843276,
+            "observed_rate": 0.1297533994007836,
+            "abstention_rate": 0.4113851117769071,
+            "n": 4339.0,
+            "positives": 563.0
+          },
+          "no cost barrier": {
+            "recall": 0.8405693950177936,
+            "false_positive_rate": 0.2987767294106491,
+            "precision": 0.2194351542177629,
+            "mean_predicted": 0.09476091906863413,
+            "observed_rate": 0.09084639093044809,
+            "abstention_rate": 0.38254628532017154,
+            "n": 46397.0,
+            "positives": 4215.0
+          }
+        },
+        "gaps": {
+          "recall": {
+            "max_gap": 0.018189288445857543,
+            "ratio_min_over_max": 0.9783607533730484
+          },
+          "false_positive_rate": {
+            "max_gap": 0.030672423131723803,
+            "ratio_min_over_max": 0.9068978539024204
+          },
+          "precision": {
+            "max_gap": 0.051800932484053125,
+            "ratio_min_over_max": 0.8090190242974542
+          },
+          "abstention_rate": {
+            "max_gap": 0.028838826456735578,
+            "ratio_min_over_max": 0.9298982252124506
+          }
+        }
+      }
+    },
+    "flags": [
+      "Sex: recall gap 0.103 > 0.1",
+      "AgeGroup: recall gap 0.783 > 0.1",
+      "Income: recall gap 0.120 > 0.1"
+    ]
+  },
+  "flags": [
+    "band 'low' holds 64.8% of test people (> 50%)",
+    "abstention 38.5% on test (> 30%)",
+    "isotonic calibration did not improve Brier on cal-B",
+    "Sex: recall gap 0.103 > 0.1",
+    "AgeGroup: recall gap 0.783 > 0.1",
+    "Income: recall gap 0.120 > 0.1"
+  ],
+  "train_seconds_total": 45.3
+}

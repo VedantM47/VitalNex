@@ -1,0 +1,9 @@
+{
+  "alpha": 0.1,
+  "score": "1 - p_hat(true class)",
+  "method": "mondrian split conformal",
+  "q0": 0.2773722627737226,
+  "n0": 21834,
+  "q1": 0.9344827586206896,
+  "n1": 3534
+}
