@@ -3,13 +3,15 @@ Assistant service — the SPEC §5 pipeline. No generative model, no external AP
 
 Per message:
 1. Emergency rules (ml/nlp/data/emergency_phrases.json, shared with the assessment) -> 108 / 112.
+   D-26: a bare red-flag word ("stroke", "लकवा", "heart attack", ...) sets `emergency_card`: the
+   108 / 112 card is shown AND the normal answer below it.
 2. Medicine / dose rule (ml/nlp/data/medication_phrases.json) -> polite refusal.
 3. Encode with the local IndicSBERT encoder (loaded once, CPU).
 4. Intent classifier. Safety backstops first (P(EMERGENCY) / P(MEDICATION_REQUEST) above their
    validation-chosen thresholds), then abstain to OUT_OF_SCOPE when max probability < threshold.
 5. Action: templated explanation from the user's latest stored assessment, sourced FAQ retrieval
    (below the similarity threshold -> "no reliable answer"), or a navigation reply + button.
-6. Log only intent, confidence and emergency flag in assistant_logs. Message text is never stored
+6. Log only intent, confidence and emergency flag (true whenever the 108 / 112 card was shown) in assistant_logs. Message text is never stored
    or logged anywhere.
 Every sentence returned comes from apps/api/content/assistant.{lang}.json, the FAQ files, or the
 existing explanation / guidance content files.
@@ -60,6 +62,7 @@ class Decision:
     confidence: Optional[float]
     source: str  # rule | classifier | abstain | unavailable
     embedding: Any = field(default=None, repr=False)
+    emergency_card: bool = False  # show the 108 / 112 card (full emergency or D-26 bare red-flag word)
 
 
 def warm_up() -> bool:
@@ -77,6 +80,12 @@ def warm_up() -> bool:
 
 def classify(text: str) -> Decision:
     """Steps 1-4. Pure function of the text (no I/O besides the local model); used by tests."""
+    d = _classify(text)
+    d.emergency_card = d.intent == EMERGENCY or rules.has_bare_red_flag(text)
+    return d
+
+
+def _classify(text: str) -> Decision:
     if rules.is_emergency(text):
         return Decision(EMERGENCY, None, "rule")
     if rules.is_medication_request(text):
@@ -192,7 +201,7 @@ class AgentService:
         """assistant_logs has no message column; only these three fields are written."""
         row = {"user_id": user_id, "intent": d.intent,
                "confidence": None if d.confidence is None else round(float(d.confidence), 4),
-               "emergency_flag": d.intent == EMERGENCY}
+               "emergency_flag": d.intent == EMERGENCY or d.emergency_card}
         try:
             await service_db().table("assistant_logs").insert(row).execute()
         except Exception as e:  # noqa: BLE001 — logging must never block an emergency reply
@@ -224,6 +233,7 @@ class AgentService:
             citations=citations or [],
             escalation_recommended=escalate,
             disclaimer=content("assistant", lang)["disclaimer"],
+            emergency_card=d.emergency_card,
             details=extra or {},
             timestamp=datetime.now(timezone.utc),
         )

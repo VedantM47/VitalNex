@@ -14,6 +14,13 @@
    utterances (so ~5% of off-topic questions would get an FAQ answer).
 7. Save the chosen model, nlp_meta.json and docs/model_cards/assistant.md.
 
+    python -m ml.nlp.train_intents --refresh-rules
+
+Re-evaluates only the deterministic rules (after an edit to ml/nlp/data/emergency_phrases.json) with the
+SAVED classifier and thresholds, and rewrites nlp_meta.json + the model card. Nothing is retrained.
+The untuned emergency hold-out figure recorded at P8 sign-off is kept as `emergency_holdout` (D-25);
+the hold-out on the current, partly tuned rules is reported separately.
+
 Downloads the encoder weights once from Hugging Face if they are not cached; nothing else leaves
 the machine.
 """
@@ -21,6 +28,7 @@ the machine.
 import hashlib
 import json
 import platform
+import sys
 import time
 from collections import Counter
 from datetime import datetime, timezone
@@ -228,6 +236,79 @@ def pipeline_safety(rows, proba, t_emerg, t_med, t_oos):
     return out
 
 
+def holdout_eval(holdout, ph, t_emerg):
+    """Emergency hold-out with the CURRENT rules. `card_shown` adds the D-26 bare-word card."""
+    h_rule = np.array([rules.is_emergency(r["text"]) for r in holdout])
+    h_card = np.array([rules.shows_emergency_card(r["text"]) for r in holdout])
+    h_clf = ph[:, EMERG] >= t_emerg
+    return {"n": len(holdout), "rules_only": round(float(h_rule.mean()), 4),
+            "classifier_only": round(float(h_clf.mean()), 4),
+            "pipeline": round(float((h_rule | h_clf).mean()), 4),
+            "card_shown": round(float((h_rule | h_clf | h_card).mean()), 4),
+            "missed": [r["text"] for i, r in enumerate(holdout) if not (h_rule[i] or h_clf[i])]}
+
+
+def card_stats(rows, proba, t_emerg):
+    """D-26: how often the 108 / 112 card shows on NON-emergency test messages (the accepted false-alarm cost)."""
+    y = y_of(rows)
+    full = np.array([rules.is_emergency(r["text"]) for r in rows]) | (proba[:, EMERG] >= t_emerg)
+    card = full | np.array([rules.has_bare_red_flag(r["text"]) for r in rows])
+    ne = y != EMERG
+    return {"full_emergency_rate_non_emergency": round(float(full[ne].mean()), 4),
+            "card_rate_non_emergency": round(float(card[ne].mean()), 4),
+            "card_but_normal_answer_non_emergency": int((card & ~full)[ne].sum()),
+            "n_non_emergency": int(ne.sum()),
+            "emergency_recall_with_card": round(float(card[~ne].mean()), 4),
+            "rule": "D-26: bare red-flag words (bare_red_flags in emergency_phrases.json) always show the card; "
+                    "the assistant still gives its normal answer below it."}
+
+
+def rules_meta():
+    return {"emergency_file": "ml/nlp/data/emergency_phrases.json",
+            "emergency_file_sha256": sha256(DATA / "emergency_phrases.json"),
+            "medication_file": "ml/nlp/data/medication_phrases.json",
+            "note": "Rule lists were extended once after the first look at test-set misses (see model card); "
+                    "emergency_holdout.jsonl was written afterwards and was NOT used to tune anything up to the "
+                    "P8 sign-off. D-25: after sign-off ONE hold-out miss ('chhativar konitari basla aahe asa vatat') "
+                    "was added to the rules after being seen, together with independently written 'chest heavy / "
+                    "pressure / someone sitting on chest / tight' wordings, so hold-out results on the current "
+                    "rules are no longer untuned. D-26: bare red-flag words always show the 108 / 112 card."}
+
+
+def untuned_holdout(current):
+    """The untuned hold-out figure frozen at P8 sign-off (D-25); falls back to `current` on a first run."""
+    if META_PATH.exists():
+        prev = json.loads(META_PATH.read_text(encoding="utf-8")).get("emergency_holdout")
+        if prev:
+            return {**prev, "frozen": "P8 sign-off, before the D-25 rule additions (rules never tuned on the hold-out)"}
+    return current
+
+
+def refresh_rules():
+    """Re-evaluate the deterministic rules with the saved classifier; nothing is retrained."""
+    from ml.nlp.intent_model import load_classifier
+
+    meta = json.loads(META_PATH.read_text(encoding="utf-8"))
+    clf = load_classifier()
+    t = meta["thresholds"]
+    test, holdout = load("intents_test.jsonl"), load("emergency_holdout.jsonl")
+    p = clf.predict_proba([r["text"] for r in test], encoder.encode([r["text"] for r in test]))
+    ph = clf.predict_proba([r["text"] for r in holdout], encoder.encode([r["text"] for r in holdout]))
+    meta["emergency_holdout"] = untuned_holdout(None)
+    meta["pipeline_safety_test"] = pipeline_safety(test, p, t["emergency"], t["medication"], t["oos"])
+    meta["emergency_holdout_current_rules"] = holdout_eval(holdout, ph, t["emergency"])
+    meta["emergency_card_d26"] = card_stats(test, p, t["emergency"])
+    meta["rules"] = rules_meta()
+    meta["rules_refreshed_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    print("pipeline safety:", {k: v for k, v in meta["pipeline_safety_test"].items() if k != "pipeline_intent_metrics"})
+    print("hold-out untuned:", meta["emergency_holdout"])
+    print("hold-out current rules:", meta["emergency_holdout_current_rules"])
+    print("D-26 card:", meta["emergency_card_d26"])
+    META_PATH.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_card(meta)
+    print(f"rewrote {META_PATH} and {CARD}")
+
+
 # ------------------------------------------------------------------ main
 
 def main():
@@ -292,15 +373,13 @@ def main():
 
     safety = pipeline_safety(test, p, t_emerg, t_med, t_oos)
     ph = proba_of(chosen, models[chosen], holdout, Ehold)
-    h_rule = np.array([rules.is_emergency(r["text"]) for r in holdout])
-    h_clf = ph[:, EMERG] >= t_emerg
-    holdout_res = {"n": len(holdout), "rules_only": round(float(h_rule.mean()), 4),
-                   "classifier_only": round(float(h_clf.mean()), 4),
-                   "pipeline": round(float((h_rule | h_clf).mean()), 4),
-                   "missed": [r["text"] for i, r in enumerate(holdout) if not (h_rule[i] or h_clf[i])]}
+    holdout_cur = holdout_eval(holdout, ph, t_emerg)
+    holdout_res = untuned_holdout(holdout_cur)
+    card = card_stats(test, p, t_emerg)
     print("test (chosen, with abstention):", chosen_test)
     print("pipeline safety:", {k: v for k, v in safety.items() if k != "pipeline_intent_metrics"})
-    print("emergency hold-out:", holdout_res)
+    print("emergency hold-out (untuned):", holdout_res)
+    print("emergency hold-out (current rules):", holdout_cur)
 
     # 6. FAQ threshold
     t_faq, oos_sims = faq_threshold(train, Etrain)
@@ -370,13 +449,12 @@ def main():
                          "errors": errors},
         "pipeline_safety_test": safety,
         "emergency_holdout": holdout_res,
+        "emergency_holdout_current_rules": holdout_cur,
+        "emergency_card_d26": card,
         "faq": {"entries_per_language": len(faq.entries("en")),
                 "per_topic": dict(Counter(e["topic"] for e in faq.entries("en"))),
                 "test_coverage": coverage},
-        "rules": {"emergency_file": "ml/nlp/data/emergency_phrases.json",
-                  "medication_file": "ml/nlp/data/medication_phrases.json",
-                  "note": "Rule lists were extended once after the first look at test-set misses (see model card); "
-                          "emergency_holdout.jsonl was written afterwards and was NOT used to tune anything."},
+        "rules": rules_meta(),
         "libraries": {"python": platform.python_version(), "scikit-learn": sklearn.__version__,
                       "torch": torch.__version__, "sentence-transformers": sentence_transformers.__version__,
                       "transformers": transformers.__version__, "numpy": np.__version__},
@@ -401,6 +479,11 @@ def write_card(meta):
     t = meta["thresholds"]
     s = meta["pipeline_safety_test"]
     h = meta["emergency_holdout"]
+    hc = meta.get("emergency_holdout_current_rules", h)
+    cd = meta.get("emergency_card_d26")
+    card_row = (f"| D-26: 108 / 112 card shown on non-emergency test messages (bare red-flag word or full emergency) | "
+                f"{cd['card_rate_non_emergency']:.3f} ({cd['card_but_normal_answer_non_emergency']} of "
+                f"{cd['n_non_emergency']} keep their normal answer below the card) |\n") if cd else ""
     c = meta["test_metrics"]["chosen_with_abstention"]
     cov = meta["faq"]["test_coverage"]
     weak = meta["test_metrics"]["weakest_intent"]
@@ -439,7 +522,8 @@ def write_card(meta):
   {meta['data']['romanised_train']} romanised HI/MR. Validation = 20% of train, stratified by intent × language (seed {meta['data']['split']['seed']}).
 - Test: {meta['data']['n_test']} utterances, 10 per intent per language ({meta['data']['romanised_test']} romanised),
   written separately with different phrasing. Used once, after the approach was chosen.
-- Emergency hold-out: {h['n']} extra emergency messages written after the rule lists were finalised; never used for tuning.
+- Emergency hold-out: {h['n']} extra emergency messages written after the rule lists were finalised; never used for
+  tuning up to the P8 sign-off. One hold-out line was added to the rules afterwards (D-25, see below).
 
 ## Comparison (test set, argmax, no abstention)
 
@@ -482,13 +566,28 @@ Confusion matrix (all languages, test, with abstention):
 | Non-medicine messages wrongly refused | {s['medication_false_refusal_rate_other']:.3f} |
 | OUT_OF_SCOPE messages that abstain | {s['oos_abstain_rate_on_oos']:.3f} |
 | In-scope messages that abstain | {s['in_scope_abstain_rate']:.3f} |
-| Emergency hold-out (never tuned): rules only / classifier only / pipeline | {h['rules_only']:.3f} / {h['classifier_only']:.3f} / {h['pipeline']:.3f} |
-
+| **Emergency hold-out, untuned (P8 sign-off)**: rules only / classifier only / pipeline | {h['rules_only']:.3f} / {h['classifier_only']:.3f} / **{h['pipeline']:.3f}** |
+| Emergency hold-out, current rules (after D-25, **no longer untuned**): rules only / classifier only / pipeline / card shown | {hc['rules_only']:.3f} / {hc['classifier_only']:.3f} / {hc['pipeline']:.3f} / {hc.get('card_shown', hc['pipeline']):.3f} |
+{card_row}
 Honest note on the rules: the first version of the phrase lists caught only part of the test emergency
 messages (extra words such as "बहुत तेज़" broke exact phrases). The lists were then extended once with
 proximity rules (a chest word near a pain word, etc.) after looking at those misses, so the test-set rule recall
 above is **optimistic**. The separate hold-out was written afterwards to measure this honestly; hold-out misses
 are listed in `nlp_meta.json` → `emergency_holdout.missed`.
+
+**The honest emergency figure is the untuned hold-out above ({round(h['pipeline'] * h['n'])}/{h['n']} caught by the
+full pipeline).** D-25: after the P8 sign-off the one missed hold-out phrase ("chhativar konitari basla aahe asa vatat",
+romanised Marathi, "feels like someone is sitting on my chest") was added to the rules **after it had been seen**,
+together with "chest heavy / chest pressure / someone sitting on chest / chest tight" wordings in EN / HI / MR
+(Devanagari and romanised) written without copying any other hold-out line. Because of that addition the
+"current rules" hold-out row is no longer an untuned measurement; a new, untouched hold-out is needed for an
+honest re-measurement.
+
+D-26: bare red-flag words ("stroke", "heart attack", "chest pain", "paralysis", स्ट्रोक, लकवा, दिल का दौरा,
+अर्धांगवायू, पक्षाघात, हृदयविकाराचा झटका, lakwa, dil ka daura, ...) **always** show the 108 / 112 card
+(`bare_red_flags` in the same emergency file). In the assistant the normal answer is still shown below the card;
+in the assessment free-text box they count as a full emergency. This deliberately adds false alarms on questions
+such as "what is a stroke?" (safety over convenience, hard rule 8).
 
 ## FAQ retrieval
 
@@ -518,4 +617,4 @@ The encoder runs locally; no message leaves the server.
 
 
 if __name__ == "__main__":
-    main()
+    refresh_rules() if "--refresh-rules" in sys.argv[1:] else main()

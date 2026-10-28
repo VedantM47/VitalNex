@@ -129,3 +129,48 @@ def test_faq_entries_are_sourced_short_and_never_about_medicines(lang):
 def test_faq_never_states_a_diagnosis(lang):
     bad = re.compile(r"(?<!if )\byou have (diabetes|heart disease|a stroke)\b", re.I)  # conditionals are fine
     assert not [e["id"] for e in faq(lang) if bad.search(e["answer"])]
+
+
+# ---------------------------------------------------------------- D-25 / D-26
+
+BARE_WORDS = [
+    "stroke", "what is a stroke?", "heart attack", "warning signs of a heart attack", "chest pain", "paralysis",
+    "स्ट्रोक क्या होता है", "लकवा", "दिल का दौरा क्यों पड़ता है", "सीने में दर्द", "पक्षाघात",
+    "अर्धांगवायू म्हणजे काय", "हृदयविकाराचा झटका म्हणजे काय", "छातीत दुखणे", "पक्षाघात",
+    "lakwa kya hai", "dil ka daura", "seene mein dard", "ardhangvayu", "hrudayvikaracha jhatka", "chhatit dukhte",
+]
+
+
+@pytest.mark.parametrize("text", BARE_WORDS)
+def test_bare_red_flag_words_always_show_the_card_and_are_full_emergency_in_assessment(text):
+    assert rules.shows_emergency_card(text)
+    assert text_has_red_flag(text)  # assessment free text: full emergency
+
+
+@pytest.mark.parametrize("text", ["what is a stroke?", "स्ट्रोक क्या होता है", "हृदयविकाराचा झटका म्हणजे काय",
+                                  "lakwa kya hai"])
+def test_bare_questions_are_card_not_full_emergency_in_assistant(text):
+    assert rules.has_bare_red_flag(text) and not rules.is_emergency(text)
+
+
+@pytest.mark.parametrize("text", [
+    "chhativar konitari basla aahe asa vatat",  # D-25: the one hold-out miss, added after it was seen
+    "feels like someone sitting on my chest", "my chest is heavy and tight", "there is pressure on my chest",
+    "सीने पर कोई बैठा हो ऐसा लग रहा है", "सीने में कसाव है", "छातीवर कोणीतरी बसल्यासारखे वाटते",
+    "छातीत घट्टपणा जाणवतो", "seene par koi baitha hai", "chhati jakad gayi", "chhati ghatt vatte",
+])
+def test_d25_chest_heavy_pressure_wordings_are_full_emergencies(text):
+    assert rules.is_emergency(text) and text_has_red_flag(text)
+
+
+def test_bare_words_live_in_the_one_shared_emergency_file():
+    spec = json.loads((DATA / "emergency_phrases.json").read_text(encoding="utf-8"))
+    assert set(spec["bare_red_flags"]["phrases"]) == {"en", "hi", "mr", "hi_roman", "mr_roman"}
+
+
+def test_no_holdout_line_except_the_disclosed_one_is_copied_into_the_rules():
+    spec = json.loads((DATA / "emergency_phrases.json").read_text(encoding="utf-8"))
+    listed = {rules.normalise(p) for sec in (spec["phrases"], spec["bare_red_flags"]["phrases"])
+              for lang in sec.values() for p in lang}
+    copied = [r["text"] for r in rows("emergency_holdout.jsonl") if rules.normalise(r["text"]) in listed]
+    assert copied == ["chhativar konitari basla aahe asa vatat"]

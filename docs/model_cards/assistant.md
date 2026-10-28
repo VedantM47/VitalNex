@@ -28,7 +28,8 @@
   220 romanised HI/MR. Validation = 20% of train, stratified by intent × language (seed 42).
 - Test: 330 utterances, 10 per intent per language (66 romanised),
   written separately with different phrasing. Used once, after the approach was chosen.
-- Emergency hold-out: 30 extra emergency messages written after the rule lists were finalised; never used for tuning.
+- Emergency hold-out: 30 extra emergency messages written after the rule lists were finalised; never used for
+  tuning up to the P8 sign-off. One hold-out line was added to the rules afterwards (D-25, see below).
 
 ## Comparison (test set, argmax, no abstention)
 
@@ -93,13 +94,29 @@ Confusion matrix (all languages, test, with abstention):
 | Non-medicine messages wrongly refused | 0.007 |
 | OUT_OF_SCOPE messages that abstain | 0.800 |
 | In-scope messages that abstain | 0.010 |
-| Emergency hold-out (never tuned): rules only / classifier only / pipeline | 0.400 / 0.967 / 0.967 |
+| **Emergency hold-out, untuned (P8 sign-off)**: rules only / classifier only / pipeline | 0.400 / 0.967 / **0.967** |
+| Emergency hold-out, current rules (after D-25, **no longer untuned**): rules only / classifier only / pipeline / card shown | 0.567 / 0.967 / 1.000 / 1.000 |
+| D-26: 108 / 112 card shown on non-emergency test messages (bare red-flag word or full emergency) | 0.060 (13 of 300 keep their normal answer below the card) |
 
 Honest note on the rules: the first version of the phrase lists caught only part of the test emergency
 messages (extra words such as "बहुत तेज़" broke exact phrases). The lists were then extended once with
 proximity rules (a chest word near a pain word, etc.) after looking at those misses, so the test-set rule recall
 above is **optimistic**. The separate hold-out was written afterwards to measure this honestly; hold-out misses
 are listed in `nlp_meta.json` → `emergency_holdout.missed`.
+
+**The honest emergency figure is the untuned hold-out above (29/30 caught by the
+full pipeline).** D-25: after the P8 sign-off the one missed hold-out phrase ("chhativar konitari basla aahe asa vatat",
+romanised Marathi, "feels like someone is sitting on my chest") was added to the rules **after it had been seen**,
+together with "chest heavy / chest pressure / someone sitting on chest / chest tight" wordings in EN / HI / MR
+(Devanagari and romanised) written without copying any other hold-out line. Because of that addition the
+"current rules" hold-out row is no longer an untuned measurement; a new, untouched hold-out is needed for an
+honest re-measurement.
+
+D-26: bare red-flag words ("stroke", "heart attack", "chest pain", "paralysis", स्ट्रोक, लकवा, दिल का दौरा,
+अर्धांगवायू, पक्षाघात, हृदयविकाराचा झटका, lakwa, dil ka daura, ...) **always** show the 108 / 112 card
+(`bare_red_flags` in the same emergency file). In the assistant the normal answer is still shown below the card;
+in the assessment free-text box they count as a full emergency. This deliberately adds false alarms on questions
+such as "what is a stroke?" (safety over convenience, hard rule 8).
 
 ## FAQ retrieval
 

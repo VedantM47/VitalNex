@@ -82,8 +82,7 @@ class PairRule:
 
 
 class PhraseRule:
-    def __init__(self, path: Path, prefix_all: bool):
-        spec = json.loads(path.read_text(encoding="utf-8"))
+    def __init__(self, spec: dict, prefix_all: bool):
         entries = [p for lang in spec["phrases"].values() for p in lang]
         self.phrases = _compile(entries, prefix_all)
         self.patterns = [re.compile(_LEFT + normalise_pattern(p)) for p in spec.get("patterns", [])]
@@ -119,18 +118,41 @@ def normalise_pattern(p: str) -> str:
     return unicodedata.normalize("NFC", p).lower().replace("ँ", "ं")
 
 
+def _spec(name: str) -> dict:
+    return json.loads((DATA / name).read_text(encoding="utf-8"))
+
+
 @lru_cache(maxsize=1)
 def emergency_rule() -> PhraseRule:
-    return PhraseRule(DATA / "emergency_phrases.json", prefix_all=True)
+    return PhraseRule(_spec("emergency_phrases.json"), prefix_all=True)
+
+
+@lru_cache(maxsize=1)
+def bare_red_flag_rule() -> PhraseRule:
+    """D-26: bare red-flag words ("stroke", "लकवा", ...) from the `bare_red_flags` section of the SAME
+    emergency file. They always show the 108 / 112 card; see has_bare_red_flag."""
+    return PhraseRule(_spec("emergency_phrases.json")["bare_red_flags"], prefix_all=True)
 
 
 @lru_cache(maxsize=1)
 def medication_rule() -> PhraseRule:
-    return PhraseRule(DATA / "medication_phrases.json", prefix_all=False)
+    return PhraseRule(_spec("medication_phrases.json"), prefix_all=False)
 
 
 def is_emergency(text: Optional[str]) -> bool:
+    """A full emergency message (symptom happening now): the assistant replies with 108 / 112 only."""
     return emergency_rule().matches(text)
+
+
+def has_bare_red_flag(text: Optional[str]) -> bool:
+    """A bare red-flag word (D-26), e.g. "what is a stroke?". The assistant shows the 108 / 112 card
+    AND its normal answer; the assessment free-text check treats it as a full emergency."""
+    return bare_red_flag_rule().matches(text)
+
+
+def shows_emergency_card(text: Optional[str]) -> bool:
+    """True when the 108 / 112 card must be shown: a full emergency or a bare red-flag word."""
+    return is_emergency(text) or has_bare_red_flag(text)
 
 
 def is_medication_request(text: Optional[str]) -> bool:

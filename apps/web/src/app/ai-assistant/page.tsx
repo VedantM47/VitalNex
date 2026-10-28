@@ -1,272 +1,329 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  Bot,
-  Send,
-  Mic,
-  AlertTriangle,
-  RotateCcw,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  User,
-  ExternalLink,
-} from "lucide-react";
+import { ArrowRight, Bot, ExternalLink, Phone, RotateCcw, Send, ShieldCheck, Siren, User } from "lucide-react";
 import { AppShell } from "../../components/layout/AppShell";
-import { Card } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
-import { DemoBadge } from "../../components/ui/StatusBadge";
-import { api } from "../../lib/api-client";
-import { useTranslation, SupportedLanguage } from "../../lib/i18n";
+import { api, apiFailure } from "../../lib/api-client";
+import { SUPPORTED_LANGUAGES, useTranslation, type SupportedLanguage } from "../../lib/i18n";
 
-interface Message {
+/**
+ * SPEC §5 assistant. Every reply comes from the server's fixed, reviewed library (templates, sourced
+ * FAQ, navigation). Nothing is generated here and no message is stored in the browser beyond this page.
+ * D-26: when the server sets `emergency_card`, the 108 / 112 card is shown above the reply.
+ */
+
+interface Suggestion {
   id: string;
-  role: "user" | "assistant";
-  content: string;
-  escalationRecommended?: boolean;
-  suggestions?: { id: string; label: string; action_type: string; payload?: any }[];
-  citations?: { source: string }[];
-  timestamp: string;
+  label: string;
+  action_type: string; // ask | navigate | emergency_call
+  payload?: { path?: string; numbers?: string[] };
+}
+
+interface Citation {
+  title: string;
+  url: string;
+}
+
+interface AssistantResponse {
+  id: string;
+  response: string;
+  language: SupportedLanguage;
+  intent?: string | null;
+  emergency_card?: boolean;
+  suggestions: Suggestion[];
+  citations: Citation[];
+}
+
+type Message =
+  | { id: string; role: "user"; text: string }
+  | { id: string; role: "assistant"; kind: "welcome" }
+  | { id: string; role: "assistant"; kind: "error"; signIn: boolean }
+  | { id: string; role: "assistant"; kind: "reply"; data: AssistantResponse };
+
+const CHIPS = ["explain", "change", "disease", "ai", "doctor", "data"] as const;
+const WELCOME: Message = { id: "welcome", role: "assistant", kind: "welcome" };
+
+function EmergencyCard({ fullEmergency, text }: { fullEmergency: boolean; text?: string }) {
+  const { t } = useTranslation();
+  const call =
+    "flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-white px-4 text-base font-extrabold text-[#7F1D1D] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-white";
+  return (
+    <div role="alert" className="space-y-3 rounded-2xl bg-[#7F1D1D] p-4 text-white shadow-sm">
+      <div className="flex items-start gap-2">
+        <Siren className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+        <p className="text-sm font-extrabold leading-snug sm:text-base">{t("assistant.emergencyCard.title")}</p>
+      </div>
+      <p className="whitespace-pre-line text-sm leading-relaxed">
+        {fullEmergency && text ? text : t("assistant.emergencyCard.body")}
+      </p>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <a href="tel:108" className={call}>
+          <Phone className="h-4 w-4" aria-hidden="true" />
+          {t("assistant.emergencyCard.call108")}
+        </a>
+        <a href="tel:112" className={call}>
+          <Phone className="h-4 w-4" aria-hidden="true" />
+          {t("assistant.emergencyCard.call112")}
+        </a>
+      </div>
+      {!fullEmergency && <p className="text-xs text-[#FEE2E2]">{t("assistant.emergencyCard.answerBelow")}</p>}
+    </div>
+  );
 }
 
 export default function AIAssistantPage() {
   const { t, language, setLanguage } = useTranslation();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([WELCOME]);
+  const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "msg-welcome",
-      role: "assistant",
-      content:
-        "Hello! I am the VITALNEX assistant. My answers are fixed, pre-written text; I do not generate medical advice. I can help you find your way around the app or find a demo clinician. In an emergency, call 108 / 112.",
-      suggestions: [
-        { id: "s1", label: "Explain my health profile", action_type: "navigate", payload: { path: "/health-profile" } },
-        { id: "s2", label: "What does my risk assessment mean?", action_type: "navigate", payload: { path: "/risk-assessment" } },
-        { id: "s3", label: "Help me find a demo clinician", action_type: "navigate", payload: { path: "/care-connect" } },
-      ],
-      citations: [{ source: "VITALNEX Clinical Guidance Protocol v1.0" }],
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    },
-  ]);
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: "end" });
+  }, [messages, isLoading]);
 
-  const handleSend = async (textToSend?: string) => {
-    const text = (textToSend || input).trim();
+  const send = async (raw?: string) => {
+    const text = (raw ?? input).trim();
     if (!text || isLoading) return;
-
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: "user",
-      content: text,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: "user", text }]);
     setInput("");
     setIsLoading(true);
-
     try {
-      const res = await api.sendAssistantMessage({
-        message: text,
-        language: language,
-      });
-
-      if (res) {
-        const assistantMessage: Message = {
-          id: res.id,
-          role: "assistant",
-          content: res.response,
-          escalationRecommended: res.escalation_recommended,
-          suggestions: res.suggestions,
-          citations: res.citations,
-          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
-      }
+      const res = (await api.sendAssistantMessage({ message: text, language })) as AssistantResponse;
+      setMessages((prev) => [...prev, { id: res.id, role: "assistant", kind: "reply", data: res }]);
     } catch (err) {
-      console.warn("Assistant API unavailable:", err);
-      const fallback: Message = {
-        id: `ast-offline-${Date.now()}`,
-        role: "assistant",
-        content:
-          language === "mr"
-            ? "सूचना: थेट सहाय्यक सर्व्हरशी संपर्क होऊ शकला नाही. स्थानिक सुरक्षा नियमांनुसार: तीव्र अस्वस्थता असल्यास त्वरित 108 वर संपर्क साधा किंवा आपल्या डॉक्टरांचा सल्ला घ्या."
-            : language === "hi"
-            ? "सूचना: सहायक सर्वर से संपर्क नहीं हो पाया। आपातकालीन स्थिति में तुरंत 108 पर कॉल करें अथवा अपने चिकित्सक से संपर्क करें।"
-            : "Notice: The assistant could not be reached. For acute symptoms please contact emergency services (108 / 112). For anything else, please consult a doctor.",
-        suggestions: [
-          { id: "fb-1", label: "Inspect AI Trust Passport", action_type: "navigate", payload: { path: "/ai-trust" } },
-          { id: "fb-2", label: "Discover Clinicians", action_type: "navigate", payload: { path: "/care-connect" } },
-        ],
-        citations: [],
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      };
-      setMessages((prev) => [...prev, fallback]);
+      const signIn = apiFailure(err) === "signin";
+      setMessages((prev) => [...prev, { id: `e-${Date.now()}`, role: "assistant", kind: "error", signIn }]);
     } finally {
       setIsLoading(false);
+      inputRef.current?.focus();
     }
   };
 
   const clearChat = () => {
-    setMessages([
-      {
-        id: "msg-reset",
-        role: "assistant",
-        content: "Conversation history cleared. How may I assist your health journey?",
-        suggestions: [
-          { id: "s1", label: "Explain my health profile", action_type: "navigate", payload: { path: "/health-profile" } },
-          { id: "s2", label: "Help me find a demo clinician", action_type: "navigate", payload: { path: "/care-connect" } },
-        ],
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      },
-    ]);
+    setMessages([WELCOME]);
+    inputRef.current?.focus();
+  };
+
+  const chip =
+    "rounded-xl border border-[#D8E2EA] bg-white px-3 py-1.5 text-xs font-medium text-[#0B1F33] shadow-2xs transition-colors hover:border-[#0E7490] hover:text-[#0E7490] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E7490] disabled:opacity-50";
+  const navBtn =
+    "inline-flex items-center gap-1.5 rounded-xl bg-[#0E7490] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#0C627A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E7490]";
+
+  const renderSuggestions = (items: Suggestion[]) => {
+    const visible = items.filter((s) => s.action_type !== "emergency_call"); // the emergency card has the call buttons
+    if (visible.length === 0) return null;
+    return (
+      <div className="flex flex-wrap gap-2 pt-1">
+        {visible.map((s) =>
+          s.action_type === "navigate" && s.payload?.path ? (
+            <Link key={s.id} href={s.payload.path} className={navBtn} aria-label={`${t("assistant.goTo")}: ${s.label}`}>
+              {s.label}
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          ) : (
+            <button key={s.id} type="button" className={chip} onClick={() => send(s.label)} disabled={isLoading}>
+              {s.label}
+            </button>
+          )
+        )}
+      </div>
+    );
+  };
+
+  const bubble = "rounded-2xl border border-[#D8E2EA] bg-white p-4 text-sm leading-relaxed text-[#0F172A] shadow-xs";
+
+  const renderAssistant = (m: Extract<Message, { role: "assistant" }>) => {
+    if (m.kind === "welcome") {
+      return (
+        <>
+          <div className={bubble}>
+            <p>{t("assistant.welcome")}</p>
+          </div>
+          <p className="pt-1 text-xs font-semibold text-[#475569]">{t("assistant.suggestedTitle")}</p>
+          <div className="flex flex-wrap gap-2">
+            {CHIPS.map((c) => (
+              <button key={c} type="button" className={chip} onClick={() => send(t(`assistant.chips.${c}`))} disabled={isLoading}>
+                {t(`assistant.chips.${c}`)}
+              </button>
+            ))}
+          </div>
+        </>
+      );
+    }
+    if (m.kind === "error") {
+      return (
+        <div className="rounded-2xl border border-[#FCA5A5] bg-[#FEF2F2] p-4 text-sm text-[#991B1B]">
+          <p>{m.signIn ? t("assistant.signIn") : t("assistant.error")}</p>
+        </div>
+      );
+    }
+    const d = m.data;
+    const fullEmergency = d.intent === "EMERGENCY";
+    return (
+      <>
+        {d.emergency_card && <EmergencyCard fullEmergency={fullEmergency} text={d.response} />}
+        {!fullEmergency && (
+          <div className={bubble}>
+            <p className="whitespace-pre-line">{d.response}</p>
+            {d.citations.length > 0 && (
+              <ul className="mt-3 space-y-1 border-t border-slate-200/60 pt-2 text-xs text-[#475569]">
+                {d.citations.map((c) => (
+                  <li key={c.url} className="flex items-start gap-1.5">
+                    <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#0F766E]" aria-hidden="true" />
+                    <span>
+                      {t("assistant.sources")}:{" "}
+                      <a
+                        href={c.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 font-medium text-[#0E7490] underline underline-offset-2"
+                      >
+                        {c.title}
+                        <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                      </a>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+        {renderSuggestions(d.suggestions)}
+      </>
+    );
   };
 
   return (
     <AppShell>
-      <div className="space-y-6 flex flex-col h-[calc(100vh-130px)]">
+      <div className="flex h-[calc(100vh-130px)] flex-col gap-4">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8E2EA] pb-4 shrink-0">
+        <div className="flex shrink-0 flex-col justify-between gap-3 border-b border-[#D8E2EA] pb-4 sm:flex-row sm:items-start">
           <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-xl sm:text-2xl font-extrabold text-[#0B1F33]">
-                {t("assistant.title")}
-              </h1>
-              <DemoBadge label="Agentic AI Guardrails Active" />
-            </div>
-            <p className="text-xs text-[#475569]">{t("assistant.subtitle")}</p>
+            <h1 className="text-xl font-extrabold text-[#0B1F33] sm:text-2xl">{t("assistant.title")}</h1>
+            <p className="text-xs text-[#475569] sm:text-sm">{t("assistant.subtitle")}</p>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={clearChat} leftIcon={<RotateCcw className="w-3.5 h-3.5" />}>
-              Clear Chat
-            </Button>
-            <Link href="/voice">
-              <Button variant="outline" size="sm" leftIcon={<Mic className="w-3.5 h-3.5" />}>
-                Voice Mode
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Emergency Triage Banner */}
-        <div className="p-3 bg-[#FEF2F2] rounded-xl border border-[#FCA5A5] flex items-center justify-between text-xs text-[#991B1B] shrink-0">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-[#B42318] shrink-0" />
-            <span>
-              <strong>Emergency Safeguard:</strong> {t("assistant.emergencyBanner")}
-            </span>
-          </div>
-          <span className="font-bold underline cursor-pointer">Emergency: 108</span>
-        </div>
-
-        {/* Chat Messages Container */}
-        <div className="flex-1 overflow-y-auto space-y-4 pr-1">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex items-start gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-            >
-              <div
-                className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-                  msg.role === "user" ? "bg-[#0B1F33] text-white" : "bg-[#0E7490] text-white"
-                }`}
-              >
-                {msg.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-              </div>
-
-              <div className={`space-y-2 max-w-xl ${msg.role === "user" ? "text-right" : "text-left"}`}>
-                <div
-                  className={`p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
-                    msg.role === "user"
-                      ? "bg-[#0B1F33] text-white rounded-tr-xs"
-                      : msg.escalationRecommended
-                      ? "bg-[#FEF2F2] text-[#991B1B] border border-[#F87171] rounded-tl-xs"
-                      : "bg-white text-[#0F172A] border border-[#D8E2EA] rounded-tl-xs shadow-xs"
+          <div className="flex flex-wrap items-center gap-3">
+            <div role="group" aria-label={t("assistant.languageLabel")} className="flex items-center gap-1">
+              <span className="mr-1 text-xs text-[#475569]" aria-hidden="true">
+                {t("assistant.languageLabel")}
+              </span>
+              {SUPPORTED_LANGUAGES.map((l) => (
+                <button
+                  key={l.code}
+                  type="button"
+                  lang={l.code}
+                  aria-pressed={language === l.code}
+                  onClick={() => setLanguage(l.code)}
+                  className={`h-8 rounded-lg border px-2.5 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E7490] ${
+                    language === l.code
+                      ? "border-[#0E7490] bg-[#0E7490] text-white"
+                      : "border-[#D8E2EA] bg-white text-[#0B1F33] hover:border-[#0E7490]"
                   }`}
                 >
-                  <p>{msg.content}</p>
+                  {l.nativeName}
+                </button>
+              ))}
+            </div>
+            <Button variant="ghost" size="sm" onClick={clearChat} leftIcon={<RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />}>
+              {t("assistant.clear")}
+            </Button>
+          </div>
+        </div>
 
-                  {/* Citations */}
-                  {msg.citations && msg.citations.length > 0 && (
-                    <div className="mt-3 pt-2 border-t border-slate-200/60 text-[11px] text-[#64748B] flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#0F766E]" />
-                      <span>Source: {msg.citations[0].source}</span>
-                    </div>
-                  )}
-                </div>
+        {/* Fixed-library notice + standing emergency line */}
+        <div className="shrink-0 space-y-2">
+          <div className="flex items-start gap-2 rounded-xl border border-[#BAE6FD] bg-[#F0F9FF] p-3 text-xs text-[#0B1F33]">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#0E7490]" aria-hidden="true" />
+            <p>
+              <strong>{t("assistant.notice")}</strong> {t("assistant.noticeDetail")}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#FCA5A5] bg-[#FEF2F2] p-3 text-xs text-[#991B1B]">
+            <span>{t("assistant.emergencyBanner")}</span>
+            <span className="flex gap-3 font-bold">
+              <a href="tel:108" className="underline underline-offset-2">108</a>
+              <a href="tel:112" className="underline underline-offset-2">112</a>
+            </span>
+          </div>
+        </div>
 
-                {/* Suggestions and Tool Action Cards */}
-                {msg.suggestions && msg.suggestions.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {msg.suggestions.map((sug) => (
-                      <button
-                        key={sug.id}
-                        onClick={() => handleSend(sug.label)}
-                        className="px-3 py-1.5 rounded-xl bg-white border border-[#D8E2EA] hover:border-[#0E7490] text-[#0B1F33] hover:text-[#0E7490] text-xs font-medium transition-colors shadow-2xs"
-                      >
-                        {sug.label}
-                      </button>
-                    ))}
-                  </div>
+        {/* Conversation: a log region so screen readers announce each new message */}
+        <div
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+          aria-label={t("assistant.conversationLabel")}
+          aria-busy={isLoading}
+          className="flex-1 space-y-4 overflow-y-auto pr-1"
+        >
+          {messages.map((m) => (
+            <div key={m.id} className={`flex items-start gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+              <div
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-white ${
+                  m.role === "user" ? "bg-[#0B1F33]" : "bg-[#0E7490]"
+                }`}
+                aria-hidden="true"
+              >
+                {m.role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+              </div>
+              <div className={`max-w-xl space-y-2 ${m.role === "user" ? "text-right" : ""}`}>
+                <span className="sr-only">{m.role === "user" ? t("assistant.you") : t("assistant.bot")}:</span>
+                {m.role === "user" ? (
+                  <div className="inline-block rounded-2xl bg-[#0B1F33] p-3 text-left text-sm text-white">{m.text}</div>
+                ) : (
+                  renderAssistant(m)
                 )}
-
-                <span className="text-[10px] text-[#94A3B8] px-1">{msg.timestamp}</span>
               </div>
             </div>
           ))}
-
           {isLoading && (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-[#0E7490] text-white flex items-center justify-center">
-                <Bot className="w-4 h-4 animate-pulse" />
+            <div className="flex items-center gap-3 text-xs text-[#475569]">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0E7490] text-white" aria-hidden="true">
+                <Bot className="h-4 w-4 animate-pulse" />
               </div>
-              <div className="p-3 bg-white border border-[#D8E2EA] rounded-2xl text-xs text-[#64748B] flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#0E7490] animate-ping" />
-                <span>Evaluating clinical intelligence guardrails...</span>
-              </div>
+              <span>{t("assistant.thinking")}</span>
             </div>
           )}
+          <div ref={endRef} />
         </div>
 
-        {/* Input Bar */}
-        <div className="p-3 bg-white rounded-2xl border border-[#D8E2EA] shadow-xs shrink-0 flex items-center gap-2">
+        {/* Input */}
+        <form
+          className="flex shrink-0 items-center gap-2 rounded-2xl border border-[#D8E2EA] bg-white p-3 shadow-xs"
+          onSubmit={(e) => {
+            e.preventDefault();
+            send();
+          }}
+        >
+          <label htmlFor="assistant-input" className="sr-only">
+            {t("assistant.inputLabel")}
+          </label>
           <input
+            id="assistant-input"
+            ref={inputRef}
             type="text"
             value={input}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSend();
-              }
-            }}
+            maxLength={2000}
+            autoComplete="off"
+            lang={language}
+            onChange={(e) => setInput(e.target.value)}
             placeholder={t("assistant.placeholder")}
-            className="flex-1 bg-transparent border-0 outline-none shadow-none text-xs sm:text-sm h-10 text-[#0F172A] placeholder:text-[#94A3B8]"
+            className="h-10 flex-1 rounded-lg border-0 bg-transparent px-1 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8] focus-visible:ring-2 focus-visible:ring-[#0E7490]"
           />
-
-          <Link href="/voice">
-            <button
-              type="button"
-              aria-label="Voice input"
-              className="p-2.5 rounded-xl text-[#0E7490] hover:bg-[#F1F5F9] transition-colors"
-            >
-              <Mic className="w-4 h-4" />
-            </button>
-          </Link>
-
           <Button
+            type="submit"
             size="sm"
             variant="primary"
-            onClick={() => handleSend()}
             disabled={!input.trim() || isLoading}
-            rightIcon={<Send className="w-3.5 h-3.5" />}
+            rightIcon={<Send className="h-3.5 w-3.5" aria-hidden="true" />}
           >
             {t("assistant.btnSend")}
           </Button>
-        </div>
+        </form>
       </div>
     </AppShell>
   );

@@ -1,6 +1,6 @@
 {
   "_review": "pending",
-  "_note": "Deterministic emergency red-flag list (SPEC §1.4 rule 1, §5 step 1; CLAUDE.md hard rule 8). Loaded by apps/api/core/emergency.py and used by BOTH the assessment free-text check and the assistant. Matching: text and phrases are normalised (NFC, lower-case, nukta removed, chandrabindu -> anusvara, punctuation -> space, apostrophes dropped) and a phrase matches when it starts at a word boundary (prefix match, so inflections like 'fainting' or 'बेहोशी' also match). Bare disease names ('stroke', 'heart attack', 'लकवा') are NOT on the list so that questions such as 'what is a stroke?' reach the FAQ; present-tense forms ('having a stroke', 'लकवा मार गया') are in `patterns`. Self-harm phrases are included so that they also get the 108 / 112 response.",
+  "_note": "Deterministic emergency red-flag list (SPEC §1.4 rule 1, §5 step 1; CLAUDE.md hard rule 8). Loaded by apps/api/core/emergency.py and used by BOTH the assessment free-text check and the assistant. Matching: text and phrases are normalised (NFC, lower-case, nukta removed, chandrabindu -> anusvara, punctuation -> space, apostrophes dropped) and a phrase matches when it starts at a word boundary (prefix match, so inflections like 'fainting' or 'बेहोशी' also match). Bare disease names ('stroke', 'heart attack', 'लकवा') are NOT on this full-emergency list; they are in `bare_red_flags` (D-26): the assistant shows the 108 / 112 card AND its normal answer, and the assessment free-text check treats them as a full emergency. Present-tense forms ('having a stroke', 'लकवा मार गया') are full emergencies (`patterns`). Self-harm phrases are included so that they also get the 108 / 112 response.",
   "phrases": {
     "en": [
       "chest pain",
@@ -146,7 +146,16 @@
       "dont want to live",
       "do not want to live",
       "urgent help",
-      "help me now"
+      "help me now",
+      "someone sitting on my chest",
+      "something sitting on my chest",
+      "elephant on my chest",
+      "weight on my chest",
+      "chest feels like a weight",
+      "band around my chest",
+      "chest is tight",
+      "chest feels squeezed",
+      "chest is heavy"
     ],
     "hi": [
       "सीने में दर्द",
@@ -224,7 +233,16 @@
       "मर जाऊंगी",
       "जीना नहीं चाहता",
       "जीना नहीं चाहती",
-      "बचाओ"
+      "बचाओ",
+      "सीने पर कोई बैठा",
+      "छाती पर कोई बैठा",
+      "सीने पर भार",
+      "सीने पर वजन",
+      "सीने में कसाव",
+      "छाती में कसाव",
+      "सीना जकड़",
+      "छाती जकड़",
+      "सीना दब रहा"
     ],
     "mr": [
       "छातीत दुखणे",
@@ -293,7 +311,15 @@
       "मरेन असे",
       "जगायचे नाही",
       "जगायचं नाही",
-      "वाचवा"
+      "वाचवा",
+      "छातीवर कोणीतरी बसल",
+      "छातीवर कोणी बसल",
+      "छातीवर भार",
+      "छातीवर ओझे",
+      "छातीत घट्टपणा",
+      "छाती घट्ट",
+      "छाती आवळ",
+      "छाती दाबल"
     ],
     "hi_roman": [
       "seene mein dard",
@@ -377,7 +403,18 @@
       "mar jaungi",
       "jeena nahi chahta",
       "jeena nahi chahti",
-      "bachao"
+      "bachao",
+      "seene par koi baitha",
+      "seene pe koi baitha",
+      "chhati par koi baitha",
+      "seene par bhaar",
+      "seene pe bhar",
+      "seene par vajan",
+      "seene me kasav",
+      "seene mein kasaav",
+      "seena jakad",
+      "chhati jakad",
+      "seena dab raha"
     ],
     "mr_roman": [
       "chhatit dukh",
@@ -451,7 +488,17 @@
       "marnar aahe",
       "jagayche nahi",
       "jagaycha nahi",
-      "vachva"
+      "vachva",
+      "chhativar konitari basla aahe asa vatat",
+      "chhativar konitari basla",
+      "chhativar koni basla",
+      "chativar konitari basla",
+      "chhativar bhar",
+      "chhativar ojha",
+      "chhatit ghattpana",
+      "chhati ghatt",
+      "chhati aaval",
+      "chhati dabli"
     ]
   },
   "patterns": [
@@ -527,7 +574,38 @@
         "dab",
         "jad",
         "ojh",
-        "vedana"
+        "vedana",
+        "sitting",
+        "sat on=",
+        "elephant",
+        "constrict",
+        "compress",
+        "band=",
+        "बैठ",
+        "कसाव",
+        "कसा",
+        "भार",
+        "वजन",
+        "बसल",
+        "घट्ट",
+        "आवळ",
+        "baith",
+        "baitha",
+        "kasav",
+        "kasaav",
+        "bhaar",
+        "bhar=",
+        "vajan",
+        "wajan",
+        "vazan",
+        "basla",
+        "basle",
+        "basly",
+        "ghatt",
+        "aaval",
+        "aawal",
+        "ojha",
+        "oza="
       ]
     },
     {
@@ -724,5 +802,110 @@
         "doke dukh"
       ]
     }
-  ]
+  ],
+  "_d25_note": "D-25 (P8 sign-off): added 'chhativar konitari basla aahe asa vatat' (the one emergency hold-out miss, added AFTER it was seen in ml/nlp/data/emergency_holdout.jsonl) plus 'chest heavy / pressure / someone sitting on chest / tight' wordings written independently in EN/HI/MR + romanised. No other hold-out line was copied.",
+  "bare_red_flags": {
+    "_note": "D-26: bare red-flag words. ALWAYS show the 108 / 112 card. Assistant: card + normal answer. Assessment free text (apps/api/core/emergency.text_has_red_flag): full emergency. Prefix match at a word boundary after the same normalisation as above. 'chest pain' style phrases are also on the full list.",
+    "phrases": {
+      "en": [
+        "stroke",
+        "heart attack",
+        "heartattack",
+        "cardiac arrest",
+        "chest pain",
+        "paralysis",
+        "paralys",
+        "paralyz",
+        "paralytic",
+        "brain attack",
+        "mini stroke"
+      ],
+      "hi": [
+        "स्ट्रोक",
+        "लकवा",
+        "लकवे",
+        "पक्षाघात",
+        "दिल का दौरा",
+        "दिल के दौरे",
+        "दिल का दोरा",
+        "हार्ट अटैक",
+        "हार्टअटैक",
+        "हृदयाघात",
+        "हृदय आघात",
+        "दिल की धड़कन रुक",
+        "सीने में दर्द",
+        "सीने मे दर्द",
+        "छाती में दर्द",
+        "छाती मे दर्द",
+        "कार्डियक अरेस्ट",
+        "ब्रेन स्ट्रोक",
+        "अधरंग"
+      ],
+      "mr": [
+        "स्ट्रोक",
+        "अर्धांगवायू",
+        "अर्धांगवायु",
+        "पक्षाघात",
+        "लकवा",
+        "लकव्या",
+        "हृदयविकाराचा झटका",
+        "हृदयविकाराच्या झटक",
+        "हृदयविकाराचे झटके",
+        "हार्ट अटॅक",
+        "हार्ट अटॅक",
+        "छातीत दुखणे",
+        "छातीत दुख",
+        "छातीत वेदना",
+        "मेंदूचा झटका",
+        "ब्रेन स्ट्रोक"
+      ],
+      "hi_roman": [
+        "lakwa",
+        "lakva",
+        "lakwe",
+        "lakve",
+        "laqwa",
+        "pakshaghat",
+        "paksha ghat",
+        "dil ka daura",
+        "dil ka dora",
+        "dil ke daure",
+        "dil ka dorra",
+        "heart atack",
+        "hart attack",
+        "hartattack",
+        "hriday aghat",
+        "hridayaghat",
+        "seene mein dard",
+        "seene me dard",
+        "sine me dard",
+        "sine mein dard",
+        "sene me dard",
+        "chhati mein dard",
+        "chhati me dard",
+        "chati me dard",
+        "adhrang",
+        "brain stroke"
+      ],
+      "mr_roman": [
+        "ardhangvayu",
+        "ardhangwayu",
+        "ardhangavayu",
+        "ardhang vayu",
+        "pakshaghat",
+        "lakwa",
+        "hrudayvikaracha jhatka",
+        "hrudayvikarachya jhatk",
+        "hriday vikaracha jhatka",
+        "hridayvikaracha jhatka",
+        "hruday vikaracha jhatka",
+        "chhatit dukh",
+        "chatit dukh",
+        "chhatit dukhte",
+        "chhatit dukhne",
+        "chhatit vedana",
+        "menducha jhatka"
+      ]
+    }
+  }
 }

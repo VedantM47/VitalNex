@@ -835,7 +835,8 @@
     "pipeline": 0.9667,
     "missed": [
       "chhativar konitari basla aahe asa vatat"
-    ]
+    ],
+    "frozen": "P8 sign-off, before the D-25 rule additions (rules never tuned on the hold-out)"
   },
   "faq": {
     "entries_per_language": 59,
@@ -1292,8 +1293,9 @@
   },
   "rules": {
     "emergency_file": "ml/nlp/data/emergency_phrases.json",
+    "emergency_file_sha256": "eaf55e86bc180c605530d4de9beec3554f3f3807d5e875a753a81c1aab13a4c1",
     "medication_file": "ml/nlp/data/medication_phrases.json",
-    "note": "Rule lists were extended once after the first look at test-set misses (see model card); emergency_holdout.jsonl was written afterwards and was NOT used to tune anything."
+    "note": "Rule lists were extended once after the first look at test-set misses (see model card); emergency_holdout.jsonl was written afterwards and was NOT used to tune anything up to the P8 sign-off. D-25: after sign-off ONE hold-out miss ('chhativar konitari basla aahe asa vatat') was added to the rules after being seen, together with independently written 'chest heavy / pressure / someone sitting on chest / tight' wordings, so hold-out results on the current rules are no longer untuned. D-26: bare red-flag words always show the 108 / 112 card."
   },
   "libraries": {
     "python": "3.13.0",
@@ -1303,5 +1305,22 @@
     "transformers": "5.7.0",
     "numpy": "2.2.0"
   },
-  "train_seconds_total": 61.1
+  "train_seconds_total": 61.1,
+  "emergency_holdout_current_rules": {
+    "n": 30,
+    "rules_only": 0.5667,
+    "classifier_only": 0.9667,
+    "pipeline": 1.0,
+    "card_shown": 1.0,
+    "missed": []
+  },
+  "emergency_card_d26": {
+    "full_emergency_rate_non_emergency": 0.0167,
+    "card_rate_non_emergency": 0.06,
+    "card_but_normal_answer_non_emergency": 13,
+    "n_non_emergency": 300,
+    "emergency_recall_with_card": 1.0,
+    "rule": "D-26: bare red-flag words (bare_red_flags in emergency_phrases.json) always show the card; the assistant still gives its normal answer below it."
+  },
+  "rules_refreshed_at": "2026-10-28T14:31:15+00:00"
 }

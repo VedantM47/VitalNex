@@ -268,3 +268,16 @@ def test_pune_rows_contradictory_or_out_of_range_never_fixed(db):
         assert post({**base, "age": 15}).status_code == 422
         warn = post({**base, "gen_health": 1, "phys_health_days": 25}).json()
         assert {"code": "excellent_health_but_many_unwell_days"} in warn["data_quality"]["warnings"]
+
+
+@pytest.mark.parametrize("word", ["stroke", "heart attack", "paralysis", "लकवा", "स्ट्रोक", "दिल का दौरा",
+                                  "अर्धांगवायू", "पक्षाघात", "हृदयविकाराचा झटका", "lakwa", "dil ka daura",
+                                  "ardhangvayu"])
+def test_bare_red_flag_word_in_free_text_is_a_full_emergency(db, monkeypatch, word):
+    """D-26: in the assessment free-text box a bare red-flag word counts as a full emergency."""
+    def boom(*a, **k):
+        raise AssertionError("models must not run for an emergency")
+
+    monkeypatch.setattr(screening, "score", boom)
+    body = post({**LOW, "free_text": f"worried about {word}"}).json()
+    assert body["next_step"] == "emergency" and body["emergency"] and body["results"] == {}

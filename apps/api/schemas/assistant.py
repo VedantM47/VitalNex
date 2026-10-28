@@ -38,6 +38,10 @@ class AssistantMessageResponse(BaseModel):
     suggestions: List[ActionSuggestion] = []
     citations: List[Dict[str, str]] = []  # {"title", "url"} for FAQ / guidance answers
     escalation_recommended: bool = False
+    # D-26: show the 108 / 112 emergency card above the reply. True for a full emergency (then `response`
+    # is the emergency text only) and for a bare red-flag word such as "stroke" (then `response` is the
+    # normal answer, shown below the card).
+    emergency_card: bool = False
     disclaimer: str = (
         "Answers come from a fixed, reviewed library — VITALNEX does not generate medical advice. "
         "In an emergency call 108 / 112."

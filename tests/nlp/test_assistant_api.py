@@ -239,3 +239,79 @@ def test_explain_result_reads_latest_assessment(db):
     assert data["intent"] == "EXPLAIN_RESULT"
     assert "moderate band" in data["response"]
     assert_logged_without_text(db, "please explain my screening result")
+
+
+# ---------------------------------------------------------------- D-26: bare red-flag words
+
+@pytest.mark.parametrize("message,lang", [
+    ("I have crushing chest pain", "en"), ("सीने में बहुत तेज़ दर्द है", "hi"),
+    ("chhativar konitari basla aahe asa vatat", "mr"),
+])
+def test_full_emergency_keeps_emergency_only_reply_with_card(db, message, lang):
+    data = ask(message, lang)
+    assert data["intent"] == "EMERGENCY" and data["emergency_card"] is True
+    assert data["response"] == svc.content("assistant", lang)["emergency"]
+
+
+@pytest.mark.parametrize("message,lang", [
+    ("stroke medicine dose", "en"), ("लकवा की दवा कितनी लें", "hi"), ("ardhangvayu sathi konti goli ghyavi", "mr"),
+])
+def test_bare_word_with_medicine_request_shows_card_and_still_refuses(db, message, lang):
+    data = ask(message, lang)
+    assert data["emergency_card"] is True
+    assert data["intent"] == "MEDICATION_REQUEST"
+    assert data["response"] == svc.content("assistant", lang)["medication_refusal"]
+    assert_logged_without_text(db, message)
+    assert db.inserts[-1][1]["emergency_flag"] is True
+
+
+def test_bare_word_shows_card_even_when_classifier_is_unavailable(db, monkeypatch):
+    def broken():
+        raise FileNotFoundError("no artifact")
+
+    monkeypatch.setattr(svc, "load_classifier", broken)
+    data = ask("what is a stroke?")
+    assert data["intent"] == "UNAVAILABLE" and data["emergency_card"] is True
+
+
+def test_no_card_on_ordinary_message_rule_path(db):
+    data = ask("how much metformin should I take")
+    assert data["emergency_card"] is False
+
+
+@needs_model
+@pytest.mark.parametrize("message,lang", [
+    ("what is a stroke?", "en"), ("what are the warning signs of a heart attack", "en"),
+    ("स्ट्रोक क्या होता है", "hi"), ("lakwa kya hota hai", "hi"),
+    ("पक्षाघात म्हणजे काय", "mr"), ("what causes a stroke", "en"),
+])
+def test_bare_word_question_shows_card_and_normal_answer(db, message, lang):
+    data = ask(message, lang)
+    assert data["emergency_card"] is True
+    assert data["intent"] != "EMERGENCY"
+    assert data["response"] != svc.content("assistant", lang)["emergency"]  # the normal answer is still there
+    assert data["response"].strip()
+    assert_logged_without_text(db, message)
+
+
+@needs_model
+def test_bare_word_faq_answer_keeps_its_source(db):
+    data = ask("what is a stroke?")
+    assert data["emergency_card"] is True and data["intent"] == "DISEASE_INFO"
+    if data["details"].get("faq_id"):
+        assert data["citations"] and data["citations"][0]["url"].startswith("https://")
+
+
+@needs_model
+def test_no_card_on_ordinary_questions(db):
+    for m in ("what is prediabetes?", "book an appointment", "hello"):
+        assert ask(m)["emergency_card"] is False, m
+
+
+@needs_model
+@pytest.mark.parametrize("message", ["stroke", "hrudayvikaracha jhatka mhanje kay", "ardhangvayu mhanje kay"])
+def test_card_is_shown_even_when_the_classifier_backstop_escalates(db, message):
+    """Known, accepted behaviour: the approved classifier emergency backstop (P(EMERGENCY) >= 0.05) can turn a
+    bare-word question into an emergency-only reply. The card is always shown either way."""
+    data = ask(message, "mr" if " " in message else "en")
+    assert data["emergency_card"] is True
