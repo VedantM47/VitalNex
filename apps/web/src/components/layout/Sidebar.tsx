@@ -16,6 +16,7 @@ import {
   Settings,
   Lock,
   ChevronRight,
+  BookOpen,
 } from "lucide-react";
 import { useTranslation } from "../../lib/i18n";
 import { useAuth } from "../../lib/auth-context";
@@ -52,6 +53,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
   const adminNav = [
     { label: t("nav.adminDashboard"), href: "/admin/dashboard", icon: LayoutDashboard },
     { label: t("nav.adminGovernance"), href: "/admin/governance", icon: Lock },
+    { label: t("nav.adminDocs"), href: "/admin/docs", icon: BookOpen },
   ];
 
   const renderNavLink = (item: { label: string; href: string; icon: any }) => {

@@ -29,7 +29,8 @@
     "doctorPatients": "Patients & reviews",
     "doctorAppointments": "Appointments",
     "adminDashboard": "Admin overview",
-    "adminGovernance": "Governance & audit"
+    "adminGovernance": "Governance & audit",
+    "adminDocs": "Documentation"
   },
   "dashboard": {
     "welcome": "Good morning",
@@ -1110,7 +1111,8 @@
     "settings": "Settings and my data",
     "disclaimerLabel": "Not a diagnosis:",
     "disclaimer": "VITALNEX is a research and decision-support prototype. It does not diagnose disease, does not recommend medicines and does not replace a qualified doctor. In an emergency call 108 / 112 (India).",
-    "copyright": "© {year} VITALNEX."
+    "copyright": "© {year} VITALNEX.",
+    "docs": "Documentation"
   },
   "landing": {
     "navFeatures": "What it does",
@@ -1163,7 +1165,12 @@
     "langSource": "Source language",
     "langReview": "Wording review pending",
     "ctaTitle": "Try the demo",
-    "ctaBody": "Use a dummy account. Please do not enter real personal health data."
+    "ctaBody": "Use a dummy account. Please do not enter real personal health data.",
+    "navDocs": "Documentation",
+    "docsKicker": "Documentation",
+    "docsTitle": "Read how VITALNEX works, in plain words",
+    "docsBody": "Step-by-step guides for every feature, with screenshots, the safety rules, the models and data behind it, and how it follows the seven NITI Aayog principles for responsible AI. The documentation is written in English.",
+    "docsCta": "Open the documentation"
   },
   "onboarding": {
     "title": "Welcome to VITALNEX",
@@ -1176,5 +1183,16 @@
     "step3Body": "Your answers are used only for the screening. Questions you do not answer stay empty; nothing is filled in for you.",
     "step3Button": "Go to my health profile",
     "skip": "Go to my dashboard"
+  },
+  "docs": {
+    "title": "Documentation",
+    "pages": "Documentation pages",
+    "search": "Search the docs",
+    "noResults": "No page matches your search.",
+    "notFound": "This documentation page does not exist.",
+    "previous": "Previous",
+    "next": "Next",
+    "onThisPage": "On this page",
+    "backHome": "Home"
   }
 }

@@ -1,0 +1,280 @@
+{
+  "_hints": "All shots as admin@vitalnex.demo; nothing creates data. The governance page scrolls inside <main>; each mark scrolls itself into view, so keep marks of one shot close together. gov-activity switches the period to 365 days (view-only) so the chart has data; if the chart is still empty, the 'No screenings in this period.' text appears instead of the chart and the 'Show as table' summary is missing - then mark that text as 2 and drop mark 3 (tell the writer). gov-audit uses a tall viewport so the filters, header and pager fit in one picture; if the pager is still off-screen, re-run with a larger height. The fairness section is long; marks 1-4 all target the first condition's first table (Sex). docs-page / docs-search need width >= 1280 for 'On this page' to show.",
+  "out_dir": "apps/web/public/docs/admin-console",
+  "shots": [
+    {
+      "name": "admin-dashboard",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/dashboard",
+      "steps": [
+        {
+          "wait_for": "text=Clinician agree rate"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main div.grid > div:has-text('Models loaded')",
+          "n": 1
+        },
+        {
+          "selector": "main div.grid > div:has-text('Screenings counted')",
+          "n": 2
+        },
+        {
+          "selector": "main div.grid > div:has-text('Pending clinician reviews')",
+          "n": 3
+        },
+        {
+          "selector": "main div.grid > div:has-text('Clinician agree rate')",
+          "n": 4
+        },
+        {
+          "selector": "main a[href='/admin/governance']",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "name": "gov-registry",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/governance",
+      "steps": [
+        {
+          "wait_for": "#registry table"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main nav[aria-label='On this page']",
+          "n": 1
+        },
+        {
+          "selector": "#registry thead",
+          "n": 2
+        },
+        {
+          "selector": "#registry a:has-text('Model card') >> nth=0",
+          "n": 3
+        },
+        {
+          "selector": "#registry details >> nth=0",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "gov-fairness",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/governance",
+      "steps": [
+        {
+          "wait_for": "#fairness table"
+        },
+        {
+          "scroll_to": "#fairness"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#fairness h3:has-text('Diabetes or prediabetes') >> nth=0",
+          "n": 1
+        },
+        {
+          "selector": "#fairness table caption >> nth=0",
+          "n": 2
+        },
+        {
+          "selector": "#fairness table thead >> nth=0",
+          "n": 3
+        },
+        {
+          "selector": "#fairness div.rounded-xl > p >> nth=0",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "gov-overrides",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/governance",
+      "steps": [
+        {
+          "wait_for": "#overrides dl"
+        },
+        {
+          "scroll_to": "#overrides"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#overrides dl >> nth=0",
+          "n": 1
+        },
+        {
+          "selector": "#overrides table",
+          "n": 2
+        },
+        {
+          "selector": "#overrides h3:has-text('Overrides per reason')",
+          "n": 3
+        },
+        {
+          "selector": "#overrides h3:has-text('Direction')",
+          "n": 4
+        },
+        {
+          "selector": "#overrides h3:has-text('Why cases entered the queue')",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "name": "gov-activity",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/governance",
+      "steps": [
+        {
+          "scroll_to": "#activity"
+        },
+        {
+          "select": [
+            "#act-days",
+            "365"
+          ]
+        },
+        {
+          "wait": 2500
+        },
+        {
+          "scroll_to": "#activity"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#act-days",
+          "n": 1
+        },
+        {
+          "selector": "#activity div[role='img']",
+          "n": 2
+        },
+        {
+          "selector": "#activity summary:has-text('Show as table')",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "gov-consents",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/governance",
+      "steps": [
+        {
+          "wait_for": "#consents table"
+        },
+        {
+          "scroll_to": "#consents"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#consents p:has-text('Patient accounts')",
+          "n": 1
+        },
+        {
+          "selector": "#consents table",
+          "n": 2
+        },
+        {
+          "selector": "#consents div:has(> h3:has-text('QR shares'))",
+          "n": 3
+        },
+        {
+          "selector": "#consents div:has(> h3:has-text('Data requests'))",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "gov-audit",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/governance",
+      "height": 2000,
+      "steps": [
+        {
+          "wait_for": "#audit table"
+        },
+        {
+          "scroll_to": "#audit"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#audit form",
+          "n": 1
+        },
+        {
+          "selector": "#audit table thead",
+          "n": 2
+        },
+        {
+          "selector": "#audit div:has(> span[aria-live='polite'])",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "docs-page",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/docs/admin-console",
+      "steps": [
+        {
+          "wait_for": "aside[aria-label='On this page']"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "nav[aria-label='Documentation pages']",
+          "n": 1
+        },
+        {
+          "selector": "nav[aria-label='Documentation pages'] input[type=search]",
+          "n": 2
+        },
+        {
+          "selector": "aside[aria-label='On this page']",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "docs-search",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/docs/admin-console",
+      "steps": [
+        {
+          "fill": [
+            "nav[aria-label='Documentation pages'] input[type=search]",
+            "override"
+          ]
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "nav[aria-label='Documentation pages'] input[type=search]",
+          "n": 1
+        },
+        {
+          "selector": "nav[aria-label='Documentation pages'] div.space-y-1 >> nth=0",
+          "n": 2
+        }
+      ]
+    }
+  ]
+}

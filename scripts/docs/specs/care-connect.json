@@ -1,0 +1,185 @@
+{
+  "out_dir": "apps/web/public/docs/care-connect",
+  "_hints": "Slot drop-downs are native <select>s whose option values are slot UUIDs, so pick a slot with keyboard steps (focus the select, ArrowDown, Enter) instead of select_option. Doctors are sorted by name: Dr. Anand Joshi (Demo) is the first card when 'All specialties' is chosen. If a card says 'No free slots in the next 14 days', the demo slots have run out; run `python supabase/seed/seed_demo.py` (idempotent) or use another doctor. Shot 'booked' CREATES one booking for patient4 and must run before 'appointments' (same account). Do not cancel it: cancelling uses a window.confirm dialog. If patient4 already has an upcoming booking, 'booked' can be skipped and 'appointments' still works. 'overview' uses patient1; mark 3 boxes the upcoming card whether it is empty or not.",
+  "shots": [
+    {
+      "name": "overview",
+      "account": "patient1@vitalnex.demo",
+      "path": "/care-connect",
+      "steps": [
+        {
+          "wait_for": "text=Dr. Anand Joshi (Demo)"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "text=All doctors and time slots here are synthetic demo data",
+          "n": 1
+        },
+        {
+          "selector": "text=This is not for emergencies",
+          "n": 2
+        },
+        {
+          "selector": "div.rounded-2xl:has(> div h3:has-text('Your upcoming appointments'))",
+          "n": 3
+        },
+        {
+          "selector": "role=combobox[name='Specialty']",
+          "n": 4
+        },
+        {
+          "selector": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi'))",
+          "n": 5
+        }
+      ],
+      "width": 1440,
+      "height": 1080
+    },
+    {
+      "name": "doctor-card",
+      "account": "patient1@vitalnex.demo",
+      "path": "/care-connect",
+      "steps": [
+        {
+          "wait_for": "text=Dr. Anand Joshi (Demo)"
+        },
+        {
+          "scroll_to": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi'))"
+        },
+        {
+          "click": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi')) select"
+        },
+        {
+          "press": "ArrowDown"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait": 500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "h2:has-text('Dr. Anand Joshi')",
+          "n": 1
+        },
+        {
+          "selector": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi')) p:has-text('Cardiology')",
+          "n": 2
+        },
+        {
+          "selector": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi')) ul",
+          "n": 3
+        },
+        {
+          "selector": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi')) select",
+          "n": 4
+        },
+        {
+          "selector": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi')) button:has-text('Book this slot')",
+          "n": 5
+        }
+      ],
+      "clip": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi'))"
+    },
+    {
+      "name": "suggested",
+      "account": "patient1@vitalnex.demo",
+      "path": "/care-connect?specialty=cardiology",
+      "steps": [
+        {
+          "wait_for": "text=Pre-selected from your screening result"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "role=combobox[name='Specialty']",
+          "n": 1
+        },
+        {
+          "selector": "text=Pre-selected from your screening result",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "name": "booked",
+      "_note": "creates data: books one demo slot with Dr. Anand Joshi (Demo) as patient4. Do not cancel it. Captured once on 2026-10-30 (booking for 30 Oct 2026 10:00); the upcoming list had not refreshed yet in that capture, hence the extra wait_for for any future run.",
+      "account": "patient4@vitalnex.demo",
+      "path": "/care-connect",
+      "steps": [
+        {
+          "wait_for": "text=Dr. Anand Joshi (Demo)"
+        },
+        {
+          "click": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi')) select"
+        },
+        {
+          "press": "ArrowDown"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait": 500
+        },
+        {
+          "click": "div.rounded-2xl:has(> div h2:has-text('Dr. Anand Joshi')) button:has-text('Book this slot')"
+        },
+        {
+          "wait_for": "text=Booked (demo) with"
+        },
+        {
+          "wait_for": "div.rounded-2xl:has(> div h3:has-text('Your upcoming appointments')) >> text=Reference:"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "text=Booked (demo) with",
+          "n": 1
+        },
+        {
+          "selector": "div.rounded-2xl:has(> div h3:has-text('Your upcoming appointments'))",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "name": "appointments",
+      "account": "patient4@vitalnex.demo",
+      "path": "/appointments",
+      "steps": [
+        {
+          "wait_for": "text=Reference:"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main a[href='/care-connect']",
+          "n": 1
+        },
+        {
+          "selector": "role=tablist",
+          "n": 2
+        },
+        {
+          "selector": "div.rounded-2xl:has(> div p:has-text('(Demo)'))",
+          "n": 3
+        },
+        {
+          "selector": "main >> text=\"Booked\"",
+          "n": 4
+        },
+        {
+          "selector": "role=button[name='Cancel appointment']",
+          "n": 5
+        }
+      ]
+    }
+  ]
+}

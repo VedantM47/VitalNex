@@ -1,0 +1,69 @@
+{
+  "_hints": "Two shots, both as patient1 (English). language-selector: the globe button in the top bar opens a dropdown (role=listbox); do NOT click an option, so the language stays English. settings-consent: /settings shows the Language card, then the Consents cards (one role=switch button per purpose, labelled Withdraw or Turn on), then the 'Download a copy of my data' card. A tall viewport is used so all three marks fit in one screen; if the export button is still off-screen, raise height or drop mark 3 and tell the writer. Do not press any consent button or the delete button.",
+  "out_dir": "apps/web/public/docs/faq",
+  "shots": [
+    {
+      "name": "language-selector",
+      "account": "patient1@vitalnex.demo",
+      "path": "/dashboard",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "header button[aria-label='Choose the interface language']"
+        },
+        {
+          "click": "header button[aria-label='Choose the interface language']"
+        },
+        {
+          "wait_for": "[role=listbox]"
+        },
+        {
+          "wait": 400
+        }
+      ],
+      "marks": [
+        {
+          "selector": "header button[aria-label='Choose the interface language']",
+          "n": 1
+        },
+        {
+          "selector": "[role=listbox]",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "name": "settings-consent",
+      "account": "patient1@vitalnex.demo",
+      "path": "/settings",
+      "width": 1440,
+      "height": 1700,
+      "steps": [
+        {
+          "wait_for": "select#ui-lang"
+        },
+        {
+          "wait_for": "[role=switch]"
+        },
+        {
+          "wait": 500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "select#ui-lang",
+          "n": 1
+        },
+        {
+          "selector": "[role=switch]",
+          "n": 2
+        },
+        {
+          "selector": "button:has-text('Download JSON')",
+          "n": 3
+        }
+      ]
+    }
+  ]
+}

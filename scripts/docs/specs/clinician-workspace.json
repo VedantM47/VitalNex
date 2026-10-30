@@ -1,0 +1,283 @@
+{
+  "out_dir": "apps/web/public/docs/clinician-workspace",
+  "_hints": "All shots are read-only: never press 'Save review' or any appointment button (Confirm / Mark completed / Cancel booking). Every clinician sees the same review queue (consenting patients), so dr.khan works if dr.joshi shows nothing. The case shots open the first PENDING queue card whose reasons include 'High screening level' so the three condition cards are present (emergency cases have no condition cards). If no such card exists, fall back to the first pending card (selector a[href^='/doctor/cases/']); if there are no pending cases at all the review form is replaced by 'This case has been reviewed' and the two form shots cannot be made - report it. Appointments: no bookings are seeded; if the page shows the 'No appointments' empty state, capture that (the page text already covers it). If case-model-output does not fit the viewport, increase height.",
+  "shots": [
+    {
+      "name": "dashboard",
+      "account": "dr.joshi@vitalnex.demo",
+      "path": "/doctor/dashboard",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "text=Most recent pending cases"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main div.rounded-2xl:has(p:text-is('Pending reviews'))",
+          "n": 1
+        },
+        {
+          "selector": "main div.rounded-2xl:has(p:text-is(\"Today's appointments\"))",
+          "n": 2
+        },
+        {
+          "selector": "main div.rounded-2xl:has-text('Most recent pending cases')",
+          "n": 3
+        },
+        {
+          "selector": "main a[href='/doctor/patients']",
+          "n": 4
+        },
+        {
+          "selector": "aside div.space-y-1:has(a[href='/doctor/dashboard'])",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "name": "queue",
+      "account": "dr.joshi@vitalnex.demo",
+      "path": "/doctor/patients",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "#panel-queue"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "[role=tablist]",
+          "n": 1
+        },
+        {
+          "selector": "#status-filter",
+          "n": 2
+        },
+        {
+          "selector": "#panel-queue ul > li",
+          "n": 3
+        },
+        {
+          "selector": "#panel-queue ul > li >> text=Why it is here",
+          "n": 4
+        },
+        {
+          "selector": "#panel-queue a[href^='/doctor/cases/']",
+          "n": 5
+        },
+        {
+          "selector": "main button:has-text('Refresh')",
+          "n": 6
+        }
+      ]
+    },
+    {
+      "name": "patients",
+      "account": "dr.joshi@vitalnex.demo",
+      "path": "/doctor/patients",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "click": "#tab-patients"
+        },
+        {
+          "wait_for": "#panel-patients table"
+        },
+        {
+          "wait": 1000
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#tab-patients",
+          "n": 1
+        },
+        {
+          "selector": "text=Only patients who agreed to share with clinicians are shown.",
+          "n": 2
+        },
+        {
+          "selector": "#panel-patients table",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "case-model-output",
+      "account": "dr.joshi@vitalnex.demo",
+      "path": "/doctor/patients",
+      "width": 1440,
+      "height": 1300,
+      "steps": [
+        {
+          "wait_for": "#panel-queue a[href^='/doctor/cases/']"
+        },
+        {
+          "click": "#panel-queue li:has-text('High screening level') a[href^='/doctor/cases/']"
+        },
+        {
+          "wait_for": "text=3. Model's level"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main h1:has-text('Case review')",
+          "n": 1
+        },
+        {
+          "selector": "main div.rounded-2xl:has(> p:text-is('Next step shown to the patient'))",
+          "n": 2
+        },
+        {
+          "selector": "text=For each condition, the main factors",
+          "n": 3
+        },
+        {
+          "selector": "section:has(> h3:text-is('1. Main factors (SHAP)'))",
+          "n": 4
+        },
+        {
+          "selector": "section:has(> h3:text-is('2. Uncertainty'))",
+          "n": 5
+        },
+        {
+          "selector": "section:has(> h3:text-is(\"3. Model's level\"))",
+          "n": 6
+        }
+      ]
+    },
+    {
+      "name": "case-review-form",
+      "account": "dr.joshi@vitalnex.demo",
+      "path": "/doctor/patients",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "#panel-queue a[href^='/doctor/cases/']"
+        },
+        {
+          "click": "#panel-queue li:has-text('High screening level') a[href^='/doctor/cases/']"
+        },
+        {
+          "wait_for": "#patient-note"
+        },
+        {
+          "scroll_to": "#patient-note"
+        },
+        {
+          "wait": 1000
+        }
+      ],
+      "marks": [
+        {
+          "selector": "text=Overrides are logged for accountability",
+          "n": 1
+        },
+        {
+          "selector": "fieldset:has(> legend:text-is('Decision'))",
+          "n": 2
+        },
+        {
+          "selector": "#patient-note",
+          "n": 3
+        },
+        {
+          "selector": "form button[type=submit]",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "case-override",
+      "account": "dr.joshi@vitalnex.demo",
+      "path": "/doctor/patients",
+      "width": 1440,
+      "height": 1000,
+      "_note": "Changes form fields only (radio + checkbox). Does NOT submit; nothing is saved.",
+      "steps": [
+        {
+          "wait_for": "#panel-queue a[href^='/doctor/cases/']"
+        },
+        {
+          "click": "#panel-queue li:has-text('High screening level') a[href^='/doctor/cases/']"
+        },
+        {
+          "wait_for": "#patient-note"
+        },
+        {
+          "click": "input[name=decision][value=override]"
+        },
+        {
+          "check": "form fieldset input[type=checkbox]"
+        },
+        {
+          "wait_for": "select[id^='reason-']"
+        },
+        {
+          "scroll_to": "select[id^='band-']"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "label:has(input[name=decision][value=override])",
+          "n": 1
+        },
+        {
+          "selector": "form fieldset:has(input[type=checkbox])",
+          "n": 2
+        },
+        {
+          "selector": "select[id^='band-']",
+          "n": 3
+        },
+        {
+          "selector": "select[id^='reason-']",
+          "n": 4
+        },
+        {
+          "selector": "input[id^='rnote-']",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "name": "appointments",
+      "account": "dr.joshi@vitalnex.demo",
+      "path": "/doctor/appointments",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait": 2500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main div.border-b:has(h1)",
+          "n": 1
+        },
+        {
+          "selector": "main ul.space-y-4 > li:first-child, main :text('No appointments')",
+          "n": 2
+        }
+      ]
+    }
+  ]
+}

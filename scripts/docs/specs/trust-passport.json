@@ -1,0 +1,259 @@
+{
+  "out_dir": "apps/web/public/docs/trust-passport",
+  "_hints": "/ai-trust loads two API calls; wait for '#what' / '#principles ul' before marking. The principle map loads separately from the rest. share-created CREATES a share link for patient1 (1 hour, Latest screening levels only). For share-public you need a real token: create a 1-hour share as patient1 (e.g. run share-created, or POST /api/v1/shares), read the full URL from input#share-url (the token is shown once), put the token in share-public's path in place of REPLACE_WITH_TOKEN, capture it SIGNED OUT (no account), then revoke that link in /reports (Revoke button) so it does not stay active. patient1 should have store_history ON and saved screenings; if the share page says history is hidden, use patient4. If share-public cannot be made, capture /share/invalid-link-example-000000000000000000000 instead (shows 'This link is not valid') and tell the writer.",
+  "shots": [
+    {
+      "name": "trust-top",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-trust",
+      "steps": [
+        {
+          "wait_for": "#what"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "h1:text-is('AI Trust Passport')",
+          "n": 1
+        },
+        {
+          "selector": "nav[aria-label='On this page']",
+          "n": 2
+        },
+        {
+          "selector": "#what",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "trust-models",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-trust",
+      "height": 1300,
+      "steps": [
+        {
+          "wait_for": "#m-diabetes"
+        },
+        {
+          "scroll_to": "#m-diabetes"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#m-diabetes",
+          "n": 1
+        },
+        {
+          "selector": "#models div:has(> dt:text-is('Chosen model')) >> nth=0",
+          "n": 2
+        },
+        {
+          "selector": "#models div:has(> dt:text-is('AUROC (95% CI)')) >> nth=0",
+          "n": 3
+        },
+        {
+          "selector": "#models div:has(> dt:text-is('Miss rate in the Low band')) >> nth=0",
+          "n": 4
+        },
+        {
+          "selector": "#models table >> nth=0",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "name": "trust-fairness",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-trust",
+      "steps": [
+        {
+          "wait_for": "#fairness"
+        },
+        {
+          "scroll_to": "#fairness"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#fairness ul > li >> nth=0",
+          "n": 1
+        },
+        {
+          "selector": "#fairness details summary >> nth=0",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "name": "trust-principles",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-trust",
+      "height": 1300,
+      "steps": [
+        {
+          "wait_for": "button[aria-controls='ev-privacy_security']"
+        },
+        {
+          "click": "button[aria-controls='ev-privacy_security']"
+        },
+        {
+          "wait_for": "#ev-privacy_security"
+        },
+        {
+          "scroll_to": "#principles li:has(> h3:text-is('Privacy and Security'))"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#principles li:has(> h3:text-is('Privacy and Security'))",
+          "n": 1,
+          "pad": 10
+        },
+        {
+          "selector": "#principles li:has(> h3:text-is('Privacy and Security')) div:has(> p:text-is('Implemented by'))",
+          "n": 2
+        },
+        {
+          "selector": "#principles li:has(> h3:text-is('Privacy and Security')) div:has(> button[aria-controls='ev-privacy_security'])",
+          "n": 3
+        },
+        {
+          "selector": "#ev-privacy_security",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "consent-centre",
+      "account": "patient1@vitalnex.demo",
+      "path": "/settings",
+      "height": 1200,
+      "steps": [
+        {
+          "wait_for": "li[aria-labelledby='consent-store_history']"
+        },
+        {
+          "scroll_to": "#mydata-h"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "li[aria-labelledby='consent-assessment_processing'] h3 + div",
+          "n": 1
+        },
+        {
+          "selector": "li[aria-labelledby='consent-store_history'] h3 + div",
+          "n": 2
+        },
+        {
+          "selector": "li[aria-labelledby='consent-store_history'] button[aria-describedby='consent-store_history-notice']",
+          "n": 3
+        },
+        {
+          "selector": "li[aria-labelledby='consent-store_history'] >> text=/^If off:/",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "share-form",
+      "account": "patient1@vitalnex.demo",
+      "path": "/reports",
+      "height": 1100,
+      "steps": [
+        {
+          "wait_for": "button:has-text('Create link and QR')"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "fieldset:has(legend:text-is('What to include'))",
+          "n": 1
+        },
+        {
+          "selector": "fieldset:has(legend:text-is('Link works for'))",
+          "n": 2
+        },
+        {
+          "selector": "button:has-text('Create link and QR')",
+          "n": 3
+        },
+        {
+          "selector": "h3:text-is('Your share links')",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "share-created",
+      "_note": "creates data: a 1-hour share link for patient1 (Latest screening levels). Revoke it afterwards in /reports.",
+      "account": "patient1@vitalnex.demo",
+      "path": "/reports",
+      "height": 1100,
+      "steps": [
+        {
+          "wait_for": "button:has-text('Create link and QR')"
+        },
+        {
+          "check": "input[name=expiry][value='1h']"
+        },
+        {
+          "click": "button:has-text('Create link and QR')"
+        },
+        {
+          "wait_for": "#share-url"
+        },
+        {
+          "scroll_to": "img[alt='QR code for your share link']"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "img[alt='QR code for your share link']",
+          "n": 1
+        },
+        {
+          "selector": "#share-url",
+          "n": 2
+        },
+        {
+          "selector": "button:has-text('Copy link')",
+          "n": 3
+        },
+        {
+          "selector": "button:has-text('Revoke') >> nth=0",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "share-public",
+      "_note": "needs a real token from a share created as patient1; capture signed out, then revoke the link",
+      "path": "/share/clJJobVbpurRITDIe-4GXUCRWsk69wB5Zatl_1LO0VA",
+      "height": 1000,
+      "steps": [
+        {
+          "wait_for": "text=\"Shared screening summary\""
+        },
+        {
+          "wait_for": "main [role=status]"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main [role=status] >> nth=0",
+          "n": 1
+        },
+        {
+          "selector": "main [role=status] >> nth=1",
+          "n": 2
+        },
+        {
+          "selector": "text=\"Latest screening\"",
+          "n": 3
+        }
+      ]
+    }
+  ]
+}

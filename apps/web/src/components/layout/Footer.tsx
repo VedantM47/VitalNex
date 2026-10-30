@@ -16,6 +16,7 @@ export function Footer() {
         { href: "/ai-trust", label: "footer.trust" },
         { href: "/health-profile", label: "footer.profile" },
         { href: "/care-connect", label: "footer.care" },
+        { href: "/documentation", label: "footer.docs" },
       ],
     },
     { title: "footer.governance", links: [{ href: "/admin/governance", label: "footer.audit" }] },

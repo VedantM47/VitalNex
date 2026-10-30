@@ -5,7 +5,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Activity, ArrowRight, CheckCircle2, Globe, Lock, ShieldCheck, Stethoscope, Users } from "lucide-react";
+import { Activity, ArrowRight, BookOpen, CheckCircle2, Globe, Lock, ShieldCheck, Stethoscope, Users } from "lucide-react";
 import { BrandLogo } from "../components/layout/BrandLogo";
 import { LanguageSelector } from "../components/ui/LanguageSelector";
 import { Button } from "../components/ui/Button";
@@ -13,6 +13,7 @@ import { Card } from "../components/ui/Card";
 import { DemoBadge } from "../components/ui/StatusBadge";
 import { Footer } from "../components/layout/Footer";
 import { SUPPORTED_LANGUAGES, useTranslation } from "../lib/i18n";
+import { getDoc } from "../content/docs";
 
 export default function LandingPage() {
   const { t } = useTranslation();
@@ -32,6 +33,7 @@ export default function LandingPage() {
           <a href="#features" className="transition-colors hover:text-[#0E7490]">{t("landing.navFeatures")}</a>
           <a href="#trust-passport" className="transition-colors hover:text-[#0E7490]">{t("landing.navTrust")}</a>
           <a href="#languages" className="transition-colors hover:text-[#0E7490]">{t("landing.navLanguages")}</a>
+          <Link href="/documentation" className="transition-colors hover:text-[#0E7490]">{t("landing.navDocs")}</Link>
         </nav>
         <div className="flex items-center gap-3">
           <LanguageSelector variant="compact" />
@@ -168,6 +170,33 @@ export default function LandingPage() {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+
+        <section id="documentation" className="mx-auto max-w-7xl px-4 sm:px-8">
+          <div className="space-y-8 rounded-3xl border border-[#D8E2EA] bg-white p-8 shadow-sm sm:p-12">
+            <div className="max-w-2xl space-y-3">
+              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#0E7490]">
+                <BookOpen className="h-4 w-4" aria-hidden="true" />
+                {t("landing.docsKicker")}
+              </span>
+              <h2 className="text-2xl font-bold text-[#0B1F33] sm:text-3xl">{t("landing.docsTitle")}</h2>
+              <p className="text-xs leading-relaxed text-[#475569] sm:text-sm">{t("landing.docsBody")}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {["introduction", "risk-assessment", "responsible-ai", "testing"].map((slug) => {
+                const d = getDoc(slug);
+                return d ? (
+                  <Link key={slug} href={`/documentation/${slug}`} className="space-y-1.5 rounded-2xl border border-[#D8E2EA] bg-[#F8FAFC] p-4 transition-colors hover:border-[#0E7490]">
+                    <p lang="en" className="text-sm font-bold text-[#0B1F33]">{d.title}</p>
+                    <p lang="en" className="line-clamp-3 text-xs leading-relaxed text-[#475569]">{d.summary}</p>
+                  </Link>
+                ) : null;
+              })}
+            </div>
+            <Link href="/documentation">
+              <Button variant="primary" size="md" rightIcon={<ArrowRight className="h-4 w-4" />}>{t("landing.docsCta")}</Button>
+            </Link>
           </div>
         </section>
 

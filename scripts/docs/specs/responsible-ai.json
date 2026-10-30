@@ -1,0 +1,48 @@
+{
+  "_hints": "Trust Passport principle map is the last section of /ai-trust and loads asynchronously (GET /api/v1/trust-passport/principles); wait for the Show evidence button. Cards are li elements in ul.grid inside section#principles; first card = Safety and Reliability. If the viewport cuts the opened evidence, scroll to button[aria-controls='ev-safety_reliability'] instead or raise height. No data is created.",
+  "out_dir": "apps/web/public/docs/responsible-ai",
+  "shots": [
+    {
+      "name": "principle-map",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-trust",
+      "width": 1440,
+      "height": 1000,
+      "steps": [
+        {
+          "wait_for": "button[aria-controls='ev-safety_reliability']"
+        },
+        {
+          "click": "button[aria-controls='ev-safety_reliability']"
+        },
+        {
+          "wait_for": "#ev-safety_reliability"
+        },
+        {
+          "scroll_to": "#principles"
+        },
+        {
+          "wait": 500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#principles-h",
+          "n": 1
+        },
+        {
+          "selector": "#principles ul.grid > li:first-child > div:first-of-type",
+          "n": 2
+        },
+        {
+          "selector": "#principles ul.grid > li:first-child > div:nth-of-type(2)",
+          "n": 3
+        },
+        {
+          "selector": "#ev-safety_reliability > li:first-child",
+          "n": 4
+        }
+      ]
+    }
+  ]
+}

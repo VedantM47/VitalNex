@@ -1,0 +1,79 @@
+{
+  "_hints": "run with --base http://localhost:8000 (FastAPI Swagger UI, no account needed). Swagger lists every operation under its tag, so the page is long; height 2600 is planned so all five tags fit in one viewport. If a tag falls outside the viewport, reduce marks or click a tag heading to collapse groups (clicking toggles it). Selectors match the tag headings (h3.opblock-tag) by their exact tag names from apps/api/routers/v1/*.py. Capture agent: all tag groups are collapsed by clicking each heading so every tag fits in one 1300px viewport.",
+  "out_dir": "apps/web/public/docs/architecture",
+  "shots": [
+    {
+      "name": "api-docs",
+      "path": "/docs",
+      "width": 1600,
+      "height": 1300,
+      "settle": 2500,
+      "steps": [
+        {
+          "wait_for": "h3.opblock-tag"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='Health']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='Session & Consent']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='User & Health Profiles']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='Screening']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='Care Connect & Appointments']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='AI Assistant & Voice']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='Model Registry & Governance']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='Clinical Reports & Documentation']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='Admin Governance']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='Trust Passport']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='QR Patient-held Record']"
+        },
+        {
+          "click": "h3.opblock-tag[data-tag='default']"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "h3.opblock-tag[data-tag='Session & Consent']",
+          "n": 1
+        },
+        {
+          "selector": "h3.opblock-tag[data-tag='Screening']",
+          "n": 2
+        },
+        {
+          "selector": "h3.opblock-tag[data-tag='AI Assistant & Voice']",
+          "n": 3
+        },
+        {
+          "selector": "h3.opblock-tag[data-tag='Clinical Reports & Documentation']",
+          "n": 4
+        },
+        {
+          "selector": "h3.opblock-tag[data-tag='Admin Governance']",
+          "n": 5
+        }
+      ]
+    }
+  ]
+}

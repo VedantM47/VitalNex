@@ -1,0 +1,172 @@
+{
+  "_hints": "All shots are read-only (no data created). patient1 currently has 4 saved screenings (newest 29 Oct 2026 Low/Low/Low live; 22 Sept 2026 Demo, High x3, 'Waiting for clinician review'; two older Demo Low rows). history-row targets the row that contains 'Waiting for clinician review'; if no such row exists any more, use the first row with a 'Demo' badge and drop mark 2. The sidebar also has a[href='/history'], so in-page links are scoped with 'main'. The chart is Recharts SVG; give it ~1500 ms to render.",
+  "out_dir": "apps/web/public/docs/history-and-reports",
+  "shots": [
+    {
+      "name": "history-overview",
+      "account": "patient1@vitalnex.demo",
+      "path": "/history",
+      "width": 1440,
+      "height": 1100,
+      "steps": [
+        {
+          "wait_for": "text=All screenings"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "aside a[href='/history']",
+          "n": 1
+        },
+        {
+          "selector": "main button:has-text('Try again')",
+          "n": 2
+        },
+        {
+          "selector": "main div.rounded-2xl.space-y-4:has(> [role='img'])",
+          "n": 3
+        },
+        {
+          "selector": "main >> text=All screenings",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "history-chart",
+      "account": "patient1@vitalnex.demo",
+      "path": "/history",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "text=Levels over time"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main .recharts-legend-wrapper",
+          "n": 1
+        },
+        {
+          "selector": "main .recharts-yAxis-tick-labels",
+          "n": 2
+        },
+        {
+          "selector": "main .recharts-xAxis-tick-labels",
+          "n": 3
+        }
+      ],
+      "clip": "main [role='img']"
+    },
+    {
+      "name": "history-row",
+      "account": "patient1@vitalnex.demo",
+      "path": "/history",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "text=All screenings"
+        },
+        {
+          "scroll_to": "main li:has-text('Waiting for clinician review')"
+        },
+        {
+          "wait": 500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main li:has-text('Waiting for clinician review') > div:first-child > span:first-child",
+          "n": 1
+        },
+        {
+          "selector": "main li:has-text('Waiting for clinician review') >> text=Waiting for clinician review",
+          "n": 2
+        },
+        {
+          "selector": "main li:has-text('Waiting for clinician review') > p",
+          "n": 3
+        },
+        {
+          "selector": "main li:has-text('Waiting for clinician review') > ul",
+          "n": 4
+        }
+      ],
+      "clip": "main li:has-text('Waiting for clinician review')"
+    },
+    {
+      "name": "reports-overview",
+      "account": "patient1@vitalnex.demo",
+      "path": "/reports",
+      "width": 1440,
+      "height": 1300,
+      "steps": [
+        {
+          "wait_for": "text=Download PDF"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "aside a[href='/reports']",
+          "n": 1
+        },
+        {
+          "selector": "main >> text=Share my record (QR)",
+          "n": 2
+        },
+        {
+          "selector": "main >> text=Printable report (PDF)",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "reports-pdf",
+      "account": "patient1@vitalnex.demo",
+      "path": "/reports",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "text=Download PDF"
+        },
+        {
+          "scroll_to": "main >> text=Printable report (PDF)"
+        },
+        {
+          "wait": 500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main select",
+          "n": 1
+        },
+        {
+          "selector": "main >> text=/\\d+ saved screenings/",
+          "n": 2
+        },
+        {
+          "selector": "main li:has(button:has-text('Download PDF'))",
+          "n": 3
+        },
+        {
+          "selector": "main a[href='/history']",
+          "n": 4
+        }
+      ],
+      "clip": "main div.rounded-2xl.space-y-4:has(select)"
+    }
+  ]
+}

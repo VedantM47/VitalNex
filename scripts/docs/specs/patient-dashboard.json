@@ -1,0 +1,213 @@
+{
+  "out_dir": "apps/web/public/docs/patient-dashboard",
+  "_hints": "All shots use patient1 (English). The dashboard's <main> scrolls inside the window, so tall viewports are used. Mark 4 (Levels over time) only exists if patient1 has 2+ saved screenings; mark 6 matches either 'Upcoming appointment' (has a booking) or 'Care Connect' (no booking) - both are fine. The profile-validation shot types an invalid height (300) and clicks Save Changes: validation fails in the browser, so nothing is sent or saved. Never click Save with valid values, and never change the Language box.",
+  "shots": [
+    {
+      "name": "dashboard-overview",
+      "account": "patient1@vitalnex.demo",
+      "path": "/dashboard",
+      "width": 1440,
+      "height": 1350,
+      "steps": [
+        {
+          "wait_for": "xpath=//h3[normalize-space()='Latest screening']"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main h1",
+          "n": 1
+        },
+        {
+          "selector": "main button:has-text('Start Screening Assessment')",
+          "n": 2
+        },
+        {
+          "selector": "xpath=//h3[normalize-space()='Latest screening']/ancestor::div[contains(@class,'rounded-2xl')][1]",
+          "n": 3
+        },
+        {
+          "selector": "xpath=//h3[normalize-space()='Levels over time']/ancestor::div[contains(@class,'rounded-2xl')][1]",
+          "n": 4
+        },
+        {
+          "selector": "xpath=//main//h2[normalize-space()='Health profile']/ancestor::div[contains(@class,'grid-cols-2')][1]",
+          "n": 5
+        },
+        {
+          "selector": "xpath=//main//h2[normalize-space()='Upcoming appointment' or normalize-space()='Care Connect']/ancestor::div[contains(@class,'rounded-2xl')][1]",
+          "n": 6
+        },
+        {
+          "selector": "xpath=//main//h2[normalize-space()='AI Trust Passport']/ancestor::div[contains(@class,'rounded-2xl')][1]",
+          "n": 7
+        }
+      ]
+    },
+    {
+      "name": "dashboard-latest",
+      "account": "patient1@vitalnex.demo",
+      "path": "/dashboard",
+      "width": 1440,
+      "height": 1000,
+      "steps": [
+        {
+          "wait_for": "main li.space-y-3"
+        },
+        {
+          "wait": 1000
+        }
+      ],
+      "marks": [
+        {
+          "selector": "main li.space-y-3 > div",
+          "n": 1
+        },
+        {
+          "selector": "xpath=//main//li[contains(@class,'space-y-3')]//p[span[starts-with(normalize-space(),'Next step')]]",
+          "n": 2
+        },
+        {
+          "selector": "main li.space-y-3 > ul",
+          "n": 3
+        }
+      ],
+      "clip": "xpath=//h3[normalize-space()='Latest screening']/ancestor::div[contains(@class,'rounded-2xl')][1]"
+    },
+    {
+      "name": "profile-top",
+      "account": "patient1@vitalnex.demo",
+      "path": "/health-profile",
+      "width": 1440,
+      "height": 1300,
+      "steps": [
+        {
+          "wait_for": "xpath=//h3[normalize-space()='About you']"
+        },
+        {
+          "fill": [
+            "xpath=//label[normalize-space()='Height (cm)']/following::input[1]",
+            "170"
+          ]
+        },
+        {
+          "fill": [
+            "xpath=//label[normalize-space()='Weight (kg)']/following::input[1]",
+            "70"
+          ]
+        },
+        {
+          "wait": 1000
+        }
+      ],
+      "marks": [
+        {
+          "selector": "aside a[href='/health-profile']",
+          "n": 1
+        },
+        {
+          "selector": "#pref-lang",
+          "n": 2
+        },
+        {
+          "selector": "main p:has-text('Saved answers are filled in for you')",
+          "n": 3
+        },
+        {
+          "selector": "xpath=//h3[normalize-space()='About you']/ancestor::div[contains(@class,'rounded-2xl')][1]",
+          "n": 4
+        },
+        {
+          "selector": "div[aria-live='polite']:has-text('Your BMI')",
+          "n": 5
+        }
+      ],
+      "_note": "patient1's saved profile is empty, so height/weight are typed in the browser (not saved) to show the BMI box."
+    },
+    {
+      "name": "profile-bottom",
+      "account": "patient1@vitalnex.demo",
+      "path": "/health-profile",
+      "width": 1440,
+      "height": 1100,
+      "steps": [
+        {
+          "wait_for": "xpath=//h3[normalize-space()='How you feel']"
+        },
+        {
+          "click": "xpath=//h3[normalize-space()='How you feel']/ancestor::div[contains(@class,'rounded-2xl')][1]//label[normalize-space()='Good']"
+        },
+        {
+          "scroll_to": "main button:has-text('Save Changes')"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "xpath=//h3[normalize-space()='How you feel']/ancestor::div[contains(@class,'rounded-2xl')][1]",
+          "n": 1
+        },
+        {
+          "selector": "xpath=//h3[normalize-space()='How you feel']/ancestor::div[contains(@class,'rounded-2xl')][1]//button[starts-with(normalize-space(),'Clear')]",
+          "n": 2
+        },
+        {
+          "selector": "main button:has-text('Save Changes')",
+          "n": 3
+        },
+        {
+          "selector": "main button:has-text('Start Screening Assessment')",
+          "n": 4
+        }
+      ],
+      "_note": "patient1's saved profile is empty, so General health = Good is clicked in the browser (not saved) to show a Clear button."
+    },
+    {
+      "name": "profile-validation",
+      "_note": "types an invalid height and clicks Save Changes; browser validation fails, so nothing is saved. Do not reuse this page context for other shots.",
+      "account": "patient1@vitalnex.demo",
+      "path": "/health-profile",
+      "width": 1440,
+      "height": 1000,
+      "steps": [
+        {
+          "wait_for": "xpath=//label[normalize-space()='Height (cm)']"
+        },
+        {
+          "fill": [
+            "xpath=//label[normalize-space()='Height (cm)']/following::input[1]",
+            "300"
+          ]
+        },
+        {
+          "click": "main button:has-text('Save Changes')"
+        },
+        {
+          "wait_for": "text=Enter a number from 120 to 220."
+        },
+        {
+          "scroll_to": "xpath=//label[normalize-space()='Height (cm)']"
+        },
+        {
+          "wait": 500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "xpath=//label[normalize-space()='Height (cm)']/following::input[1]",
+          "n": 1
+        },
+        {
+          "selector": "text=Enter a number from 120 to 220.",
+          "n": 2
+        }
+      ],
+      "clip": "xpath=//h3[normalize-space()='About you']/ancestor::div[contains(@class,'rounded-2xl')][1]"
+    }
+  ]
+}

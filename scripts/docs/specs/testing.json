@@ -1,0 +1,47 @@
+{
+  "_hints": "One shot. Sends one assistant message as patient1 (the assistant does not store message text). The emergency card (div role=alert with tel:108 / tel:112 links) appears above the reply once the server answers; the first answer can be slow while the local encoder loads, hence the long wait_for. If the button selector fails, try \"form button[type=submit]\". Capture agent: the standing banner also has tel:108/112 links, so waits and marks are scoped to [role=alert].",
+  "out_dir": "apps/web/public/docs/testing",
+  "shots": [
+    {
+      "name": "emergency-card",
+      "_note": "creates data: sends one assistant message as patient1 (text not stored by design)",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-assistant",
+      "steps": [
+        {
+          "fill": [
+            "#assistant-input",
+            "I have chest pain"
+          ]
+        },
+        {
+          "click": "button[type=submit]:has-text('Send')"
+        },
+        {
+          "wait_for": "[role=alert] a[href='tel:108']"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "div[role=alert]:has(a[href='tel:108'])",
+          "n": 1
+        },
+        {
+          "selector": "[role=alert] a[href='tel:108']",
+          "n": 2
+        },
+        {
+          "selector": "[role=alert] a[href='tel:112']",
+          "n": 3
+        },
+        {
+          "selector": "#assistant-input",
+          "n": 4
+        }
+      ]
+    }
+  ]
+}

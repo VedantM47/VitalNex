@@ -1,0 +1,516 @@
+{
+  "_hints": "All shots use patient4 (not patient1). Every shot fills the form from scratch; patient4's saved health profile may pre-fill some answers (with a 'From your profile' tag and a blue notice) - that is fine, the fill/click steps overwrite them. Only the 'emergency' shot creates data. The emergency screen appears only after 'See my results'; the free-text box does nothing while typing. If the emergency shot instead shows a consent error ('To run a screening, please turn on...'), patient4 lacks assessment_processing consent: add a step that ticks \"label:has-text('Chest pain or pressure now')\" on step 5 before Next - the page then shows the emergency screen even on an API error. Do not change patient4's consents.",
+  "out_dir": "apps/web/public/docs/risk-assessment",
+  "shots": [
+    {
+      "name": "step1-about",
+      "account": "patient4@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 1250,
+      "steps": [
+        {
+          "wait_for": "input[type=number] >> nth=0"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "52"
+          ]
+        },
+        {
+          "click": "fieldset:has-text('Sex assigned at birth') label:has-text('Female')"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "160"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "68"
+          ]
+        }
+      ],
+      "marks": [
+        {
+          "selector": "nav[aria-label='Screening steps']",
+          "n": 1
+        },
+        {
+          "selector": "text=Step 1 of 6",
+          "n": 2
+        },
+        {
+          "selector": "input[type=number] >> nth=0",
+          "n": 3
+        },
+        {
+          "selector": "fieldset:has-text('Sex assigned at birth')",
+          "n": 4
+        },
+        {
+          "selector": "div[aria-live=polite]:has-text('Your BMI')",
+          "n": 5
+        },
+        {
+          "selector": "role=button[name=\"Next\"s]",
+          "n": 6
+        }
+      ]
+    },
+    {
+      "name": "step3-lifestyle",
+      "account": "patient4@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 1350,
+      "steps": [
+        {
+          "wait_for": "input[type=number] >> nth=0"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "52"
+          ]
+        },
+        {
+          "click": "fieldset:has-text('Sex assigned at birth') label:has-text('Female')"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "160"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "68"
+          ]
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 2 of 6"
+        },
+        {
+          "click": "fieldset:has-text('high blood pressure') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('cholesterol is high') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('difficulty walking') label:has-text('No')"
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 3 of 6"
+        },
+        {
+          "click": "fieldset:has-text('100 cigarettes') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('physical activity or exercise') label:has-text('Yes')"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "nav[aria-label='Screening steps'] li:nth-child(1) button",
+          "n": 1
+        },
+        {
+          "selector": "fieldset:has-text('physical activity or exercise')",
+          "n": 2
+        },
+        {
+          "selector": "text=Answer yes even if you have stopped smoking.",
+          "n": 3
+        },
+        {
+          "selector": "role=button[name=\"Back\"s]",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "free-text",
+      "account": "patient4@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 1100,
+      "steps": [
+        {
+          "wait_for": "input[type=number] >> nth=0"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "52"
+          ]
+        },
+        {
+          "click": "fieldset:has-text('Sex assigned at birth') label:has-text('Female')"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "160"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "68"
+          ]
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 2 of 6"
+        },
+        {
+          "click": "fieldset:has-text('high blood pressure') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('cholesterol is high') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('difficulty walking') label:has-text('No')"
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 3 of 6"
+        },
+        {
+          "click": "fieldset:has-text('100 cigarettes') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('physical activity or exercise') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('fruit at least') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('vegetables at least') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('14 drinks') label:has-text('No')"
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 4 of 6"
+        },
+        {
+          "click": "fieldset:has-text('how is your health') label >> nth=2"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "2"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "3"
+          ]
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 5 of 6"
+        },
+        {
+          "fill": [
+            "#free-text",
+            "I sometimes feel tired after climbing stairs."
+          ]
+        }
+      ],
+      "marks": [
+        {
+          "selector": "fieldset:has-text('Do you have any of these right now')",
+          "n": 1
+        },
+        {
+          "selector": "#free-text",
+          "n": 2
+        },
+        {
+          "selector": "#free-text-help",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "review",
+      "account": "patient4@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 1700,
+      "steps": [
+        {
+          "wait_for": "input[type=number] >> nth=0"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "52"
+          ]
+        },
+        {
+          "click": "fieldset:has-text('Sex assigned at birth') label:has-text('Female')"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "160"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "68"
+          ]
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 2 of 6"
+        },
+        {
+          "click": "fieldset:has-text('high blood pressure') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('cholesterol is high') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('difficulty walking') label:has-text('No')"
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 3 of 6"
+        },
+        {
+          "click": "fieldset:has-text('100 cigarettes') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('physical activity or exercise') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('fruit at least') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('vegetables at least') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('14 drinks') label:has-text('No')"
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 4 of 6"
+        },
+        {
+          "click": "fieldset:has-text('how is your health') label >> nth=2"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "2"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "3"
+          ]
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 5 of 6"
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 6 of 6"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "div.rounded-2xl:has(h3:text-is('About you'))",
+          "n": 1
+        },
+        {
+          "selector": "div[aria-live=polite]:has-text('Your BMI')",
+          "n": 2
+        },
+        {
+          "selector": "text=Your answers are processed only if you allowed it",
+          "n": 3
+        },
+        {
+          "selector": "role=button[name=\"See my results\"]",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "emergency",
+      "account": "patient4@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 900,
+      "_note": "creates data: submits one assessment for patient4 with free text 'chest pain'. The server marks it as an emergency (no models run); if patient4 allows saving it is stored as an emergency assessment and, with sharing consent, added to the clinician review queue.",
+      "steps": [
+        {
+          "wait_for": "input[type=number] >> nth=0"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "52"
+          ]
+        },
+        {
+          "click": "fieldset:has-text('Sex assigned at birth') label:has-text('Female')"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "160"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "68"
+          ]
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 2 of 6"
+        },
+        {
+          "click": "fieldset:has-text('high blood pressure') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('cholesterol is high') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('difficulty walking') label:has-text('No')"
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 3 of 6"
+        },
+        {
+          "click": "fieldset:has-text('100 cigarettes') label:has-text('No')"
+        },
+        {
+          "click": "fieldset:has-text('physical activity or exercise') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('fruit at least') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('vegetables at least') label:has-text('Yes')"
+        },
+        {
+          "click": "fieldset:has-text('14 drinks') label:has-text('No')"
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 4 of 6"
+        },
+        {
+          "click": "fieldset:has-text('how is your health') label >> nth=2"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "2"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "3"
+          ]
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 5 of 6"
+        },
+        {
+          "fill": [
+            "#free-text",
+            "chest pain"
+          ]
+        },
+        {
+          "click": "role=button[name=\"Next\"s]"
+        },
+        {
+          "wait_for": "text=Step 6 of 6"
+        },
+        {
+          "click": "role=button[name=\"See my results\"]"
+        },
+        {
+          "wait_for": "text=Call for emergency help now"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#emergency-title",
+          "n": 1
+        },
+        {
+          "selector": "a[href='tel:108']",
+          "n": 2
+        },
+        {
+          "selector": "a[href='tel:112']",
+          "n": 3
+        },
+        {
+          "selector": "text=No screening levels are shown",
+          "n": 4
+        },
+        {
+          "selector": "text=Back to my answers",
+          "n": 5
+        }
+      ]
+    }
+  ]
+}

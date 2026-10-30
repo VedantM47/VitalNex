@@ -1,0 +1,197 @@
+{
+  "_hints": "All shots as patient1 on /ai-assistant. Every shot loads a fresh page, so the chat starts empty each time (chat lives only in React state). Each sent message writes one assistant_logs row (intent/confidence/emergency flag only, no text) - harmless. capture.py's init script resets vitalnex_lang to 'en' on every page load, so clicking the Hindi button in 'hindi-question' needs no undo. The answer bubble selector '[role=log] div.rounded-2xl.border p.whitespace-pre-line' matches the white reply bubble but NOT the red emergency card (the card div has no 'border' class). There are two tel:108 links on the page (banner above + card), so the card one is scoped with [role=alert]. If 'What is prediabetes?' or the Hindi question returns the 'no reliable answer' text instead of an FAQ answer with a Source line, tell the writer (the page claims an FAQ answer with source).",
+  "out_dir": "apps/web/public/docs/ai-assistant",
+  "shots": [
+    {
+      "name": "empty-chat",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-assistant",
+      "marks": [
+        {
+          "selector": "aside a[href='/ai-assistant']",
+          "n": 1
+        },
+        {
+          "selector": "[role=group][aria-label='Answer language']",
+          "n": 2
+        },
+        {
+          "selector": "button:has-text('Clear chat')",
+          "n": 3
+        },
+        {
+          "selector": "text=Answers come from a fixed, pre-written library",
+          "n": 4
+        },
+        {
+          "selector": "text=Chest pain, trouble breathing, a drooping face or sudden weakness? Call 108 / 112 now.",
+          "n": 5
+        },
+        {
+          "selector": "text=Try asking",
+          "n": 6
+        },
+        {
+          "selector": "#assistant-input",
+          "n": 7
+        },
+        {
+          "selector": "form button[type=submit]",
+          "n": 8
+        }
+      ]
+    },
+    {
+      "name": "answer-prediabetes",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-assistant",
+      "_note": "creates data: one assistant_logs row (intent only, no message text)",
+      "steps": [
+        {
+          "click": "[role=log] button:has-text('What is prediabetes?')"
+        },
+        {
+          "wait_for": "[role=log] div.rounded-2xl.border p.whitespace-pre-line"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "[role=log] div.inline-block",
+          "n": 1
+        },
+        {
+          "selector": "[role=log] div.rounded-2xl.border p.whitespace-pre-line",
+          "n": 2
+        },
+        {
+          "selector": "[role=log] a[target='_blank']",
+          "n": 3
+        },
+        {
+          "selector": "[role=log] a[href='/risk-assessment']",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "hindi-question",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-assistant",
+      "_note": "creates data: one assistant_logs row (intent only, no message text). Language is browser-only and reset to en on next load.",
+      "steps": [
+        {
+          "click": "button[lang='hi']"
+        },
+        {
+          "wait": 800
+        },
+        {
+          "fill": [
+            "#assistant-input",
+            "डायबिटीज़ क्या है?"
+          ]
+        },
+        {
+          "click": "form button[type=submit]"
+        },
+        {
+          "wait_for": "[role=log] div.rounded-2xl.border p.whitespace-pre-line"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "button[lang='hi'][aria-pressed='true']",
+          "n": 1
+        },
+        {
+          "selector": "[role=log] div.inline-block",
+          "n": 2
+        },
+        {
+          "selector": "[role=log] div.rounded-2xl.border p.whitespace-pre-line",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "emergency-card",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-assistant",
+      "_note": "creates data: one assistant_logs row with emergency_flag=true (no message text)",
+      "steps": [
+        {
+          "fill": [
+            "#assistant-input",
+            "What is a stroke?"
+          ]
+        },
+        {
+          "click": "form button[type=submit]"
+        },
+        {
+          "wait_for": "[role=alert]"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "[role=alert]",
+          "n": 1
+        },
+        {
+          "selector": "[role=alert] a[href='tel:108']",
+          "n": 2
+        },
+        {
+          "selector": "text=The answer to your question is below.",
+          "n": 3
+        },
+        {
+          "selector": "[role=log] div.rounded-2xl.border p.whitespace-pre-line",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "medicine-refusal",
+      "account": "patient1@vitalnex.demo",
+      "path": "/ai-assistant",
+      "_note": "creates data: one assistant_logs row, intent MEDICATION_REQUEST (no message text)",
+      "steps": [
+        {
+          "fill": [
+            "#assistant-input",
+            "What dose of medicine should I take for sugar?"
+          ]
+        },
+        {
+          "click": "form button[type=submit]"
+        },
+        {
+          "wait_for": "[role=log] div.rounded-2xl.border p.whitespace-pre-line"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": "[role=log] div.rounded-2xl.border p.whitespace-pre-line",
+          "n": 1
+        },
+        {
+          "selector": "[role=log] a[href='/care-connect']",
+          "n": 2
+        }
+      ]
+    }
+  ]
+}

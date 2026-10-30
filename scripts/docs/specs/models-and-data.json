@@ -1,0 +1,74 @@
+{
+  "_hints": "Both shots are on /admin/governance as admin. The registry table has min-width 900px inside a horizontal scroller, so a wide viewport (1680) keeps the 'Model card' column visible. Sections load data from the API; wait for the tables. Marks must all be inside the viewport at once: if mark 4 of 'fairness' (gap line) is off-screen, increase height or switch the 4th selector to the Sex table only. The first fairness table is the 'Sex' grouping of Diabetes.",
+  "out_dir": "apps/web/public/docs/models-and-data",
+  "shots": [
+    {
+      "name": "registry",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/governance",
+      "width": 1680,
+      "height": 1000,
+      "steps": [
+        {
+          "wait_for": "#registry table tbody tr"
+        },
+        {
+          "scroll_to": "#registry"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#registry tbody tr >> nth=0",
+          "n": 1
+        },
+        {
+          "selector": "#registry thead th:has-text('Test AUROC')",
+          "n": 2
+        },
+        {
+          "selector": "#registry tbody a:has-text('Model card') >> nth=0",
+          "n": 3
+        },
+        {
+          "selector": "#registry details >> nth=0",
+          "n": 4
+        }
+      ],
+      "clip": "#registry"
+    },
+    {
+      "name": "fairness",
+      "account": "admin@vitalnex.demo",
+      "path": "/admin/governance",
+      "width": 1680,
+      "height": 1100,
+      "steps": [
+        {
+          "wait_for": "#fairness table"
+        },
+        {
+          "scroll_to": "#fairness"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#fairness h3:has-text('Diabetes or prediabetes') >> nth=0",
+          "n": 1
+        },
+        {
+          "selector": "#fairness caption >> nth=0",
+          "n": 2
+        },
+        {
+          "selector": "#fairness table tbody >> nth=0",
+          "n": 3
+        },
+        {
+          "selector": "#fairness p:has-text('Largest gap') >> nth=0",
+          "n": 4
+        }
+      ],
+      "clip": "#fairness"
+    }
+  ]
+}

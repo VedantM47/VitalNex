@@ -1,0 +1,60 @@
+{
+  "_hints": "Both shots are signed out (no account). /login/doctor is a client redirect to /auth/login?role=doctor, so the path below goes straight to the target URL. Inputs have no name attribute; use the type selectors.",
+  "out_dir": "apps/web/public/docs/getting-started",
+  "shots": [
+    {
+      "name": "login",
+      "path": "/auth/login",
+      "width": 1280,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "text=Sign in to VITALNEX"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "input[type=email]",
+          "n": 1
+        },
+        {
+          "selector": "input[type=password]",
+          "n": 2
+        },
+        {
+          "selector": "a[href='/auth/forgot-password']",
+          "n": 3
+        },
+        {
+          "selector": "button[type=submit]",
+          "n": 4
+        },
+        {
+          "selector": "button[aria-label='Choose the interface language']",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "name": "login-clinician-portal",
+      "path": "/auth/login?role=doctor",
+      "width": 1280,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "text=Clinician portal"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "text=Clinician portal",
+          "n": 1
+        },
+        {
+          "selector": "text=Your access depends on your account, not on the portal you choose.",
+          "n": 2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "_hints": "Swagger UI is served by the API, not the web app: run capture.py with --base http://localhost:8000. No account. Wait for Swagger to render (#swagger-ui .information-container). The Authorize button appears because the API uses HTTPBearer. Tag sections have ids like operations-tag-Health (first group, visible without scrolling).",
+  "out_dir": "apps/web/public/docs/api-reference",
+  "shots": [
+    {
+      "name": "swagger",
+      "path": "/docs",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": ".information-container .title"
+        },
+        {
+          "wait": 800
+        }
+      ],
+      "marks": [
+        {
+          "selector": ".information-container .title",
+          "n": 1
+        },
+        {
+          "selector": "button.authorize",
+          "n": 2
+        },
+        {
+          "selector": "#operations-tag-Health",
+          "n": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "_hints": "Two shots. 'landing' is signed out at '/'. 'dashboard' is patient1 at '/dashboard'; the desktop sidebar is the <aside>. Section titles are rendered uppercase by CSS but the DOM text is 'Screening' / 'Care and records'.",
+  "out_dir": "apps/web/public/docs/introduction",
+  "shots": [
+    {
+      "name": "landing",
+      "path": "/",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "text=Know what kind of care to seek, and how soon."
+        }
+      ],
+      "marks": [
+        {
+          "selector": "header button[aria-label='Choose the interface language']",
+          "n": 1
+        },
+        {
+          "selector": "header a[href='/dashboard']",
+          "n": 2
+        },
+        {
+          "selector": "main a[href='/onboarding'] >> nth=0",
+          "n": 3
+        },
+        {
+          "selector": "main div.rounded-2xl.shadow-xl",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "dashboard",
+      "account": "patient1@vitalnex.demo",
+      "path": "/dashboard",
+      "width": 1440,
+      "height": 900,
+      "steps": [
+        {
+          "wait_for": "aside a[href='/history']"
+        },
+        {
+          "wait": 1500
+        }
+      ],
+      "marks": [
+        {
+          "selector": "aside div.space-y-1:has(> p:text-is('Screening'))",
+          "n": 1
+        },
+        {
+          "selector": "aside div.space-y-1:has(> p:text-is('Care and records'))",
+          "n": 2
+        },
+        {
+          "selector": "aside >> text=Demo environment",
+          "n": 3
+        }
+      ]
+    }
+  ]
+}

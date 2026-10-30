@@ -1,0 +1,216 @@
+{
+  "out_dir": "apps/web/public/docs/accounts-and-login",
+  "_hints": "Signed-out shots (login, signup, forgot-password, language-menu) have no account. NEVER submit sign-up or the reset form. Onboarding is read-only (nothing saved). Settings: only look, do not click Withdraw/Turn on, Download or Delete. Settings is tall; height 1900 keeps all marks in one viewport (the AppShell <main> scrolls internally). If the settings consent list is still 'Loading data...', raise settle.",
+  "shots": [
+    {
+      "name": "login",
+      "path": "/auth/login",
+      "steps": [
+        {
+          "wait_for": "button[type=submit]"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "text=Patient portal",
+          "n": 1
+        },
+        {
+          "selector": "text=MVP with dummy accounts only",
+          "n": 2
+        },
+        {
+          "selector": "input[type=email]",
+          "n": 3
+        },
+        {
+          "selector": "input[type=password]",
+          "n": 4
+        },
+        {
+          "selector": "a[href='/auth/forgot-password']",
+          "n": 5
+        },
+        {
+          "selector": "button[type=submit]",
+          "n": 6
+        },
+        {
+          "selector": "a[href='/auth/signup']",
+          "n": 7
+        },
+        {
+          "selector": "header button[aria-label='Choose the interface language']",
+          "n": 8
+        }
+      ]
+    },
+    {
+      "name": "signup",
+      "path": "/auth/signup",
+      "steps": [
+        {
+          "wait_for": "button[type=submit]"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "text=Clinician and admin accounts are created by the VITALNEX team.",
+          "n": 1
+        },
+        {
+          "selector": "input[autocomplete=name]",
+          "n": 2
+        },
+        {
+          "selector": "input[type=email]",
+          "n": 3
+        },
+        {
+          "selector": "input[autocomplete=new-password]",
+          "n": 4
+        },
+        {
+          "selector": "text=No health information is collected when you create an account.",
+          "n": 5
+        },
+        {
+          "selector": "button[type=submit]",
+          "n": 6
+        },
+        {
+          "selector": "main a[href='/auth/login']",
+          "n": 7
+        }
+      ]
+    },
+    {
+      "name": "language-menu",
+      "path": "/auth/login",
+      "steps": [
+        {
+          "click": "header button[aria-label='Choose the interface language']"
+        },
+        {
+          "wait_for": "[role=listbox]"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "[role=listbox]",
+          "n": 1
+        },
+        {
+          "selector": "[role=option][aria-selected=true] svg",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "name": "forgot-password",
+      "path": "/auth/forgot-password",
+      "steps": [
+        {
+          "wait_for": "button[type=submit]"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "input[type=email]",
+          "n": 1
+        },
+        {
+          "selector": "button[type=submit]",
+          "n": 2
+        },
+        {
+          "selector": "main a[href='/auth/login']",
+          "n": 3
+        }
+      ]
+    },
+    {
+      "name": "onboarding",
+      "account": "patient4@vitalnex.demo",
+      "path": "/onboarding",
+      "height": 1500,
+      "steps": [
+        {
+          "wait_for": "text=Welcome to VITALNEX"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "p:text-is('What VITALNEX is')",
+          "n": 1
+        },
+        {
+          "selector": "text=Emergency? Call 108 / 112 now.",
+          "n": 2
+        },
+        {
+          "selector": "main button[aria-label='Choose the interface language']",
+          "n": 3
+        },
+        {
+          "selector": "main a[href='/settings']",
+          "n": 4
+        },
+        {
+          "selector": "main a[href='/health-profile']",
+          "n": 5
+        },
+        {
+          "selector": "main a[href='/dashboard']",
+          "n": 6
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "account": "patient1@vitalnex.demo",
+      "path": "/settings",
+      "height": 1900,
+      "settle": 3000,
+      "steps": [
+        {
+          "wait_for": "li[aria-labelledby='consent-store_history']"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "#ui-lang",
+          "n": 1
+        },
+        {
+          "selector": "#mydata-h",
+          "n": 2
+        },
+        {
+          "selector": "li[aria-labelledby='consent-store_history']",
+          "n": 3
+        },
+        {
+          "selector": "li[aria-labelledby='consent-store_history'] button[role=switch]",
+          "n": 4
+        },
+        {
+          "selector": "button:has-text('Download JSON')",
+          "n": 5
+        },
+        {
+          "selector": "button:has-text('Delete my data')",
+          "n": 6
+        },
+        {
+          "selector": "main a[href='/reports']",
+          "n": 7
+        },
+        {
+          "selector": "header button[aria-label='Sign out']",
+          "n": 8
+        }
+      ]
+    }
+  ]
+}

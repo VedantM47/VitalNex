@@ -1,0 +1,540 @@
+{
+  "out_dir": "apps/web/public/docs/understanding-results",
+  "_hints": "The result screen is NOT a URL: it appears only on /risk-assessment right after pressing 'See my results', and History has no detail view, so every shot must fill the 6-step form and submit (each shot = one new saved assessment for patient1; 4 in total). Answers were chosen by running apps/api/services/screening.assess locally: shots top/why/bottom use age 45, Male, 170 cm, 90 kg, high BP yes, cholesterol yes, difficulty walking yes, smoker no, activity/fruit/veg yes, alcohol no, general health Fair (nth=3), 2 and 3 unwell days, no symptoms -> diabetes High, heart High, stroke NOT CONFIDENT, next step 'not confident'. Shot care uses age 55 + smoker yes -> all three High, next step 'See a doctor soon', which shows the 'Book a demo Endocrinology ... doctor' box. The form may be pre-filled from patient1's saved profile; the fill/click steps overwrite every answer. Radio inputs have name '<field>-<reactId>' (options order: Yes,No / Female,Male,Prefer not / Excellent..Poor). Number inputs per step in order: step1 age,height,weight; step4 mental days, physical days. The 'A clinician will review this result.' note (top mark 3) only shows if patient1 has both store_history and share_with_clinician consent; if it is absent drop that mark and tell the writer. The AppShell <main> scrolls internally; tall viewports are used so all marks fit at once. If the 'How sure' miss-rate lines are still loading, add a wait. If the bottom shot cannot fit What-if + guidance + buttons in one viewport, raise height.",
+  "shots": [
+    {
+      "name": "top",
+      "_note": "creates data: submits one risk assessment as patient1 (saved to history; goes to clinician review queue if patient1 shares with clinicians)",
+      "account": "patient1@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 1250,
+      "steps": [
+        {
+          "wait_for": "input[type=number]"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "45"
+          ]
+        },
+        {
+          "click": "input[name^='sex-'] >> nth=1"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "170"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "90"
+          ]
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='high_bp-']"
+        },
+        {
+          "click": "input[name^='high_bp-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='high_chol-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='diff_walk-'] >> nth=0"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='smoker-']"
+        },
+        {
+          "click": "input[name^='smoker-'] >> nth=1"
+        },
+        {
+          "click": "input[name^='phys_activity-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='fruits-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='veggies-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='heavy_alcohol-'] >> nth=1"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='gen_health-']"
+        },
+        {
+          "click": "input[name^='gen_health-'] >> nth=3"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "2"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "3"
+          ]
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "text=Chest pain or pressure now"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "button:has-text('See my results')"
+        },
+        {
+          "click": "button:has-text('See my results')"
+        },
+        {
+          "wait_for": "section[aria-labelledby='next-step-title']"
+        },
+        {
+          "wait": 2500
+        },
+        {
+          "scroll_to": "h2:text-is('Your screening results')"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "h2:text-is('Your screening results')",
+          "n": 1
+        },
+        {
+          "selector": "section[aria-labelledby='next-step-title']",
+          "n": 2
+        },
+        {
+          "selector": "p:has-text('A clinician will review this result.')",
+          "n": 3
+        },
+        {
+          "selector": "section[aria-label='Your screening results'] > div:nth-child(1)",
+          "n": 4
+        },
+        {
+          "selector": "section[aria-label='Your screening results'] > div:nth-child(3)",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "name": "care",
+      "_note": "creates data: submits one risk assessment as patient1 (saved to history; goes to clinician review queue if patient1 shares with clinicians)",
+      "account": "patient1@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 1000,
+      "steps": [
+        {
+          "wait_for": "input[type=number]"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "55"
+          ]
+        },
+        {
+          "click": "input[name^='sex-'] >> nth=1"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "170"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "90"
+          ]
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='high_bp-']"
+        },
+        {
+          "click": "input[name^='high_bp-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='high_chol-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='diff_walk-'] >> nth=0"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='smoker-']"
+        },
+        {
+          "click": "input[name^='smoker-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='phys_activity-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='fruits-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='veggies-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='heavy_alcohol-'] >> nth=1"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='gen_health-']"
+        },
+        {
+          "click": "input[name^='gen_health-'] >> nth=3"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "2"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "3"
+          ]
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "text=Chest pain or pressure now"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "button:has-text('See my results')"
+        },
+        {
+          "click": "button:has-text('See my results')"
+        },
+        {
+          "wait_for": "section[aria-labelledby='next-step-title']"
+        },
+        {
+          "wait": 2500
+        },
+        {
+          "scroll_to": "h2:text-is('Your screening results')"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "section[aria-labelledby='next-step-title']",
+          "n": 1
+        },
+        {
+          "selector": "a[href^='/care-connect?specialty='] >> nth=0",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "name": "why",
+      "_note": "creates data: submits one risk assessment as patient1 (saved to history; goes to clinician review queue if patient1 shares with clinicians)",
+      "account": "patient1@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 1750,
+      "steps": [
+        {
+          "wait_for": "input[type=number]"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "45"
+          ]
+        },
+        {
+          "click": "input[name^='sex-'] >> nth=1"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "170"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "90"
+          ]
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='high_bp-']"
+        },
+        {
+          "click": "input[name^='high_bp-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='high_chol-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='diff_walk-'] >> nth=0"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='smoker-']"
+        },
+        {
+          "click": "input[name^='smoker-'] >> nth=1"
+        },
+        {
+          "click": "input[name^='phys_activity-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='fruits-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='veggies-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='heavy_alcohol-'] >> nth=1"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='gen_health-']"
+        },
+        {
+          "click": "input[name^='gen_health-'] >> nth=3"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "2"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "3"
+          ]
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "text=Chest pain or pressure now"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "button:has-text('See my results')"
+        },
+        {
+          "click": "button:has-text('See my results')"
+        },
+        {
+          "wait_for": "section[aria-labelledby='next-step-title']"
+        },
+        {
+          "wait": 2500
+        },
+        {
+          "wait_for": "text=See the Trust Passport"
+        },
+        {
+          "wait": 1500
+        },
+        {
+          "scroll_to": "div:has(> div > div > div > h3:text-is('Why this result?'))"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "div:has(> div > div > div > h3:text-is('Why this result?'))",
+          "n": 1
+        },
+        {
+          "selector": "div:has(> div > div > div > h3:text-is('Shared factors'))",
+          "n": 2
+        },
+        {
+          "selector": "div:has(> div > div > div > h3:text-is('What you can change'))",
+          "n": 3
+        },
+        {
+          "selector": "div:has(> div > div > div > h3:text-is('How sure is VITALNEX?'))",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "name": "bottom",
+      "_note": "creates data: submits one risk assessment as patient1 (saved to history; goes to clinician review queue if patient1 shares with clinicians)",
+      "account": "patient1@vitalnex.demo",
+      "path": "/risk-assessment",
+      "width": 1440,
+      "height": 1900,
+      "steps": [
+        {
+          "wait_for": "input[type=number]"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "45"
+          ]
+        },
+        {
+          "click": "input[name^='sex-'] >> nth=1"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "170"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=2",
+            "90"
+          ]
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='high_bp-']"
+        },
+        {
+          "click": "input[name^='high_bp-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='high_chol-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='diff_walk-'] >> nth=0"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='smoker-']"
+        },
+        {
+          "click": "input[name^='smoker-'] >> nth=1"
+        },
+        {
+          "click": "input[name^='phys_activity-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='fruits-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='veggies-'] >> nth=0"
+        },
+        {
+          "click": "input[name^='heavy_alcohol-'] >> nth=1"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "input[name^='gen_health-']"
+        },
+        {
+          "click": "input[name^='gen_health-'] >> nth=3"
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=0",
+            "2"
+          ]
+        },
+        {
+          "fill": [
+            "input[type=number] >> nth=1",
+            "3"
+          ]
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "text=Chest pain or pressure now"
+        },
+        {
+          "click": "button:has-text('Next')"
+        },
+        {
+          "wait_for": "button:has-text('See my results')"
+        },
+        {
+          "click": "button:has-text('See my results')"
+        },
+        {
+          "wait_for": "section[aria-labelledby='next-step-title']"
+        },
+        {
+          "wait": 2500
+        },
+        {
+          "scroll_to": "button:has-text('Start a new screening')"
+        }
+      ],
+      "marks": [
+        {
+          "selector": "div:has(> div > div > div > h3:has-text('What if'))",
+          "n": 1
+        },
+        {
+          "selector": "div:has(> div > div > div > h3:text-is('General guidance'))",
+          "n": 2
+        },
+        {
+          "selector": "p:has-text('VITALNEX is a screening and care-navigation prototype') >> nth=-1",
+          "n": 3
+        },
+        {
+          "selector": "div:has(> button:has-text('Start a new screening'))",
+          "n": 4
+        }
+      ]
+    }
+  ]
+}

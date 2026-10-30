@@ -36,6 +36,38 @@ Decisions: `docs/DECISIONS.md` (D-1 … D-26).*
   audit (`docs/claims_audit.md`), final feature status table, commit
   "P10: verification, red-team, ERAI report, docs".
 
+## Admin documentation (2026-10-30, uncommitted)
+
+- **What:** product-style docs at `/admin/docs/<slug>` (admin only; sidebar item "Documentation").
+  18 pages in 5 groups, English only (D-27). Feature pages: what it is, where to find it, annotated
+  screenshots (numbered markers + key), steps, behind the scenes, limits, NITI Aayog principles
+  (rule in plain words + how the feature follows it), FAQ. 71 screenshots, all checked by eye.
+- **Public copy:** the same docs are open to everyone (no sign-in) at `/documentation` and
+  `/documentation/<slug>`, linked from the landing page header, a landing section and the footer. Page
+  links use `/admin/docs/...` in content and are rewritten per copy (`components/docs/docs-base.tsx`).
+  The literal demo password is not written in any page.
+- **Files:** pages `apps/web/src/content/docs/pages/*.ts` (registry `index.ts`, types `types.ts`,
+  NITI text `niti.ts`); shell `apps/web/src/components/docs/{DocsView,DocBlocks}.tsx`; routes
+  `apps/web/src/app/admin/docs/`; screenshots `apps/web/public/docs/<slug>/`; screenshot tool
+  `scripts/docs/capture.py` with one plan per page in `scripts/docs/specs/<slug>.json`.
+- **Checks run:** `tsc --noEmit` clean, eslint clean on docs files, `i18n:check` OK (957 keys). The
+  testing page records a full local run: 319 + 10 live pytest passed, lint 0 errors.
+  **Not run:** `npm run build` (needs the dev server stopped) and a full browser click-through of
+  all 18 pages; no content-accuracy review pass by a second agent (cancelled by the user).
+- **Demo data created in the live DB by the screenshots:** patient1 several extra saved
+  assessments (dated 29–30 Oct 2026), share links (all expired or revoked) and 4+ assistant log
+  rows; patient4 one emergency assessment and one booking with Dr. Joshi (30 Oct 10:00).
+  Re-running a spec with a `_note: creates data` repeats this.
+- **App issues found while writing (not fixed):** login page shows "Email or password is incorrect"
+  for any sign-in error (hid a wrong `apps/web/.env.local` Supabase URL; fixed that file, backup in
+  `apps/web/.env.local.bak`); dashboard "Upcoming appointment" shows raw values and can show past
+  bookings; hidden history shows "No screenings yet"; emergency free-text check needs the API;
+  non-BMI form errors shown as raw codes; doctor notes cannot be written (no UI); no case
+  assignment (all clinicians see all consenting patients); stored `preferred_language` not applied
+  at sign-in; PDF link uses `PUBLIC_WEB_URL` (localhost); some Hindi PDF factor sentences read
+  awkwardly; Reports lists max 20 but counts all; review-queue date vs latest screening date
+  differ; "15 questions" on the landing page vs 14 elsewhere; no rate limiting in the API.
+
 ## Environment facts
 
 - Windows 11, Python 3.13 (global interpreter, no venv), Node; all ML/NLP deps installed globally.
