@@ -16,7 +16,7 @@ export default function OnboardingPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7FAFC] p-4 sm:p-8">
+    <div className="flex min-h-screen flex-col p-4 sm:p-8">
       <header className="mx-auto flex w-full max-w-3xl items-center justify-between border-b border-[#D8E2EA] pb-6">
         <BrandLogo size="sm" />
         <LanguageSelector variant="compact" />

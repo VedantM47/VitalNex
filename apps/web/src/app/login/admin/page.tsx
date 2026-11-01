@@ -12,7 +12,7 @@ export default function AdminLoginRedirect() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F7FAFC] text-[#64748B] text-xs font-semibold">
+    <div className="min-h-screen flex items-center justify-center text-[#64748B] text-xs font-semibold">
       {t("auth.redirecting")}
     </div>
   );

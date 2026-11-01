@@ -51,7 +51,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7FAFC] flex flex-col justify-between p-4 sm:p-8">
+    <div className="min-h-screen flex flex-col justify-between p-4 sm:p-8">
       <header className="max-w-md mx-auto w-full flex justify-between items-center pb-6">
         <BrandLogo size="md" />
         <LanguageSelector variant="compact" />

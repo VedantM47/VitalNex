@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
 
   return (
-    <div className="flex h-screen w-full bg-[#F7FAFC] overflow-hidden">
+    <div className="flex h-screen w-full overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex md:shrink-0">
         <Sidebar />

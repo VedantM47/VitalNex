@@ -14,7 +14,7 @@ import { useTranslation } from "../../lib/i18n";
 export function PublicDocsShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7FAFC]">
+    <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[#D8E2EA] bg-white/95 px-4 py-3.5 backdrop-blur-md sm:px-8">
         <BrandLogo size="md" />
         <nav className="hidden items-center gap-6 text-xs font-medium text-[#475569] sm:text-sm md:flex">

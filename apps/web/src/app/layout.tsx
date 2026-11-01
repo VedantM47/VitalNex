@@ -4,6 +4,7 @@ import "./globals.css";
 import { I18nProvider } from "../lib/i18n";
 import { AuthProvider } from "../lib/auth-context";
 import en from "../messages/en.json";
+import { AuroraBackground } from "../components/ui/aurora-background";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${notoSansDevanagari.variable}`}>
       <body className="antialiased min-h-screen bg-[#F7FAFC] text-[#0F172A]">
+        <AuroraBackground />
         <I18nProvider>
           <AuthProvider>{children}</AuthProvider>
         </I18nProvider>

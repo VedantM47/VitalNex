@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+/* The app has no dark theme: only an explicit .dark class turns `dark:` styles on (not the OS setting). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Aurora background (components/ui/aurora-background.tsx) */
+@theme {
+  --animate-aurora: aurora 60s linear infinite;
+  @keyframes aurora {
+    from {
+      background-position: 50% 50%, 50% 50%;
+    }
+    to {
+      background-position: 350% 50%, 350% 50%;
+    }
+  }
+}
+
 @layer base {
   :root {
     --primary-navy: #0B1F33;
@@ -16,6 +32,16 @@
     --warning: #B45309;
     --danger: #B42318;
     --info: #0E7490;
+
+    /* aurora colours */
+    --white: #ffffff;
+    --black: #000000;
+    --transparent: transparent;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --indigo-300: #a5b4fc;
+    --violet-200: #ddd6fe;
 
     --font-primary: "Plus Jakarta Sans", "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
   }

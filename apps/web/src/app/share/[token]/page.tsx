@@ -76,7 +76,7 @@ export default function SharedRecordPage() {
   const none = <p className="text-sm text-[#475569]">{t("share.public.none")}</p>;
 
   return (
-    <div className="min-h-screen bg-[#F7FAFC]">
+    <div className="min-h-screen">
       <header className="flex items-center justify-between gap-4 border-b border-[#D8E2EA] bg-white px-4 py-3 sm:px-8">
         <BrandLogo size="sm" />
         <LanguageSelector variant="compact" />
